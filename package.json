@@ -6,6 +6,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+	"files": [
+		"/static/css/bootstrap.min.css",
+		"/static/js/bootstrap.min.js",
+		"/src",
+		"index.js"
+	],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/panta82/crud_but_quick.git"
