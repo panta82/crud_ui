@@ -15,5 +15,14 @@
   "bugs": {
     "url": "https://github.com/panta82/crud_but_quick/issues"
   },
-  "homepage": "https://github.com/panta82/crud_but_quick#readme"
+  "homepage": "https://github.com/panta82/crud_but_quick#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0"
+  },
+  "peerDependencies": {
+    "express": "^4.0.0"
+  },
+  "devDependencies": {
+    "prettier": "^1.18.2"
+  }
 }
