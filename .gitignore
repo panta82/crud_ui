@@ -142,3 +142,7 @@ typings/
 # Serverless directories
 .serverless
 
+### Custom
+
+# We are doing a lib, so we don't want this
+package-lock.json

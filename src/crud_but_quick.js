@@ -12,6 +12,8 @@ const views = require('./views');
 function crudButQuick(options) {
 	options = new CBCOptions(options);
 
+	options.validateAndCoerce();
+
 	const router = express.Router();
 
 	router.use(express.static(libPath.resolve(__dirname, '../static')));

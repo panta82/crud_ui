@@ -9,7 +9,18 @@ const crudButQuick = require('../');
 const app = express();
 app.use(bodyParser.json());
 
-app.use('/', crudButQuick({}));
+app.use(
+	'/',
+	crudButQuick({
+		fields: [
+			{
+				type: 'string',
+				name: 'name',
+				label: 'Name',
+			},
+		],
+	})
+);
 
 const server = http.createServer(app);
 server.listen(port, () => {
