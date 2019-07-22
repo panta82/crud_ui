@@ -19,6 +19,9 @@ app.use(
 				label: 'Name',
 			},
 		],
+		list: () => {
+			return [{ name: 'a' }, { name: 'b' }];
+		},
 	})
 );
 

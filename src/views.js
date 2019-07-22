@@ -66,9 +66,7 @@ function layout(options, content) {
 
 		</nav>
 
-		<main role="main" class="container">
-			${content}
-		</main>
+		<main role="main" class="container">${content}</main>
 		
 		<footer class="text-muted">
       <div class="container">
@@ -86,6 +84,35 @@ function layout(options, content) {
 `;
 }
 
+/**
+ * @param {CBCOptions} options
+ * @param {Array} data
+ */
+function list(options, data) {
+	return `
+<table class="table table-bordered table-sm">
+<thead>
+	<tr>
+		${options.fields.map(f => `<th>${f.label}</th>`)}
+	</tr>
+</thead>
+<tbody>
+	${
+		!data.length
+			? `<tr><td colspan="100">${options.texts.listNoData}</td></tr>`
+			: data.map(row).join('\n')
+	}
+</tbody>
+</table>
+	`;
+
+	function row(item) {
+		const cols = options.fields.map(field => `<td>${item[field.name] || ''}</td>`);
+		return `<tr>${cols}</tr>`;
+	}
+}
+
 module.exports = {
 	layout,
+	list,
 };

@@ -19,7 +19,13 @@ function crudButQuick(options) {
 	router.use(express.static(libPath.resolve(__dirname, '../static')));
 
 	router.get('/', (req, res) => {
-		res.header('Content-Type', 'text/html').send(views.layout(options, '<h1>test</h1>'));
+		Promise.resolve()
+			.then(() => options.list())
+			.then(data => {
+				res
+					.header('Content-Type', 'text/html')
+					.send(views.layout(options, views.list(options, data)));
+			});
 	});
 
 	return router;

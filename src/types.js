@@ -1,5 +1,7 @@
 'use strict';
 
+const { assertProvided, assertType } = require('./tools');
+
 const CBC_FIELD_TYPES = {
 	string: 'string',
 	text: 'text',
@@ -30,7 +32,7 @@ class CBCField {
 		 * Help text to display beneath the form. Optional.
 		 * @type {string}
 		 */
-		this.help_text = undefined;
+		this.helpText = undefined;
 
 		Object.assign(this, source);
 	}
@@ -44,39 +46,52 @@ class CBCField {
 			);
 		}
 
-		if (!this.name) {
-			throw new TypeError(`Field's "name" is required`);
-		}
-		if (typeof this.name !== 'string') {
-			throw new TypeError(`Field's "name" must be a string`);
-		}
+		assertProvided(this, 'name');
+		assertType(this, 'name', 'string');
 
-		if (!this.label) {
-			throw new TypeError(`Field's "label" is required`);
-		}
-		if (typeof this.label !== 'string') {
-			throw new TypeError(`Field's "label" must be a string`);
-		}
+		assertProvided(this, 'label');
+		assertType(this, 'label', 'string');
+
+		assertType(this, 'helpText', 'string');
+	}
+}
+
+class CBTexts {
+	constructor(/** CBTexts */ source) {
+		this.listNoData = 'No data';
+
+		Object.assign(this, source);
 	}
 }
 
 class CBCOptions {
 	constructor(/** CBCOptions */ source) {
 		/**
+		 * List of fields that will constitute data. Each member must duck-type to CBCField interface.
 		 * @type {CBCField[]}
 		 */
 		this.fields = undefined;
+
+		/**
+		 * Object describing all the texts that will be used in the application. Everything has defaults,
+		 * but user is invited to overwrite some of them.
+		 * @type {CBTexts}
+		 */
+		this.texts = undefined;
+
+		/**
+		 * Function to produce the list of items in list view
+		 * @type {function():Array|Promise}
+		 */
+		this.list = undefined;
 
 		Object.assign(this, source);
 	}
 
 	validateAndCoerce() {
-		if (!this.fields) {
-			throw new TypeError(`"fields" must be provided`);
-		}
-		if (!Array.isArray(this.fields)) {
-			throw new TypeError(`"fields" must be an array`);
-		}
+		assertProvided(this, 'fields');
+		assertType(this, 'fields', 'array');
+
 		if (this.fields.length < 1) {
 			throw new TypeError(`"fields" must have at least one field supplied`);
 		}
@@ -96,6 +111,11 @@ class CBCOptions {
 			}
 			return field;
 		});
+
+		this.texts = new CBTexts(this.texts);
+
+		assertProvided(this, 'list');
+		assertProvided(this, 'list', 'function');
 	}
 }
 
