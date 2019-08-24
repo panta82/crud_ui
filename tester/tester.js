@@ -12,6 +12,7 @@ app.use(bodyParser.json());
 app.use(
 	'/',
 	crudButQuick({
+		name: 'Items',
 		fields: [
 			{
 				type: 'string',

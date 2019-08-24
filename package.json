@@ -6,12 +6,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-	"files": [
-		"/static/css/bootstrap.min.css",
-		"/static/js/bootstrap.min.js",
-		"/src",
-		"index.js"
-	],
+  "files": [
+    "/static/css/bootstrap.min.css",
+    "/static/js/bootstrap.min.js",
+    "/src",
+    "index.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/panta82/crud_but_quick.git"
@@ -23,7 +23,9 @@
   },
   "homepage": "https://github.com/panta82/crud_but_quick#readme",
   "dependencies": {
-    "body-parser": "^1.19.0"
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "pluralize": "^8.0.0"
   },
   "peerDependencies": {
     "express": "^4.0.0"

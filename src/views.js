@@ -1,8 +1,9 @@
 /**
- * @param {CBCOptions} options
+ * Main page layout. Common for all pages.
+ * @param {CBQContext} ctx
  * @param content
  */
-function layout(options, content) {
+function layout(ctx, content) {
 	return `
 <!doctype html>
 <html lang="en">
@@ -12,16 +13,28 @@ function layout(options, content) {
 		<meta name="description" content="">
 		<meta name="author" content="">
 
-		<title>Hello world</title>
+		<title>${ctx.options.texts.listTitle(ctx)}</title>
 
 		<link rel="stylesheet" href="/css/bootstrap.min.css" />
-		
 		<style type="text/css" rel="stylesheet">
 		</style>
 	</head>
 
 	<body>
+
+		${content}
 		
+		<script src="/static/js/bootstrap.min.js"></script>
+	</body>
+</html>
+`;
+}
+
+/**
+ * Render navigation menu
+ */
+function navigation(ctx) {
+	return `
 		<nav class="navbar navbar-expand-md navbar-light bg-light">
 
 			<div class="container d-flex justify-content-between">
@@ -65,54 +78,219 @@ function layout(options, content) {
 			</div>
 
 		</nav>
-
-		<main role="main" class="container">${content}</main>
-		
-		<footer class="text-muted">
-      <div class="container">
-        <hr />
-        <p class="float-right">
-          <a href="#">Back to top</a>
-        </p>
-        <p>Copyright 2019, Company</p>
-      </div>
-    </footer>
-
-		<script src="/static/js/bootstrap.min.js"></script>
-	</body>
-</html>
-`;
+	`;
 }
 
 /**
- * @param {CBCOptions} options
+ * Standard header
+ * @param {CBQContext} ctx
+ */
+function header(ctx) {
+	return `<div class="mb-5">${navigation(ctx)}</div>`;
+}
+
+/**
+ * Render standard page footer, with "back to top" link and copyright.
+ * @param {CBQContext} ctx
+ */
+function footer(ctx) {
+	return `
+		<footer class="text-muted mt-5">
+      <div class="container">
+        <hr />
+        <p class="float-right">
+          <a href="#">${ctx.options.texts.footerBackToTop(ctx)}</a>
+        </p>
+        <p>${ctx.options.texts.footerCopyright(ctx)}</p>
+      </div>
+    </footer>
+	`;
+}
+
+// *********************************************************************************************************************
+
+/**
+ * Render error page, this is shown where everything else fails
+ * @param {CBQContext} ctx
+ * @param {Error} err
+ */
+function errorPage(ctx, err) {
+	return ctx.options.views.layout(
+		ctx,
+		`
+		${ctx.options.views.header(ctx)}
+		<main class="container">
+			<div class="row">
+				<div class="col-md-6 offset-md-3">
+					<div class="alert alert-danger">
+						${err.code || err.code < 500 ? err.message : 'Internal server error'}
+					</div>
+				</div>
+			</div>
+		</main>
+	`
+	);
+}
+
+// *********************************************************************************************************************
+
+/**
+ * Render the entire list page. Embeds itself into layout, and renders all other parts of the list.
+ * @param {CBQContext} ctx
  * @param {Array} data
  */
-function list(options, data) {
+function listPage(ctx, data) {
+	return ctx.options.views.layout(
+		ctx,
+		`
+		${ctx.options.views.listHeader(ctx)}
+		<main role="main" class="container mt-4 mb-4">
+			${ctx.options.views.listAbove(ctx, data)}
+			${ctx.options.views.listContent(ctx, data)}
+			${ctx.options.views.listBelow(ctx, data)}
+		</main>
+		${ctx.options.views.listFooter(ctx, data)}
+	`
+	);
+}
+
+/**
+ * Footer for the list page
+ * @param {CBQContext} ctx
+ * @param {Array} data
+ */
+function listHeader(ctx, data) {
+	return ctx.options.views.header(ctx);
+}
+
+/**
+ * Content to be rendered above the main table
+ * @param {CBQContext} ctx
+ * @param {Array} data
+ */
+function listAbove(ctx, data) {
+	return `<h2>${ctx.options.texts.listTitle(ctx)}</h2>`;
+}
+
+/**
+ * Content to be rendered below the main table
+ * @param {CBQContext} ctx
+ * @param {Array} data
+ */
+function listBelow(ctx, data) {
+	return '';
+}
+
+/**
+ * Footer for the list page
+ * @param {CBQContext} ctx
+ * @param {Array} data
+ */
+function listFooter(ctx, data) {
+	return ctx.options.views.footer(ctx);
+}
+
+/**
+ * Render a table of items, or "no data" message
+ * @param {CBQContext} ctx
+ * @param {Array} data
+ */
+function listContent(ctx, data) {
 	return `
 <table class="table table-bordered table-sm">
 <thead>
 	<tr>
-		${options.fields.map(f => `<th>${f.label}</th>`)}
+		${ctx.options.fields.map((field, index) =>
+			ctx.options.views.listColumnHeader(ctx, data, field, index)
+		)}
 	</tr>
 </thead>
 <tbody>
 	${
 		!data.length
-			? `<tr><td colspan="100">${options.texts.listNoData}</td></tr>`
-			: data.map(row).join('\n')
+			? ctx.options.views.listNoData(ctx)
+			: data.map((item, index) => ctx.options.views.listRow(ctx, data, item, index)).join('\n')
 	}
 </tbody>
 </table>
 	`;
+}
 
-	function row(item) {
-		const cols = options.fields.map(field => `<td>${item[field.name] || ''}</td>`);
-		return `<tr>${cols}</tr>`;
+/**
+ * Render table header for each field
+ * @param {CBQContext} ctx
+ * @param {Array} data
+ * @param {CBQField} field
+ * @param {Number} index
+ * @return {string}
+ */
+function listColumnHeader(ctx, data, field, index) {
+	return `<th>${field.label}</th>`;
+}
+
+/**
+ * Render a single row in list view
+ * @param {CBQContext} ctx
+ * @param {Array} data
+ * @param {*} item
+ * @param {Number} index
+ * @return {string}
+ */
+function listRow(ctx, data, item, index) {
+	const cols = ctx.options.fields.map(field =>
+		ctx.options.views.listCell(ctx, data, item, index, field)
+	);
+	return `<tr>${cols}</tr>`;
+}
+
+/**
+ * Render single field of a single row in list view.
+ * @param {CBQContext} ctx
+ * @param {Array} data
+ * @param {*} item
+ * @param {Number} index
+ * @param {CBQField} field
+ * @return {string}
+ */
+function listCell(ctx, data, item, index, field) {
+	return `<td>${item[field.name] || ''}</td>`;
+}
+
+/**
+ * Render "no data" message when list of items is empty
+ * @param {CBQContext} ctx
+ */
+function listNoData(ctx) {
+	return `<tr><td colspan="100">${ctx.options.texts.listNoData(ctx)}</td></tr>`;
+}
+
+// *********************************************************************************************************************
+
+class CBQViews {
+	constructor(/** CBQViews */ source) {
+		this.layout = layout;
+		this.navigation = navigation;
+		this.header = header;
+		this.footer = footer;
+		this.errorPage = errorPage;
+
+		this.listPage = listPage;
+		this.listHeader = listHeader;
+		this.listAbove = listAbove;
+		this.listContent = listContent;
+		this.listBelow = listBelow;
+		this.listFooter = listFooter;
+
+		this.listColumnHeader = listColumnHeader;
+		this.listRow = listRow;
+		this.listCell = listCell;
+		this.listNoData = listNoData;
+
+		Object.assign(this, source);
 	}
 }
 
-module.exports = {
-	layout,
-	list,
-};
+// *********************************************************************************************************************
+
+module.exports = new CBQViews();
+module.exports.CBQViews = CBQViews;

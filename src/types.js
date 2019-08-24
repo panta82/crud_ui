@@ -1,17 +1,19 @@
 'use strict';
 
-const { assertProvided, assertType } = require('./tools');
+const { assertType, makeObjectAsserters, capitalize, pluralize } = require('./tools');
+const { CBQViews } = require('./views');
+const { CBQTexts } = require('./texts');
 
-const CBC_FIELD_TYPES = {
+const CBQ_FIELD_TYPES = {
 	string: 'string',
 	text: 'text',
 	select: 'select',
 };
 
-class CBCField {
-	constructor(/** CBCField */ source) {
+class CBQField {
+	constructor(/** CBQField */ source) {
 		/**
-		 * One of CBC_FIELD_TYPES-s
+		 * One of CBQ_FIELD_TYPES-s
 		 * @type {undefined}
 		 */
 		this.type = undefined;
@@ -38,49 +40,51 @@ class CBCField {
 	}
 
 	validateAndCoerce() {
-		if (!CBC_FIELD_TYPES[this.type]) {
-			throw new TypeError(
-				`Field's "type" must be one of CBC_FIELD_TYPES (${Object.keys(CBC_FIELD_TYPES).join(
-					', '
-				)}). Instead given "${this.type}"`
-			);
-		}
+		const asserters = makeObjectAsserters(this, 'Field key "');
 
-		assertProvided(this, 'name');
-		assertType(this, 'name', 'string');
+		asserters.member('type', CBQ_FIELD_TYPES);
 
-		assertProvided(this, 'label');
-		assertType(this, 'label', 'string');
+		asserters.provided('name');
+		asserters.type('name', 'string');
 
-		assertType(this, 'helpText', 'string');
+		asserters.provided('label');
+		asserters.type('label', 'string');
+
+		asserters.type('helpText', 'string');
 	}
 }
 
-class CBTexts {
-	constructor(/** CBTexts */ source) {
-		this.listNoData = 'No data';
-
-		Object.assign(this, source);
-	}
-}
-
-class CBCOptions {
-	constructor(/** CBCOptions */ source) {
+class CBQOptions {
+	constructor(/** CBQOptions */ source) {
 		/**
-		 * List of fields that will constitute data. Each member must duck-type to CBCField interface.
-		 * @type {CBCField[]}
+		 * Resource name. For example "user", "pay slip". This will be used to generate names all over the interface.
+		 * @type {string}
+		 */
+		this.name = undefined;
+
+		/**
+		 * List of fields that will constitute data. Each member must duck-type to CBQField interface.
+		 * @type {CBQField[]}
 		 */
 		this.fields = undefined;
 
 		/**
-		 * Object describing all the texts that will be used in the application. Everything has defaults,
-		 * but user is invited to overwrite some of them.
-		 * @type {CBTexts}
+		 * Functions which will be used to render HTML of various pages in the user interface.
+		 * They will call into each other, and also call into "texts". You can override any or none of them.
+		 * @type {CBQViews}
+		 */
+		this.views = undefined;
+
+		/**
+		 * Texts or functions to produce texts which will be rendered on screen or in messages.
+		 * @type {CBQTexts}
 		 */
 		this.texts = undefined;
 
 		/**
-		 * Function to produce the list of items in list view
+		 * Function to produce the list of items for the list view.
+		 * Optionally, you can return CBQListData object, where besides the items,
+		 * you can specufy some additional overrides.
 		 * @type {function():Array|Promise}
 		 */
 		this.list = undefined;
@@ -89,21 +93,22 @@ class CBCOptions {
 	}
 
 	validateAndCoerce() {
-		assertProvided(this, 'fields');
-		assertType(this, 'fields', 'array');
+		const asserters = makeObjectAsserters(this, 'Option "');
+
+		asserters.provided('name');
+		asserters.type('name', 'string');
+
+		asserters.provided('fields');
+		asserters.type('fields', 'array');
 
 		if (this.fields.length < 1) {
 			throw new TypeError(`"fields" must have at least one field supplied`);
 		}
 
 		this.fields = this.fields.map((field, index) => {
-			if (typeof field !== 'object') {
-				throw new TypeError(
-					`Invalid field #${index}: It must be an object, instead given "${typeof field}"`
-				);
-			}
+			assertType(field, 'Field #' + index, 'object');
 
-			field = new CBCField(field);
+			field = new CBQField(field);
 			try {
 				field.validateAndCoerce();
 			} catch (err) {
@@ -112,15 +117,26 @@ class CBCOptions {
 			return field;
 		});
 
-		this.texts = new CBTexts(this.texts);
+		this.views = new CBQViews(this.views);
+		this.texts = new CBQTexts(this.texts);
 
-		assertProvided(this, 'list');
-		assertProvided(this, 'list', 'function');
+		asserters.provided('list');
+		asserters.type('list', 'function');
+	}
+}
+
+class CBQContext {
+	constructor(options) {
+		/**
+		 * @type {CBQOptions}
+		 */
+		this.options = options;
 	}
 }
 
 module.exports = {
-	CBC_FIELD_TYPES,
-	CBCOptions,
-	CBCField,
+	CBQ_FIELD_TYPES,
+	CBQField,
+	CBQOptions,
+	CBQContext,
 };

@@ -2,15 +2,14 @@ const libPath = require('path');
 
 const express = require('express');
 
-const { CBCOptions } = require('./types');
-const views = require('./views');
+const { CBQOptions, CBQContext } = require('./types');
 
 /**
  * Create express.js router that will serve a CRUD ui
- * @param {CBCOptions} options
+ * @param {CBQOptions} options
  */
 function crudButQuick(options) {
-	options = new CBCOptions(options);
+	options = new CBQOptions(options);
 
 	options.validateAndCoerce();
 
@@ -18,14 +17,32 @@ function crudButQuick(options) {
 
 	router.use(express.static(libPath.resolve(__dirname, '../static')));
 
-	router.get('/', (req, res) => {
+	router.get('/', (req, res, next) => {
 		Promise.resolve()
 			.then(() => options.list())
 			.then(data => {
-				res
-					.header('Content-Type', 'text/html')
-					.send(views.layout(options, views.list(options, data)));
-			});
+				if (!data) {
+					throw new Error(`Invalid data`);
+				}
+
+				const ctx = new CBQContext(options);
+				return options.views.listPage(ctx, data);
+			})
+			.then(html => {
+				res.header('Content-Type', 'text/html').send(html);
+			}, next);
+	});
+
+	router.use((err, req, res, next) => {
+		const ctx = new CBQContext(options);
+
+		// TODO: Error logging?
+
+		const errHtml = options.views.errorPage(ctx, err);
+		res
+			.status(err.code || 500)
+			.header('Content-Type', 'text/html')
+			.send(errHtml);
 	});
 
 	return router;
