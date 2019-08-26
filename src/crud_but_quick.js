@@ -26,7 +26,7 @@ function crudButQuick(options) {
 				}
 
 				const ctx = new CBQContext(options);
-				return options.views.listPage(ctx, data);
+				return options.views.list.page(ctx, data);
 			})
 			.then(html => {
 				res.header('Content-Type', 'text/html').send(html);
@@ -36,7 +36,9 @@ function crudButQuick(options) {
 	router.use((err, req, res, next) => {
 		const ctx = new CBQContext(options);
 
-		// TODO: Error logging?
+		if (options.onError) {
+			options.onError(ctx, err);
+		}
 
 		const errHtml = options.views.errorPage(ctx, err);
 		res

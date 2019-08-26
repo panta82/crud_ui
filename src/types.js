@@ -1,7 +1,7 @@
 'use strict';
 
 const { assertType, makeObjectAsserters, capitalize, pluralize } = require('./tools');
-const { CBQViews } = require('./views');
+const { CBQViews } = require('./views/views');
 const { CBQTexts } = require('./texts');
 
 const CBQ_FIELD_TYPES = {
@@ -89,6 +89,12 @@ class CBQOptions {
 		 */
 		this.list = undefined;
 
+		/**
+		 * Function to be called in case of error. Defaults to console.error.
+		 * @type {function(CBQContext, Error)}
+		 */
+		this.onError = undefined;
+
 		Object.assign(this, source);
 	}
 
@@ -122,6 +128,12 @@ class CBQOptions {
 
 		asserters.provided('list');
 		asserters.type('list', 'function');
+
+		if (this.onError === undefined) {
+			this.onError = (ctx, err) => {
+				console.error(err);
+			};
+		}
 	}
 }
 
