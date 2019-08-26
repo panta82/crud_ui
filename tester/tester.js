@@ -20,11 +20,27 @@ app.use(
 				label: 'Name',
 			},
 		],
-		list: () => {
-			return [{ name: 'a' }, { name: 'b' }];
+		recordId: 'id',
+		handlers: {
+			list: () => {
+				return [{ name: 'a' }, { name: 'b' }];
+			},
+			delete: () => {},
+			update: () => {},
 		},
 	})
 );
+
+app.get('/', (req, res) => {
+	return res.set('content-type', 'text/html').send(`
+	<body>
+		<h1>This is just a tester</h1>
+		<h4>
+			<a href="/my/sub/route">Go to CMS</a>
+		</h4>
+	</body>
+	`);
+});
 
 const server = http.createServer(app);
 server.listen(port, () => {

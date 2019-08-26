@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "nodemon-tester": "nodemon tester/tester.js"
   },
   "files": [
     "/static/css/bootstrap.min.css",
@@ -31,6 +31,7 @@
     "express": "^4.0.0"
   },
   "devDependencies": {
+    "nodemon": "^1.19.1",
     "prettier": "^1.18.2"
   }
 }

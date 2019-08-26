@@ -54,6 +54,37 @@ class CBQField {
 	}
 }
 
+class CBQHandlers {
+	constructor(/** CBQHandlers */ source) {
+		/**
+		 * Produce the list of items for the main table view. It should return either array of objects or TODO
+		 * @type {function():Promise<Array>|Array}
+		 */
+		this.list = undefined;
+
+		/**
+		 * Update the record with given id. It will be called with a record id and update payload. If not provided, editing will be disabled.
+		 * @type {function(*, Object)}
+		 */
+		this.update = undefined;
+
+		/**
+		 * Delete a record. It will be called with a record id. If not provided, deletion will be disabled.
+		 * @type {function(*)}
+		 */
+		this.delete = undefined;
+
+		Object.assign(this, source);
+	}
+
+	validateAndCoerce() {
+		const asserters = makeObjectAsserters(this, '"', '" handler');
+
+		asserters.provided('list');
+		asserters.type('list', 'function');
+	}
+}
+
 class CBQOptions {
 	constructor(/** CBQOptions */ source) {
 		/**
@@ -61,6 +92,13 @@ class CBQOptions {
 		 * @type {string}
 		 */
 		this.name = undefined;
+
+		/**
+		 * A way to get ID or unique identifier out of a record. It can either be a string key (eg. "id"),
+		 * or a function that can take a record object and return a unique string representation of it.
+		 * @type {string|function(*):string}
+		 */
+		this.recordId = undefined;
 
 		/**
 		 * List of fields that will constitute data. Each member must duck-type to CBQField interface.
@@ -82,12 +120,11 @@ class CBQOptions {
 		this.texts = undefined;
 
 		/**
-		 * Function to produce the list of items for the list view.
-		 * Optionally, you can return CBQListData object, where besides the items,
-		 * you can specufy some additional overrides.
-		 * @type {function():Array|Promise}
+		 * Handlers for different CRUD operations to be operated against records.
+		 * User must supply these functions for the CMS to work.
+		 * @type {CBQHandlers}
 		 */
-		this.list = undefined;
+		this.handlers = undefined;
 
 		/**
 		 * Function to be called in case of error. Defaults to console.error.
@@ -107,6 +144,14 @@ class CBQOptions {
 		asserters.provided('fields');
 		asserters.type('fields', 'array');
 
+		asserters.provided('recordId');
+		asserters.type('recordId', 'string', 'function');
+		// Turn record id into a getter
+		if (typeof this.recordId === 'string') {
+			const key = this.recordId;
+			this.recordId = ob => (ob ? ob[key] : '');
+		}
+
 		if (this.fields.length < 1) {
 			throw new TypeError(`"fields" must have at least one field supplied`);
 		}
@@ -123,11 +168,11 @@ class CBQOptions {
 			return field;
 		});
 
+		this.handlers = new CBQHandlers(this.handlers);
+		this.handlers.validateAndCoerce();
+
 		this.views = new CBQViews(this.views);
 		this.texts = new CBQTexts(this.texts);
-
-		asserters.provided('list');
-		asserters.type('list', 'function');
 
 		if (this.onError === undefined) {
 			this.onError = (ctx, err) => {
@@ -149,6 +194,7 @@ class CBQContext {
 module.exports = {
 	CBQ_FIELD_TYPES,
 	CBQField,
+	CBQHandlers,
 	CBQOptions,
 	CBQContext,
 };

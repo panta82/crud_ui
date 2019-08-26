@@ -19,14 +19,14 @@ function crudButQuick(options) {
 
 	router.get('/', (req, res, next) => {
 		Promise.resolve()
-			.then(() => options.list())
+			.then(() => options.handlers.list())
 			.then(data => {
 				if (!data) {
 					throw new Error(`Invalid data`);
 				}
 
 				const ctx = new CBQContext(options);
-				return options.views.list.page(ctx, data);
+				return options.views.listPage(ctx, data);
 			})
 			.then(html => {
 				res.header('Content-Type', 'text/html').send(html);
