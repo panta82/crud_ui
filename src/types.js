@@ -57,10 +57,16 @@ class CBQField {
 class CBQHandlers {
 	constructor(/** CBQHandlers */ source) {
 		/**
-		 * Produce the list of items for the main table view. It should return either array of objects or TODO
-		 * @type {function():Promise<Array>|Array}
+		 * Produce list of items to be edited. If this is provided, main view will be a table with these items.
+		 * @type {function(CBQContext):Promise<Array>|Array}
 		 */
 		this.list = undefined;
+
+		/**
+		 * Get single item for edit view. It will be called with recird id, and should return either an object or null, if none is found.
+		 * @type {function(CBQContext, id):Promise<Array>|Array}
+		 */
+		this.single = undefined;
 
 		/**
 		 * Update the record with given id. It will be called with a record id and update payload. If not provided, editing will be disabled.
@@ -80,7 +86,7 @@ class CBQHandlers {
 	validateAndCoerce() {
 		const asserters = makeObjectAsserters(this, '"', '" handler');
 
-		asserters.provided('list');
+		asserters.type('single', 'function');
 		asserters.type('list', 'function');
 	}
 }
@@ -191,10 +197,22 @@ class CBQContext {
 	}
 }
 
+// *********************************************************************************************************************
+
+class CBQError extends Error {
+	constructor(message, code = 500) {
+		super(message);
+		this.code = code;
+	}
+}
+
+// *********************************************************************************************************************
+
 module.exports = {
 	CBQ_FIELD_TYPES,
 	CBQField,
 	CBQHandlers,
 	CBQOptions,
 	CBQContext,
+	CBQError,
 };

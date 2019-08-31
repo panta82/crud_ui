@@ -16,6 +16,15 @@ const {
 	listNoData,
 } = require('./list_views');
 
+const {
+	editPage,
+	editHeader,
+	editAbove,
+	editBelow,
+	editFooter,
+	editContent,
+} = require('./edit_views');
+
 class CBQViews {
 	constructor(/** CBQViews */ source) {
 		this.layout = layout;
@@ -37,6 +46,13 @@ class CBQViews {
 		this.listEditButton = listEditButton;
 		this.listDeleteButton = listDeleteButton;
 		this.listNoData = listNoData;
+
+		this.editPage = editPage;
+		this.editHeader = editHeader;
+		this.editAbove = editAbove;
+		this.editBelow = editBelow;
+		this.editFooter = editFooter;
+		this.editContent = editContent;
 
 		Object.assign(this, source);
 	}

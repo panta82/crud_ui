@@ -9,11 +9,18 @@ const crudButQuick = require('../');
 const app = express();
 app.use(bodyParser.json());
 
+const data = [{ id: 1, name: 'Axe' }, { id: 2, name: 'Barry' }, { id: 3, name: 'Cindy' }];
+
 app.use(
 	'/',
 	crudButQuick({
-		name: 'Items',
+		name: 'user',
 		fields: [
+			{
+				type: 'string',
+				name: 'id',
+				label: 'ID',
+			},
 			{
 				type: 'string',
 				name: 'name',
@@ -22,8 +29,11 @@ app.use(
 		],
 		recordId: 'id',
 		handlers: {
-			list: () => {
-				return [{ name: 'a' }, { name: 'b' }];
+			list: ctx => {
+				return data;
+			},
+			single: (ctx, id) => {
+				return data.find(item => String(item.id) === String(id));
 			},
 			delete: () => {},
 			update: () => {},

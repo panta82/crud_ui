@@ -4,6 +4,10 @@ function capitalize(str) {
 	return str[0].toUpperCase() + str.slice(1);
 }
 
+function uncapitalize(str) {
+	return str[0].toLowerCase() + str.slice(1);
+}
+
 function pluralize(str) {
 	return libPluralize(str);
 }
@@ -61,45 +65,9 @@ function isObject(val) {
 	return !!val && typeof val === 'object' && !Array.isArray(val);
 }
 
-/**
- * Very rudimentary template. Replaces $something and ${something} placeholders with given values.
- * Missing values are replaced with nothing. You can use \$ to get just $.
- * @param templateString
- * @param values
- */
-function microTemplate(templateString, values) {
-	let hasEscapes = false;
-	const result = templateString.replace(
-		/(?:\$([a-zA-Z][a-zA-Z0-9_]*)|\$\{([a-zA-Z][a-zA-Z0-9_]*)})/gm,
-		(found, variant1, variant2, index) => {
-			// If the variable is escaped, do not expand
-			if (templateString[index - 1] === '\\') {
-				hasEscapes = true;
-				return found;
-			}
-
-			// Either variant1 or variant2 will contain the found variable, depending on the form ($var or ${var})
-			const key = variant1 || variant2;
-			const value = values[key] !== undefined ? values[key] : '';
-			return value;
-		}
-	);
-
-	if (!hasEscapes) {
-		return result;
-	}
-
-	// Some $-s were escaped, so we want to do another pass and replace \$something with $something
-	return result.replace(
-		/\\(\$[a-zA-Z][a-zA-Z0-9_]*|\$\{[a-zA-Z][a-zA-Z0-9_]*})/gm,
-		(_, content) => {
-			return content;
-		}
-	);
-}
-
 module.exports = {
 	capitalize,
+	uncapitalize,
 	pluralize,
 	singularize,
 
@@ -108,6 +76,4 @@ module.exports = {
 	assertMember,
 	makeObjectAsserters,
 	isObject,
-
-	microTemplate,
 };

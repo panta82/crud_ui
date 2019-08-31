@@ -2,7 +2,8 @@ const libPath = require('path');
 
 const express = require('express');
 
-const { CBQOptions, CBQContext } = require('./types');
+const { CBQOptions, CBQContext, CBQError } = require('./types');
+const { capitalize, singularize } = require('./tools');
 
 /**
  * Create express.js router that will serve a CRUD ui
@@ -18,15 +19,32 @@ function crudButQuick(options) {
 	router.use(express.static(libPath.resolve(__dirname, '../static')));
 
 	router.get('/', (req, res, next) => {
+		const ctx = new CBQContext(options);
 		Promise.resolve()
-			.then(() => options.handlers.list())
+			.then(() => options.handlers.list(ctx))
 			.then(data => {
 				if (!data) {
-					throw new Error(`Invalid data`);
+					throw new CBQError(`Invalid data`);
 				}
 
-				const ctx = new CBQContext(options);
 				return options.views.listPage(ctx, data);
+			})
+			.then(html => {
+				res.header('Content-Type', 'text/html').send(html);
+			}, next);
+	});
+
+	router.get('/edit/:id', (req, res, next) => {
+		const ctx = new CBQContext(options);
+		const id = req.params.id;
+		Promise.resolve()
+			.then(() => options.handlers.single(ctx, req.params.id))
+			.then(data => {
+				if (!data) {
+					throw new CBQError(options.texts.errorNotFound(ctx, id), 404);
+				}
+
+				return options.views.editPage(ctx, data, false);
 			})
 			.then(html => {
 				res.header('Content-Type', 'text/html').send(html);

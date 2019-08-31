@@ -19,7 +19,7 @@ module.exports.listPage = (ctx, data) => {
 };
 
 /**
- * Footer for the list page
+ * Header for the list page
  * @param {CBQContext} ctx
  * @param {Array} data
  */
@@ -151,7 +151,7 @@ module.exports.listControlsCell = (ctx, data, record, index) => {
  */
 module.exports.listEditButton = (ctx, data, record, index) => {
 	return `
-		<a href="edit" class="btn btn-primary btn-sm">Edit</a>
+		<a href="edit/${ctx.options.recordId(record)}" class="btn btn-primary btn-sm">Edit</a>
 	`;
 };
 
