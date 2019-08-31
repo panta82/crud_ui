@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "nodemon-tester": "nodemon tester/tester.js"
+    "nodemon-tester": "nodemon tester/tester.js",
+    "test": "jest"
   },
   "files": [
     "/static/css/bootstrap.min.css",
@@ -31,6 +32,7 @@
     "express": "^4.0.0"
   },
   "devDependencies": {
+    "jest": "^24.9.0",
     "nodemon": "^1.19.1",
     "prettier": "^1.18.2"
   }
