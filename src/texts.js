@@ -13,19 +13,24 @@ class CBQTexts {
 		this.listTitle = (/** CBQContext */ ctx) => pluralize(capitalize(ctx.options.name));
 		this.listNoData = 'No data is available';
 
-		this.editNewTitle = (/** CBQContext */ ctx) =>
-			`Create a new ${uncapitalize(singularize(ctx.options.name))}`;
-		this.editExistingTitle = (/** CBQContext */ ctx, record) =>
-			`Edit ${uncapitalize(singularize(ctx.options.name))} ` +
-			ctx.options.texts.recordDescriptor(ctx, record);
-
-		this.errorNotFound = (/** CBQContext */ ctx, id) =>
-			`${capitalize(singularize(ctx.options.name))} with id "${id}" couldn't be found`;
-
 		this.footerBackToTop = 'Back to top';
 		this.footerCopyright = (/** CBQContext */ ctx) => {
 			return `Copyright ${new Date().getFullYear()}, All rights reserved.`;
 		};
+
+		this.editNewTitle = (/** CBQContext */ ctx) =>
+			`Create a new ${uncapitalize(singularize(ctx.options.name))}`;
+		this.editNewSave = 'Create';
+		this.editNewCancel = 'Cancel';
+
+		this.editExistingTitle = (/** CBQContext */ ctx, record) =>
+			`Edit ${uncapitalize(singularize(ctx.options.name))} ` +
+			ctx.options.texts.recordDescriptor(ctx, record);
+		this.editExistingSave = 'Save changes';
+		this.editExistingCancel = 'Cancel';
+
+		this.errorNotFound = (/** CBQContext */ ctx, id) =>
+			`${capitalize(singularize(ctx.options.name))} with id "${id}" couldn't be found`;
 
 		// Turn all properties into functions
 		Object.keys(this).forEach(key => {

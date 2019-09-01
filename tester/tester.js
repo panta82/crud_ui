@@ -4,12 +4,16 @@ const bodyParser = require('body-parser');
 
 const port = process.env.PORT || 3000;
 
-const crudButQuick = require('../');
+const { crudButQuick, CBQField, FIELD_TYPES } = require('../');
 
 const app = express();
 app.use(bodyParser.json());
 
-const data = [{ id: 1, name: 'Axe' }, { id: 2, name: 'Barry' }, { id: 3, name: 'Cindy' }];
+const data = [
+	{ id: 1, name: 'Axe' },
+	{ id: 2, name: 'Barry', description: 'This\nIs\nBarry!' },
+	{ id: 3, name: 'Cindy', gender: 'female' },
+];
 
 app.use(
 	'/',
@@ -17,15 +21,27 @@ app.use(
 		name: 'user',
 		fields: [
 			{
-				type: 'string',
+				type: FIELD_TYPES.string,
 				name: 'id',
 				label: 'ID',
 			},
 			{
-				type: 'string',
+				type: FIELD_TYPES.string,
 				name: 'name',
 				label: 'Name',
 			},
+			new CBQField({
+				type: FIELD_TYPES.text,
+				name: 'description',
+				label: 'Description',
+			}),
+			new CBQField({
+				type: FIELD_TYPES.select,
+				name: 'gender',
+				label: 'Gender',
+				defaultValue: 'male',
+				values: ['male', 'female', 'other'],
+			}),
 		],
 		recordId: 'id',
 		handlers: {

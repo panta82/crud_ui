@@ -16,6 +16,14 @@ function singularize(str) {
 	return libPluralize.singular(str);
 }
 
+// *********************************************************************************************************************
+
+function assertEqual(value, expected, identifier = 'value') {
+	if (value !== expected) {
+		throw new TypeError(`Expected ${identifier} to be "${expected}", instead got "${value}"`);
+	}
+}
+
 function assertProvided(value, identifier) {
 	if (value === undefined) {
 		throw new TypeError(`${identifier} must be provided`);
@@ -61,8 +69,23 @@ function makeObjectAsserters(object, identifierPrefix = 'Key "', identifierSuffi
 	};
 }
 
+// *********************************************************************************************************************
+
 function isObject(val) {
 	return !!val && typeof val === 'object' && !Array.isArray(val);
+}
+
+/**
+ * If val is function, call it with args and return the result. Otherwise, just return the val.
+ * This is used for function-or-literal pattern for some options.
+ * @param {function|*} val
+ * @param args
+ */
+function getOrCall(val, ...args) {
+	if (typeof val === 'function') {
+		return val(...args);
+	}
+	return val;
 }
 
 module.exports = {
@@ -71,9 +94,12 @@ module.exports = {
 	pluralize,
 	singularize,
 
+	assertEqual,
 	assertProvided,
 	assertType,
 	assertMember,
 	makeObjectAsserters,
+
 	isObject,
+	getOrCall,
 };

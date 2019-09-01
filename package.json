@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "nodemon-tester": "nodemon tester/tester.js",
-    "test": "jest"
+    "test": "jest",
+		"generate-views": "node misc/generate_views.js > src/views/views.js"
   },
   "files": [
     "/static/css/bootstrap.min.css",

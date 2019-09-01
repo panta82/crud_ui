@@ -44,7 +44,7 @@ function crudButQuick(options) {
 					throw new CBQError(options.texts.errorNotFound(ctx, id), 404);
 				}
 
-				return options.views.editPage(ctx, data, false);
+				return options.views.editPage(ctx, data);
 			})
 			.then(html => {
 				res.header('Content-Type', 'text/html').send(html);

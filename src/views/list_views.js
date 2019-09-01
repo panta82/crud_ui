@@ -64,9 +64,9 @@ module.exports.listContent = (ctx, data) => {
 <table class="table table-bordered table-sm">
 <thead>
 	<tr>
-		${ctx.options.fields.map((field, index) =>
-			ctx.options.views.listColumnHeader(ctx, data, field, index)
-		)}
+		${ctx.options.fields
+			.map((field, index) => ctx.options.views.listColumnHeader(ctx, data, field, index))
+			.join('\n')}
 		<th class="shrink-cell"></th>
 	</tr>
 </thead>
@@ -102,9 +102,9 @@ module.exports.listColumnHeader = (ctx, data, field, index) => {
  * @return {string}
  */
 module.exports.listRow = (ctx, data, record, index) => {
-	const cols = ctx.options.fields.map(field =>
-		ctx.options.views.listCell(ctx, data, record, index, field)
-	);
+	const cols = ctx.options.fields
+		.map(field => ctx.options.views.listCell(ctx, data, record, index, field))
+		.join('\n');
 	return `<tr>
 		${cols}
 		${ctx.options.views.listControlsCell(ctx, data, record, index)}

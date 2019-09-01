@@ -3,18 +3,13 @@
 const { assertType, makeObjectAsserters, capitalize, pluralize } = require('./tools');
 const { CBQViews } = require('./views/views');
 const { CBQTexts } = require('./texts');
-
-const CBQ_FIELD_TYPES = {
-	string: 'string',
-	text: 'text',
-	select: 'select',
-};
+const { CBQ_FIELD_TYPES } = require('./consts');
 
 class CBQField {
 	constructor(/** CBQField */ source) {
 		/**
 		 * One of CBQ_FIELD_TYPES-s
-		 * @type {undefined}
+		 * @type {string}
 		 */
 		this.type = undefined;
 
@@ -36,6 +31,19 @@ class CBQField {
 		 */
 		this.helpText = undefined;
 
+		/**
+		 * Function or literal default value to pre-fill when creating a new record
+		 * @type {function(CBQContext, CBQField, number)|*}
+		 */
+		this.defaultValue = undefined;
+
+		/**
+		 * Function getter or literal list of values to offer for select fields. Values can be just strings, or objects
+		 * in format {title, value}. Ignored for other field types.
+		 * @type {function(CBQContext, any, CBQField, number):string[]|string[]}
+		 */
+		this.values = undefined;
+
 		Object.assign(this, source);
 	}
 
@@ -51,6 +59,10 @@ class CBQField {
 		asserters.type('label', 'string');
 
 		asserters.type('helpText', 'string');
+
+		if (this.type === CBQ_FIELD_TYPES.select) {
+			asserters.type('values', 'array', 'function');
+		}
 	}
 }
 
@@ -209,7 +221,6 @@ class CBQError extends Error {
 // *********************************************************************************************************************
 
 module.exports = {
-	CBQ_FIELD_TYPES,
 	CBQField,
 	CBQHandlers,
 	CBQOptions,
