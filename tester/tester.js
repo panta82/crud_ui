@@ -20,11 +20,12 @@ app.use(
 	crudButQuick({
 		name: 'user',
 		fields: [
-			{
+			new CBQField({
 				type: FIELD_TYPES.string,
 				name: 'id',
 				label: 'ID',
-			},
+				noEdit: true,
+			}),
 			{
 				type: FIELD_TYPES.string,
 				name: 'name',
@@ -52,8 +53,15 @@ app.use(
 			single: (ctx, id) => {
 				return data.find(item => String(item.id) === String(id));
 			},
+			update: (ctx, id, payload) => {
+				const existing = data.find(item => String(item.id) === String(id));
+				if (!existing) {
+					throw new Error(`Not found: ${id}`);
+				}
+				Object.assign(existing, payload);
+				return existing;
+			},
 			delete: () => {},
-			update: () => {},
 		},
 	})
 );

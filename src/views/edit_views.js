@@ -71,9 +71,10 @@ module.exports.editContent = (ctx, record) => {
 				.map((field, index) => {
 					return ctx.options.views.editField(ctx, record, field, index);
 				})
+				.filter(Boolean)
 				.join('\n')}
 			<div>
-				<button type="submit" name="submit" class="btn btn-success">${
+				<button type="submit" class="btn btn-success">${
 					record
 						? ctx.options.texts.editExistingSave(ctx, record)
 						: ctx.options.texts.editNewSave(ctx, record)
@@ -96,6 +97,10 @@ module.exports.editContent = (ctx, record) => {
  * @param {*} index
  */
 module.exports.editField = (ctx, record, field, index) => {
+	if (field.noEdit) {
+		// Do not display field at all
+		return null;
+	}
 	switch (field.type) {
 		case CBQ_FIELD_TYPES.string:
 			return module.exports.editFieldString(ctx, record, field, index);

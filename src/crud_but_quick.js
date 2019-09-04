@@ -1,7 +1,9 @@
 const libPath = require('path');
 
 const express = require('express');
+const bodyParser = require('body-parser');
 
+const { CBQ_FIELD_TYPES } = require('./consts');
 const { CBQOptions, CBQContext, CBQError } = require('./types');
 const { capitalize, singularize } = require('./tools');
 
@@ -17,6 +19,8 @@ function crudButQuick(options) {
 	const router = express.Router();
 
 	router.use(express.static(libPath.resolve(__dirname, '../static')));
+
+	router.use(bodyParser.urlencoded());
 
 	router.get('/', (req, res, next) => {
 		const ctx = new CBQContext(options);
@@ -48,6 +52,43 @@ function crudButQuick(options) {
 			})
 			.then(html => {
 				res.header('Content-Type', 'text/html').send(html);
+			}, next);
+	});
+
+	router.post('/edit/:id', (req, res, next) => {
+		const ctx = new CBQContext(options);
+		const id = req.params.id;
+
+		return Promise.resolve()
+			.then(() => {
+				const payload = {};
+				for (const field of options.fields) {
+					if (field.noEdit) {
+						continue;
+					}
+
+					let value = req.body[field.name];
+
+					if (field.type === CBQ_FIELD_TYPES.select) {
+						if (field.nullOption && !value) {
+							// Convert empty string value to null
+							value = null;
+						}
+						if (value !== null && !field.values.includes(value)) {
+							// Invalid value, user trying to be sneaky?
+							throw new CBQError(`Invalid ${field.name} value: "${value}".`);
+						}
+					}
+
+					// TODO: Do some real validation here
+
+					payload[field.name] = value;
+				}
+				
+				return options.handlers.update(ctx, id, payload);
+			})
+			.then(() => {
+				return res.redirect('/edit/' + id);
 			}, next);
 	});
 

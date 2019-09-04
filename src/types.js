@@ -32,6 +32,12 @@ class CBQField {
 		this.helpText = undefined;
 
 		/**
+		 * If true, field will not appear in the edit screen.
+		 * @type {boolean}
+		 */
+		this.noEdit = undefined;
+
+		/**
 		 * Function or literal default value to pre-fill when creating a new record
 		 * @type {function(CBQContext, CBQField, number)|*}
 		 */
@@ -89,14 +95,20 @@ class CBQHandlers {
 		this.single = undefined;
 
 		/**
+		 * Create a new record with given payload. If not provided, creation will be disabled.
+		 * @type {function(CBQContext, Object)}
+		 */
+		this.create = undefined;
+
+		/**
 		 * Update the record with given id. It will be called with a record id and update payload. If not provided, editing will be disabled.
-		 * @type {function(*, Object)}
+		 * @type {function(CBQContext, id, Object)}
 		 */
 		this.update = undefined;
 
 		/**
 		 * Delete a record. It will be called with a record id. If not provided, deletion will be disabled.
-		 * @type {function(*)}
+		 * @type {function(CBQContext, id)}
 		 */
 		this.delete = undefined;
 
