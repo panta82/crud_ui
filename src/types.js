@@ -38,6 +38,14 @@ class CBQField {
 		this.defaultValue = undefined;
 
 		/**
+		 * If field is "select", this will determine the behavior with null values. If set to falsy,
+		 * null option will be disabled. If set to true or empty string, null option will appear as empty.
+		 * If set to string, null option will hold that as label.
+		 * @type {string|boolean}
+		 */
+		this.nullOption = undefined;
+
+		/**
 		 * Function getter or literal list of values to offer for select fields. Values can be just strings, or objects
 		 * in format {title, value}. Ignored for other field types.
 		 * @type {function(CBQContext, any, CBQField, number):string[]|string[]}

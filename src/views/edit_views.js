@@ -214,14 +214,21 @@ module.exports.editFieldSelect = (ctx, record, field, index) => {
 
 	const values = getOrCall(field.values, ctx, record, field, index);
 
-	const options = values
-		.map(v => {
-			const value = v.value || v;
-			const title = v.title || v;
-			const selected = selectedValue === value ? 'selected="selected"' : '';
-			return `<option value="${value}" ${selected}>${title}</option>`;
-		})
-		.join('m');
+	const options = values.map(v => {
+		const value = v.value || v;
+		const title = v.title || v;
+		const selected = selectedValue === value ? 'selected="selected"' : '';
+		return `<option value="${value}" ${selected}>${title}</option>`;
+	});
+
+	if (typeof field.nullOption === 'string' || field.nullOption === true) {
+		// Add null option
+		options.unshift(
+			`<option value="" ${!selectedValue ? 'selected="selected"' : ''}>${
+				field.nullOption.length ? field.nullOption : ''
+			}</option>`
+		);
+	}
 
 	return `
 	  <div class="form-group">

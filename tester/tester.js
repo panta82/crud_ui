@@ -41,6 +41,7 @@ app.use(
 				label: 'Gender',
 				defaultValue: 'male',
 				values: ['male', 'female', 'other'],
+				nullOption: true,
 			}),
 		],
 		recordId: 'id',
