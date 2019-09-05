@@ -39,6 +39,60 @@ function crudButQuick(options) {
 			}, next);
 	});
 
+	router.get('/create', (req, res, next) => {
+		const ctx = new CBQContext(options, req);
+		Promise.resolve()
+			.then(() => {
+				return options.views.editPage(ctx, null);
+			})
+			.then(html => {
+				res.header('Content-Type', 'text/html').send(html);
+			}, next);
+	});
+
+	/**
+	 * @param {Object} body
+	 */
+	function coerceAndValidateEditPayload(body) {
+		const payload = {};
+		for (const field of options.fields) {
+			if (field.noEdit) {
+				continue;
+			}
+
+			let value = body[field.name];
+
+			if (field.type === CBQ_FIELD_TYPES.select) {
+				if (field.nullOption && !value) {
+					// Convert empty string value to null
+					value = null;
+				}
+				if (value !== null && !field.values.includes(value)) {
+					// Invalid value, user trying to be sneaky?
+					throw new CBQError(`Invalid ${field.name} value: "${value}".`);
+				}
+			}
+
+			// TODO: Do some real validation here
+
+			payload[field.name] = value;
+		}
+		return payload;
+	}
+
+	router.post('/create', (req, res, next) => {
+		const ctx = new CBQContext(options, req);
+
+		return Promise.resolve()
+			.then(() => {
+				const payload = coerceAndValidateEditPayload(req.body);
+				return options.handlers.create(ctx, payload);
+			})
+			.then(() => {
+				return res.redirect(ctx.url('/'));
+			}, next);
+	});
+
 	router.get('/edit/:id', (req, res, next) => {
 		const ctx = new CBQContext(options, req);
 		const id = req.params.id;
@@ -62,30 +116,7 @@ function crudButQuick(options) {
 
 		return Promise.resolve()
 			.then(() => {
-				const payload = {};
-				for (const field of options.fields) {
-					if (field.noEdit) {
-						continue;
-					}
-
-					let value = req.body[field.name];
-
-					if (field.type === CBQ_FIELD_TYPES.select) {
-						if (field.nullOption && !value) {
-							// Convert empty string value to null
-							value = null;
-						}
-						if (value !== null && !field.values.includes(value)) {
-							// Invalid value, user trying to be sneaky?
-							throw new CBQError(`Invalid ${field.name} value: "${value}".`);
-						}
-					}
-
-					// TODO: Do some real validation here
-
-					payload[field.name] = value;
-				}
-
+				const payload = coerceAndValidateEditPayload(req.body);
 				return options.handlers.update(ctx, id, payload);
 			})
 			.then(() => {

@@ -53,6 +53,12 @@ app.use(
 			single: (ctx, id) => {
 				return data.find(item => String(item.id) === String(id));
 			},
+			create: (ctx, payload) => {
+				const id = data.reduce((max, item) => Math.max(item.id, max), 0) + 1;
+				const item = { ...payload, id };
+				data.push(item);
+				return item;
+			},
 			update: (ctx, id, payload) => {
 				const existing = data.find(item => String(item.id) === String(id));
 				if (!existing) {

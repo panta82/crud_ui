@@ -33,7 +33,23 @@ module.exports.listHeader = (ctx, data) => {
  * @param {Array} data
  */
 module.exports.listAbove = (ctx, data) => {
-	return `<h2>${ctx.options.texts.listTitle(ctx)}</h2>`;
+	return `
+		<h2>${ctx.options.texts.listTitle(ctx)}</h2>
+		${ctx.options.handlers.create ? ctx.options.views.listCreateButton(ctx, data) : ''}
+	`;
+};
+
+/**
+ * Render Create new record button. Only called if create new is enabled.
+ * @param {CBQContext} ctx
+ * @param {Array} data
+ */
+module.exports.listCreateButton = (ctx, data) => {
+	return `
+		<a href="${ctx.url('/create')}" class="btn btn-primary mb-3 mt-1">
+			${ctx.options.texts.listCreateButton(ctx)}
+		</a>
+	`;
 };
 
 /**
@@ -151,7 +167,9 @@ module.exports.listControlsCell = (ctx, data, record, index) => {
  */
 module.exports.listEditButton = (ctx, data, record, index) => {
 	return `
-		<a href="${ctx.url('edit/' + ctx.options.recordId(record))}" class="btn btn-primary btn-sm">Edit</a>
+		<a href="${ctx.url('/edit/' + ctx.options.recordId(record))}" class="btn btn-primary btn-sm">
+			${ctx.options.texts.listEditButton(ctx)}
+		</a>
 	`;
 };
 
@@ -168,7 +186,9 @@ module.exports.listDeleteButton = (ctx, data, record, index) => {
 		<form method="post" class="d-inline">
 			<input type="hidden" name="action" value="delete" />
 			<input type="hidden" name="id" value="${ctx.options.recordId(record)}" />
-			<button type="submit" class="btn btn-danger btn-sm">Delete</button>
+			<button type="submit" class="btn btn-danger btn-sm">
+				${ctx.options.texts.listDeleteButton(ctx)}
+			</button>
 		</form>
 	`;
 };

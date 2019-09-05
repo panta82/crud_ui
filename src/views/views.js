@@ -16,6 +16,7 @@ class CBQViews {
 		this.listPage = require('./list_views.js').listPage;
 		this.listHeader = require('./list_views.js').listHeader;
 		this.listAbove = require('./list_views.js').listAbove;
+		this.listCreateButton = require('./list_views.js').listCreateButton;
 		this.listBelow = require('./list_views.js').listBelow;
 		this.listFooter = require('./list_views.js').listFooter;
 		this.listContent = require('./list_views.js').listContent;

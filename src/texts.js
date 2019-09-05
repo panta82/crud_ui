@@ -12,6 +12,10 @@ class CBQTexts {
 
 		this.listTitle = (/** CBQContext */ ctx) => pluralize(capitalize(ctx.options.name));
 		this.listNoData = 'No data is available';
+		this.listCreateButton = (/** CBQContext */ ctx) =>
+			'Create a new ' + uncapitalize(singularize(ctx.options.name));
+		this.listEditButton = 'Edit';
+		this.listDeleteButton = 'Delete';
 
 		this.footerBackToTop = 'Back to top';
 		this.footerCopyright = (/** CBQContext */ ctx) => {
