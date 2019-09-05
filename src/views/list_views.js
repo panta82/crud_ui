@@ -151,7 +151,7 @@ module.exports.listControlsCell = (ctx, data, record, index) => {
  */
 module.exports.listEditButton = (ctx, data, record, index) => {
 	return `
-		<a href="edit/${ctx.options.recordId(record)}" class="btn btn-primary btn-sm">Edit</a>
+		<a href="${ctx.url('edit/' + ctx.options.recordId(record))}" class="btn btn-primary btn-sm">Edit</a>
 	`;
 };
 

@@ -15,15 +15,15 @@ module.exports.layout = (ctx, content) => {
 
 		<title>${ctx.options.texts.listTitle(ctx)}</title>
 
-		<link rel="stylesheet" href="/css/bootstrap.min.css" />
-		<link rel="stylesheet" href="/css/styles.css" />
+		<link rel="stylesheet" href="${ctx.url('/css/bootstrap.min.css')}" />
+		<link rel="stylesheet" href="${ctx.url('/css/styles.css')}" />
 	</head>
 
 	<body>
 
 		${content}
 		
-		<script src="/js/bootstrap.min.js"></script>
+		<script src="${ctx.url('/js/bootstrap.min.js')}"></script>
 	</body>
 </html>
 `;

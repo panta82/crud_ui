@@ -16,7 +16,7 @@ const data = [
 ];
 
 app.use(
-	'/',
+	'/my/sub/route',
 	crudButQuick({
 		name: 'user',
 		fields: [

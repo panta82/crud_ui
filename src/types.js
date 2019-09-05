@@ -1,9 +1,13 @@
 'use strict';
 
-const { assertType, makeObjectAsserters, capitalize, pluralize } = require('./tools');
+const qs = require('querystring');
+
+const { assertType, makeObjectAsserters, ensureLeadingChar } = require('./tools');
 const { CBQViews } = require('./views/views');
 const { CBQTexts } = require('./texts');
 const { CBQ_FIELD_TYPES } = require('./consts');
+
+// *********************************************************************************************************************
 
 class CBQField {
 	constructor(/** CBQField */ source) {
@@ -79,6 +83,8 @@ class CBQField {
 		}
 	}
 }
+
+// *********************************************************************************************************************
 
 class CBQHandlers {
 	constructor(/** CBQHandlers */ source) {
@@ -220,12 +226,38 @@ class CBQOptions {
 	}
 }
 
+// *********************************************************************************************************************
+
 class CBQContext {
-	constructor(options) {
+	constructor(options, req) {
 		/**
+		 * Coerced and validated options passed to the router
 		 * @type {CBQOptions}
 		 */
 		this.options = options;
+
+		/**
+		 * Full express request object
+		 * @type {e.Request}
+		 */
+		this.req = req;
+	}
+
+	/**
+	 * Make a URL relative to the path where CBQ router is mounted, using given path and (optional) query object or string.
+	 * @param {string} path
+	 * @param {string|Object} query
+	 */
+	url(path, query = undefined) {
+		let result = this.req.baseUrl + ensureLeadingChar('/', path);
+		if (query) {
+			if (typeof query === 'string') {
+				result += ensureLeadingChar('?', query);
+			} else {
+				result += '?' + qs.encode(query);
+			}
+		}
+		return result;
 	}
 }
 

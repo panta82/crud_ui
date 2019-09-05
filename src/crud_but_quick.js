@@ -23,7 +23,8 @@ function crudButQuick(options) {
 	router.use(bodyParser.urlencoded());
 
 	router.get('/', (req, res, next) => {
-		const ctx = new CBQContext(options);
+		const ctx = new CBQContext(options, req);
+
 		Promise.resolve()
 			.then(() => options.handlers.list(ctx))
 			.then(data => {
@@ -39,7 +40,7 @@ function crudButQuick(options) {
 	});
 
 	router.get('/edit/:id', (req, res, next) => {
-		const ctx = new CBQContext(options);
+		const ctx = new CBQContext(options, req);
 		const id = req.params.id;
 		Promise.resolve()
 			.then(() => options.handlers.single(ctx, req.params.id))
@@ -56,7 +57,7 @@ function crudButQuick(options) {
 	});
 
 	router.post('/edit/:id', (req, res, next) => {
-		const ctx = new CBQContext(options);
+		const ctx = new CBQContext(options, req);
 		const id = req.params.id;
 
 		return Promise.resolve()
@@ -84,16 +85,16 @@ function crudButQuick(options) {
 
 					payload[field.name] = value;
 				}
-				
+
 				return options.handlers.update(ctx, id, payload);
 			})
 			.then(() => {
-				return res.redirect('/edit/' + id);
+				return res.redirect(ctx.url('/'));
 			}, next);
 	});
 
 	router.use((err, req, res, next) => {
-		const ctx = new CBQContext(options);
+		const ctx = new CBQContext(options, req);
 
 		if (options.onError) {
 			options.onError(ctx, err);

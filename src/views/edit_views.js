@@ -79,11 +79,11 @@ module.exports.editContent = (ctx, record) => {
 						? ctx.options.texts.editExistingSave(ctx, record)
 						: ctx.options.texts.editNewSave(ctx, record)
 				}</button>
-				<a href="../" class="btn btn-light ml-1">${
-					record
-						? ctx.options.texts.editExistingCancel(ctx, record)
-						: ctx.options.texts.editNewCancel(ctx, record)
-				}</a>
+				<a href="${ctx.url('/')}" class="btn btn-light ml-1">${
+		record
+			? ctx.options.texts.editExistingCancel(ctx, record)
+			: ctx.options.texts.editNewCancel(ctx, record)
+	}</a>
 			</div>
 		</form>
 	`;

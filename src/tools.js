@@ -88,6 +88,15 @@ function getOrCall(val, ...args) {
 	return val;
 }
 
+/**
+ * Ensure string start swith leading char
+ * @param leadingChar
+ * @param str
+ */
+function ensureLeadingChar(leadingChar, str) {
+	return typeof str === 'string' && str[0] !== leadingChar ? leadingChar + str : str;
+}
+
 module.exports = {
 	capitalize,
 	uncapitalize,
@@ -102,4 +111,5 @@ module.exports = {
 
 	isObject,
 	getOrCall,
+	ensureLeadingChar,
 };
