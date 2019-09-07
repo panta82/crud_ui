@@ -122,17 +122,17 @@ module.exports.navigation = ctx => {
  * @param {CBQContext} ctx
  */
 module.exports.flashMessage = ctx => {
-	if (ctx.req.flash && ctx.req.flash.message) {
-		return `
-			<div class="cbq-flash-message alert alert-${ctx.req.flash.flavor ||
-				'success'} fade show px-0 py-1 position-absolute w-100 my-0" role="alert">
-				<div class="container">
-					${ctx.req.flash.message}
-				</div>
-			</div>
-		`;
+	if (!ctx.flash.message) {
+		return '';
 	}
-	return '';
+	return `
+		<div class="cbq-flash-message alert alert-${ctx.flash.flavor ||
+			'success'} fade show px-0 py-1 position-absolute w-100 my-0" role="alert">
+			<div class="container">
+				${ctx.flash.message}
+			</div>
+		</div>
+	`;
 };
 
 // *********************************************************************************************************************

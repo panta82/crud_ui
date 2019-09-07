@@ -11,10 +11,28 @@ class CBQContext {
 		this.options = options;
 
 		/**
-		 * Full express request object
-		 * @type {e.Request}
+		 * Id param extracted from req. Populated in edit and delete requests.
+		 * @type {*}
 		 */
-		this.req = req;
+		this.idParam = (req.params && req.params.id) || null;
+
+		/**
+		 * Request body
+		 * @type {Object}
+		 */
+		this.body = req.body || null;
+
+		/**
+		 * URL where CBQ handler is hosted. Eg. "/my/path" or "/"
+		 * @type {string}
+		 */
+		this.baseUrl = req.baseUrl;
+
+		/**
+		 * Flash object extracted by FlashManager
+		 * @type {{message: string, flavor: string}}
+		 */
+		this.flash = req.flash || {};
 	}
 
 	/**
@@ -23,7 +41,7 @@ class CBQContext {
 	 * @param {string|Object} query
 	 */
 	url(path, query = undefined) {
-		let result = this.req.baseUrl + ensureLeadingChar('/', path);
+		let result = this.baseUrl + ensureLeadingChar('/', path);
 		if (query) {
 			if (typeof query === 'string') {
 				result += ensureLeadingChar('?', query);
