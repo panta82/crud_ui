@@ -97,6 +97,23 @@ function ensureLeadingChar(leadingChar, str) {
 	return typeof str === 'string' && str[0] !== leadingChar ? leadingChar + str : str;
 }
 
+/**
+ * Escape an arbitrary text into a form that can appear inside HTML.
+ * @param str
+ * @return {void | string | never}
+ */
+function escapeHTML(str) {
+	return str.replace(/[&<>"']/g, m => ESCAPE_HTML_MAP[m]);
+}
+
+const ESCAPE_HTML_MAP = {
+	'&': '&amp;',
+	'<': '&lt;',
+	'>': '&gt;',
+	'"': '&quot;',
+	"'": '&#039;',
+};
+
 module.exports = {
 	capitalize,
 	uncapitalize,
@@ -112,4 +129,5 @@ module.exports = {
 	isObject,
 	getOrCall,
 	ensureLeadingChar,
+	escapeHTML,
 };

@@ -273,6 +273,19 @@ class CBQError extends Error {
 	}
 }
 
+class CBQOperationNotSupportedError extends CBQError {
+	constructor(op) {
+		super(`Operation is not supported: ${op}`, 500);
+		this.op = op;
+	}
+
+	static assert(handlers, op) {
+		if (typeof handlers[op] !== 'function') {
+			throw new CBQOperationNotSupportedError(op);
+		}
+	}
+}
+
 // *********************************************************************************************************************
 
 module.exports = {
@@ -281,4 +294,5 @@ module.exports = {
 	CBQOptions,
 	CBQContext,
 	CBQError,
+	CBQOperationNotSupportedError,
 };

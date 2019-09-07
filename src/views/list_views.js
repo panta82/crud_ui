@@ -7,14 +7,16 @@ module.exports.listPage = (ctx, data) => {
 	return ctx.options.views.layout(
 		ctx,
 		`
-		${ctx.options.views.listHeader(ctx)}
+		${ctx.options.views.listHeader(ctx, data)}
 		<main role="main" class="container mt-4 mb-4">
 			${ctx.options.views.listAbove(ctx, data)}
 			${ctx.options.views.listContent(ctx, data)}
 			${ctx.options.views.listBelow(ctx, data)}
 		</main>
 		${ctx.options.views.listFooter(ctx, data)}
-	`
+	`,
+		ctx.options.views.listHead(ctx, data),
+		ctx.options.views.listScripts(ctx, data)
 	);
 };
 
@@ -67,7 +69,68 @@ module.exports.listBelow = (ctx, data) => {
  * @param {Array} data
  */
 module.exports.listFooter = (ctx, data) => {
-	return ctx.options.views.footer(ctx);
+	return `
+		${ctx.options.views.footer(ctx)}
+		${ctx.options.views.listDeleteConfirmationModal(ctx, data)}
+	`;
+};
+
+/**
+ * Stuff to add to head of the list page (styles, meta-tags...)
+ * @param {CBQContext} ctx
+ * @param {Array} data
+ */
+module.exports.listHead = (ctx, data) => {
+	return '';
+};
+
+/**
+ * Stuff to add at the very bottom, in the scripts section.
+ * @param {CBQContext} ctx
+ * @param {Array} data
+ */
+module.exports.listScripts = (ctx, data) => {
+	return `
+		<script>${module.exports.listDeleteModalScripting(ctx, data)}</script>
+	`;
+};
+
+/**
+ * Scripting to enable functionality of the delete record modal. Should produce result in pure javascript.
+ * @param {CBQContext} ctx
+ * @param {Array} data
+ */
+module.exports.listDeleteModalScripting = (ctx, data) => {
+	const deleteModalData = {};
+	for (let index = 0; index < data.length; index++) {
+		const item = data[index];
+
+		const id = ctx.options.recordId(item);
+		deleteModalData[id] = {
+			action: ctx.url('/delete/' + id),
+			texts: {
+				'modal-title': ctx.options.texts.modalConfirmDeleteTitle(ctx, data, item, index),
+				'delete-modal-question': ctx.options.texts.modalConfirmDeleteQuestion(
+					ctx,
+					data,
+					item,
+					index
+				),
+				'delete-modal-yes': ctx.options.texts.modalConfirmDeleteYes(ctx, data, item, index),
+				'delete-modal-no': ctx.options.texts.modalConfirmDeleteNo(ctx, data, item, index),
+			},
+		};
+	}
+
+	return `
+	  var deleteModalData = ${JSON.stringify(deleteModalData)};
+	  function showDeleteModal(id) {
+	    var data = deleteModalData[id];
+	    if (data) {
+	      showModal('delete_modal', data.action, data.texts);
+	    }
+	  }
+	`;
 };
 
 /**
@@ -183,14 +246,44 @@ module.exports.listEditButton = (ctx, data, record, index) => {
  */
 module.exports.listDeleteButton = (ctx, data, record, index) => {
 	return `
-		<form method="post" class="d-inline">
-			<input type="hidden" name="action" value="delete" />
-			<input type="hidden" name="id" value="${ctx.options.recordId(record)}" />
-			<button type="submit" class="btn btn-danger btn-sm">
-				${ctx.options.texts.listDeleteButton(ctx)}
-			</button>
-		</form>
+		<button type="submit" class="btn btn-danger btn-sm" onclick="showDeleteModal(${ctx.options.recordId(
+			record
+		)})">
+			${ctx.options.texts.listDeleteButton(ctx)}
+		</button>
 	`;
+};
+
+/**
+ * Render "are you sure?" modal for deleting items.
+ * @param {CBQContext} ctx
+ * @param {Array} data
+ * @return {string}
+ */
+module.exports.listDeleteConfirmationModal = (ctx, data) => {
+	return `
+		<div class="modal fade" tabindex="-1" role="dialog" id="delete_modal">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title"></h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p class="delete-modal-question"></p>
+					</div>
+					<div class="modal-footer">
+						<form method="post" action="" class="d-inline">
+							<button type="submit" class="btn btn-danger delete-modal-yes"></button>
+						</form>
+						<button type="button" class="btn btn-secondary delete-modal-no" data-dismiss="modal"></button>
+					</div>
+				</div>
+			</div>
+		</div>
+		`;
 };
 
 /**

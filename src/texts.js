@@ -10,16 +10,21 @@ class CBQTexts {
 		 */
 		this.recordDescriptor = (ctx, record) => `#${ctx.options.recordId(record)}`;
 
+		/**
+		 * Generate title of a particular record, used for messages about that record. For example, "User #13".
+		 * @param {CBQContext} ctx
+		 * @param record
+		 * @return {string}
+		 */
+		this.recordTitle = (ctx, record) =>
+			`${singularize(ctx.options.name)} ${ctx.options.texts.recordDescriptor(ctx, record)}`;
+
 		this.flashMessageRecordCreated = (/** CBQContext */ ctx, record) =>
-			`${capitalize(singularize(ctx.options.name))} ${ctx.options.texts.recordDescriptor(
-				ctx,
-				record
-			)} created`;
+			`${capitalize(ctx.options.texts.recordTitle(ctx, record))} created`;
 		this.flashMessageRecordUpdated = (/** CBQContext */ ctx, record) =>
-			`${capitalize(singularize(ctx.options.name))} ${ctx.options.texts.recordDescriptor(
-				ctx,
-				record
-			)} updated`;
+			`${capitalize(ctx.options.texts.recordTitle(ctx, record))} updated`;
+		this.flashMessageRecordDeleted = (/** CBQContext */ ctx, record) =>
+			`${capitalize(ctx.options.texts.recordTitle(ctx, record))} deleted`;
 
 		this.listTitle = (/** CBQContext */ ctx) => pluralize(capitalize(ctx.options.name));
 		this.listNoData = 'No data is available';
@@ -39,10 +44,17 @@ class CBQTexts {
 		this.editNewCancel = 'Cancel';
 
 		this.editExistingTitle = (/** CBQContext */ ctx, record) =>
-			`Edit ${uncapitalize(singularize(ctx.options.name))} ` +
-			ctx.options.texts.recordDescriptor(ctx, record);
+			`Edit ${uncapitalize(ctx.options.texts.recordTitle(ctx, record))}`;
 		this.editExistingSave = 'Save changes';
 		this.editExistingCancel = 'Cancel';
+
+		this.modalConfirmDeleteTitle = 'Are you sure?';
+		this.modalConfirmDeleteQuestion = (/** CBQContext */ ctx, data, record, index) =>
+			`You are about to delete ${uncapitalize(
+				ctx.options.texts.recordTitle(ctx, record)
+			)}. Proceed?`;
+		this.modalConfirmDeleteYes = 'Delete';
+		this.modalConfirmDeleteNo = 'Cancel';
 
 		this.errorNotFound = (/** CBQContext */ ctx, id) =>
 			`${capitalize(singularize(ctx.options.name))} with id "${id}" couldn't be found`;

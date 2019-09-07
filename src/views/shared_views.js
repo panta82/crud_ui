@@ -2,8 +2,10 @@
  * Main page layout. Common for all pages.
  * @param {CBQContext} ctx
  * @param content
+ * @param head
+ * @param scripts
  */
-module.exports.layout = (ctx, content) => {
+module.exports.layout = (ctx, content, head = '', scripts = '') => {
 	return `
 <!doctype html>
 <html lang="en">
@@ -17,13 +19,17 @@ module.exports.layout = (ctx, content) => {
 
 		<link rel="stylesheet" href="${ctx.url('/css/bootstrap.min.css')}" />
 		<link rel="stylesheet" href="${ctx.url('/css/styles.css')}" />
+		${head || ''}
 	</head>
 
 	<body>
 
 		${content}
 		
+		<script src="${ctx.url('/js/jquery-3.4.1.slim.js')}"></script>
+		<script src="${ctx.url('/js/bootstrap.min.js')}"></script>
 		<script src="${ctx.url('/js/cbq-scripts.js')}"></script>
+		${scripts || ''}
 	</body>
 </html>
 `;

@@ -67,7 +67,14 @@ app.use(
 				Object.assign(existing, payload);
 				return existing;
 			},
-			delete: () => {},
+			delete: (ctx, id) => {
+				const index = data.findIndex(item => String(item.id) === String(id));
+				if (index < 0) {
+					throw new Error(`Not found: ${id}`);
+				}
+				const item = data.splice(index, 1)[0];
+				return item;
+			},
 		},
 	})
 );

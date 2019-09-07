@@ -4,7 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const { CBQ_FIELD_TYPES } = require('./consts');
-const { CBQOptions, CBQContext, CBQError } = require('./types');
+const { CBQOptions, CBQContext, CBQError, CBQOperationNotSupportedError } = require('./types');
 const { capitalize, singularize } = require('./tools');
 const { createFlashManager } = require('./web/flash_manager');
 
@@ -88,11 +88,12 @@ function crudButQuick(options) {
 
 		return Promise.resolve()
 			.then(() => {
+				CBQOperationNotSupportedError.assert(options.handlers, 'create');
 				const payload = coerceAndValidateEditPayload(req.body);
 				return options.handlers.create(ctx, payload);
 			})
 			.then(createResult => {
-				if (createResult) {
+				if (createResult && createResult !== true) {
 					const message =
 						typeof createResult === 'string'
 							? createResult
@@ -129,15 +130,39 @@ function crudButQuick(options) {
 
 		return Promise.resolve()
 			.then(() => {
+				CBQOperationNotSupportedError.assert(options.handlers, 'update');
 				const payload = coerceAndValidateEditPayload(req.body);
 				return options.handlers.update(ctx, id, payload);
 			})
 			.then(updateResult => {
-				if (updateResult) {
+				if (updateResult && updateResult !== true) {
 					const message =
 						typeof updateResult === 'string'
 							? updateResult
 							: options.texts.flashMessageRecordUpdated(ctx, updateResult);
+					flashManager.setFlash(res, {
+						message,
+					});
+				}
+				return res.redirect(ctx.url('/'));
+			}, next);
+	});
+
+	router.post('/delete/:id', (req, res, next) => {
+		const ctx = new CBQContext(options, req);
+		const id = req.params.id;
+
+		return Promise.resolve()
+			.then(() => {
+				CBQOperationNotSupportedError.assert(options.handlers, 'delete');
+				return options.handlers.delete(ctx, id);
+			})
+			.then(deleteResult => {
+				if (deleteResult && deleteResult !== true) {
+					const message =
+						typeof deleteResult === 'string'
+							? deleteResult
+							: options.texts.flashMessageRecordDeleted(ctx, deleteResult);
 					flashManager.setFlash(res, {
 						message,
 					});
