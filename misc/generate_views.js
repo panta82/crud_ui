@@ -17,7 +17,7 @@ for (const [title, filename] of sections) {
 	lines.push('', '\t\t// ' + title, '');
 	const exp = require('../src/views/' + filename);
 	for (const name in exp) {
-		lines.push(`\t\tthis.${name} = require('./${filename}').${name};`);
+		lines.push(`\t\tthis.${name} = require('../views/${filename}').${name};`);
 	}
 }
 

@@ -1,6 +1,9 @@
 const { crudButQuick } = require('./src/crud_but_quick');
-const { CBQ_FIELD_TYPES } = require('./src/consts');
-const { CBQError, CBQContext, CBQField, CBQHandlers, CBQOptions } = require('./src/types');
+const { CBQ_FIELD_TYPES } = require('./src/types/consts');
+const { CBQError } = require('./src/types/errors');
+const { CBQOptions, CBQHandlers } = require('./src/types/options');
+const { CBQField } = require('./src/types/fields');
+const { CBQContext } = require('./src/types/context');
 
 module.exports = crudButQuick;
 module.exports.crudButQuick = crudButQuick;

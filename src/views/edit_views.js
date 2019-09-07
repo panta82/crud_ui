@@ -1,4 +1,4 @@
-const { CBQ_FIELD_TYPES } = require('../consts');
+const { CBQ_FIELD_TYPES } = require('../types/consts');
 const { assertEqual, getOrCall } = require('../tools');
 
 /**

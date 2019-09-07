@@ -6,7 +6,7 @@
   "scripts": {
     "nodemon-tester": "nodemon tester/tester.js",
     "test": "jest",
-		"generate-views": "node misc/generate_views.js > src/views/views.js"
+		"generate-views": "node misc/generate_views.js > src/types/views.js"
   },
   "files": [
     "/static/css/bootstrap.min.css",

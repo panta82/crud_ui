@@ -1,4 +1,4 @@
-const { assertType, capitalize, uncapitalize, pluralize, singularize } = require('./tools');
+const { assertType, capitalize, uncapitalize, pluralize, singularize } = require('../tools');
 
 class CBQTexts {
 	constructor(/** CBQTexts */ source) {

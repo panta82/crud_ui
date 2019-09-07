@@ -3,9 +3,10 @@ const libPath = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const { CBQ_FIELD_TYPES } = require('./consts');
-const { CBQOptions, CBQContext, CBQError, CBQOperationNotSupportedError } = require('./types');
-const { capitalize, singularize } = require('./tools');
+const { CBQ_FIELD_TYPES } = require('./types/consts');
+const { CBQOptions } = require('./types/options');
+const { CBQError, CBQOperationNotSupportedError } = require('./types/errors');
+const { CBQContext } = require('./types/context');
 const { createFlashManager } = require('./web/flash_manager');
 
 /**
