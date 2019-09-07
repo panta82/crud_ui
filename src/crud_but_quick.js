@@ -96,10 +96,7 @@ function crudButQuick(options) {
 					const message =
 						typeof createResult === 'string'
 							? createResult
-							: `${capitalize(singularize(options.name))} ${options.texts.recordDescriptor(
-									ctx,
-									createResult
-							  )} created`;
+							: options.texts.flashMessageRecordCreated(ctx, createResult);
 					flashManager.setFlash(res, {
 						message,
 					});
@@ -140,10 +137,7 @@ function crudButQuick(options) {
 					const message =
 						typeof updateResult === 'string'
 							? updateResult
-							: `${capitalize(singularize(options.name))} ${options.texts.recordDescriptor(
-									ctx,
-									updateResult
-							  )} created`;
+							: options.texts.flashMessageRecordUpdated(ctx, updateResult);
 					flashManager.setFlash(res, {
 						message,
 					});

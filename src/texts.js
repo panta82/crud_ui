@@ -10,6 +10,17 @@ class CBQTexts {
 		 */
 		this.recordDescriptor = (ctx, record) => `#${ctx.options.recordId(record)}`;
 
+		this.flashMessageRecordCreated = (/** CBQContext */ ctx, record) =>
+			`${capitalize(singularize(ctx.options.name))} ${ctx.options.texts.recordDescriptor(
+				ctx,
+				record
+			)} created`;
+		this.flashMessageRecordUpdated = (/** CBQContext */ ctx, record) =>
+			`${capitalize(singularize(ctx.options.name))} ${ctx.options.texts.recordDescriptor(
+				ctx,
+				record
+			)} updated`;
+
 		this.listTitle = (/** CBQContext */ ctx) => pluralize(capitalize(ctx.options.name));
 		this.listNoData = 'No data is available';
 		this.listCreateButton = (/** CBQContext */ ctx) =>
