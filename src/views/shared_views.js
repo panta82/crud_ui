@@ -23,10 +23,41 @@ module.exports.layout = (ctx, content) => {
 
 		${content}
 		
-		<script src="${ctx.url('/js/bootstrap.min.js')}"></script>
+		<script src="${ctx.url('/js/cbq-scripts.js')}"></script>
 	</body>
 </html>
 `;
+};
+
+/**
+ * Standard header
+ * @param {CBQContext} ctx
+ */
+module.exports.header = ctx => {
+	return `
+		<div class="mb-5">
+			${ctx.options.views.navigation(ctx)}
+			${ctx.options.views.flashMessage(ctx)}
+		</div>
+	`;
+};
+
+/**
+ * Render standard page footer, with "back to top" link and copyright.
+ * @param {CBQContext} ctx
+ */
+module.exports.footer = ctx => {
+	return `
+		<footer class="text-muted mt-5">
+      <div class="container">
+        <hr />
+        <p class="float-right">
+          <a href="#">${ctx.options.texts.footerBackToTop(ctx)}</a>
+        </p>
+        <p>${ctx.options.texts.footerCopyright(ctx)}</p>
+      </div>
+    </footer>
+	`;
 };
 
 /**
@@ -81,29 +112,21 @@ module.exports.navigation = ctx => {
 };
 
 /**
- * Standard header
+ * Render navigation menu
  * @param {CBQContext} ctx
  */
-module.exports.header = ctx => {
-	return `<div class="mb-5">${ctx.options.views.navigation(ctx)}</div>`;
-};
-
-/**
- * Render standard page footer, with "back to top" link and copyright.
- * @param {CBQContext} ctx
- */
-module.exports.footer = ctx => {
-	return `
-		<footer class="text-muted mt-5">
-      <div class="container">
-        <hr />
-        <p class="float-right">
-          <a href="#">${ctx.options.texts.footerBackToTop(ctx)}</a>
-        </p>
-        <p>${ctx.options.texts.footerCopyright(ctx)}</p>
-      </div>
-    </footer>
-	`;
+module.exports.flashMessage = ctx => {
+	if (ctx.req.flash && ctx.req.flash.message) {
+		return `
+			<div class="cbq-flash-message alert alert-${ctx.req.flash.flavor ||
+				'success'} fade show px-0 py-1 position-absolute w-100 my-0" role="alert">
+				<div class="container">
+					${ctx.req.flash.message}
+				</div>
+			</div>
+		`;
+	}
+	return '';
 };
 
 // *********************************************************************************************************************

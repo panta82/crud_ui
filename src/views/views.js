@@ -6,9 +6,10 @@ class CBQViews {
 		// Shared
 
 		this.layout = require('./shared_views.js').layout;
-		this.navigation = require('./shared_views.js').navigation;
 		this.header = require('./shared_views.js').header;
 		this.footer = require('./shared_views.js').footer;
+		this.navigation = require('./shared_views.js').navigation;
+		this.flashMessage = require('./shared_views.js').flashMessage;
 		this.errorPage = require('./shared_views.js').errorPage;
 
 		// List

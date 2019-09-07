@@ -102,12 +102,15 @@ class CBQHandlers {
 
 		/**
 		 * Create a new record with given payload. If not provided, creation will be disabled.
+		 * To display a flash message, return either a string or created record.
 		 * @type {function(CBQContext, Object)}
 		 */
 		this.create = undefined;
 
 		/**
-		 * Update the record with given id. It will be called with a record id and update payload. If not provided, editing will be disabled.
+		 * Update the record with given id. It will be called with a record id and update payload.
+		 * If not provided, editing will be disabled.
+		 * To display a flash message, return either a string or updated record.
 		 * @type {function(CBQContext, id, Object)}
 		 */
 		this.update = undefined;

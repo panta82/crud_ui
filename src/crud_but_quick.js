@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const { CBQ_FIELD_TYPES } = require('./consts');
 const { CBQOptions, CBQContext, CBQError } = require('./types');
 const { capitalize, singularize } = require('./tools');
+const { createFlashManager } = require('./web/flash_manager');
 
 /**
  * Create express.js router that will serve a CRUD ui
@@ -16,11 +17,13 @@ function crudButQuick(options) {
 
 	options.validateAndCoerce();
 
+	const flashManager = createFlashManager();
+
 	const router = express.Router();
 
 	router.use(express.static(libPath.resolve(__dirname, '../static')));
-
 	router.use(bodyParser.urlencoded());
+	router.use(flashManager.middleware);
 
 	router.get('/', (req, res, next) => {
 		const ctx = new CBQContext(options, req);
@@ -88,7 +91,20 @@ function crudButQuick(options) {
 				const payload = coerceAndValidateEditPayload(req.body);
 				return options.handlers.create(ctx, payload);
 			})
-			.then(() => {
+			.then(createResult => {
+				if (createResult) {
+					const message =
+						typeof createResult === 'string'
+							? createResult
+							: `${capitalize(singularize(options.name))} ${options.texts.recordDescriptor(
+									ctx,
+									createResult
+							  )} created`;
+					flashManager.setFlash(res, {
+						message,
+					});
+				}
+
 				return res.redirect(ctx.url('/'));
 			}, next);
 	});
@@ -119,7 +135,19 @@ function crudButQuick(options) {
 				const payload = coerceAndValidateEditPayload(req.body);
 				return options.handlers.update(ctx, id, payload);
 			})
-			.then(() => {
+			.then(updateResult => {
+				if (updateResult) {
+					const message =
+						typeof updateResult === 'string'
+							? updateResult
+							: `${capitalize(singularize(options.name))} ${options.texts.recordDescriptor(
+									ctx,
+									updateResult
+							  )} created`;
+					flashManager.setFlash(res, {
+						message,
+					});
+				}
 				return res.redirect(ctx.url('/'));
 			}, next);
 	});
