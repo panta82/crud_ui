@@ -1,6 +1,6 @@
 const { CBQ_FIELD_TYPES } = require('../types/consts');
 const { CBQContext } = require('../types/context');
-const { CBQError, CBQOperationNotSupportedError } = require('../types/errors');
+const { CBQError, CBQActionNotSupportedError } = require('../types/errors');
 const { CBQRedirectResponse } = require('../types/responses');
 
 // *********************************************************************************************************************
@@ -58,7 +58,7 @@ function resultToFlash(ctx, makeMessage, result) {
  */
 function indexPage(ctx) {
 	return Promise.resolve()
-		.then(() => ctx.options.handlers.list(ctx))
+		.then(() => ctx.options.actions.getList(ctx))
 		.then(data => {
 			if (!data) {
 				throw new CBQError(`Invalid data`);
@@ -79,12 +79,12 @@ function createPage(ctx) {
  * @param {CBQContext} ctx
  */
 function createAction(ctx) {
-	CBQOperationNotSupportedError.assert(ctx.options.handlers, 'create');
+	CBQActionNotSupportedError.assert(ctx.options.actions, 'create');
 
 	const payload = coerceAndValidateEditPayload(ctx.options.fields, ctx.body);
 
 	return Promise.resolve()
-		.then(() => ctx.options.handlers.create(ctx, payload))
+		.then(() => ctx.options.actions.create(ctx, payload))
 		.then(createResult => {
 			return new CBQRedirectResponse(
 				ctx.url('/'),
@@ -98,7 +98,7 @@ function createAction(ctx) {
  */
 function editPage(ctx) {
 	return Promise.resolve()
-		.then(() => ctx.options.handlers.single(ctx, ctx.idParam))
+		.then(() => ctx.options.actions.getSingle(ctx, ctx.idParam))
 		.then(data => {
 			if (!data) {
 				throw new CBQError(ctx.options.texts.errorNotFound(ctx, ctx.idParam), 404);
@@ -112,12 +112,12 @@ function editPage(ctx) {
  * @param {CBQContext} ctx
  */
 function editAction(ctx) {
-	CBQOperationNotSupportedError.assert(ctx.options.handlers, 'update');
+	CBQActionNotSupportedError.assert(ctx.options.actions, 'update');
 
 	const payload = coerceAndValidateEditPayload(ctx.options.fields, ctx.body);
 
 	return Promise.resolve()
-		.then(() => ctx.options.handlers.update(ctx, ctx.idParam, payload))
+		.then(() => ctx.options.actions.update(ctx, ctx.idParam, payload))
 		.then(updateResult => {
 			return new CBQRedirectResponse(
 				ctx.url('/'),
@@ -130,10 +130,10 @@ function editAction(ctx) {
  * @param {CBQContext} ctx
  */
 function deleteAction(ctx) {
-	CBQOperationNotSupportedError.assert(ctx.options.handlers, 'delete');
+	CBQActionNotSupportedError.assert(ctx.options.actions, 'delete');
 
 	return Promise.resolve()
-		.then(() => ctx.options.handlers.delete(ctx, ctx.idParam))
+		.then(() => ctx.options.actions.delete(ctx, ctx.idParam))
 		.then(deleteResult => {
 			return new CBQRedirectResponse(
 				ctx.url('/'),

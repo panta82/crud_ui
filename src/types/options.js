@@ -3,19 +3,23 @@ const { CBQTexts } = require('./texts');
 const { CBQField } = require('./fields');
 const { CBQViews } = require('./views');
 
-class CBQHandlers {
-	constructor(/** CBQHandlers */ source) {
+/**
+ * Functions to execute different supported CRUD operations.
+ * User must supply these functions for the CMS to work.
+ */
+class CBQActions {
+	constructor(/** CBQActions */ source) {
 		/**
 		 * Produce list of items to be edited. If this is provided, main view will be a table with these items.
 		 * @type {function(CBQContext):Promise<Array>|Array}
 		 */
-		this.list = undefined;
+		this.getList = undefined;
 
 		/**
 		 * Get single item for edit view. It will be called with recird id, and should return either an object or null, if none is found.
 		 * @type {function(CBQContext, id):Promise<Array>|Array}
 		 */
-		this.single = undefined;
+		this.getSingle = undefined;
 
 		/**
 		 * Create a new record with given payload. If not provided, creation will be disabled.
@@ -42,7 +46,7 @@ class CBQHandlers {
 	}
 
 	validateAndCoerce() {
-		const asserters = makeObjectAsserters(this, '"', '" handler');
+		const asserters = makeObjectAsserters(this, '"', '" action');
 
 		asserters.type('single', 'function');
 		asserters.type('list', 'function');
@@ -84,11 +88,11 @@ class CBQOptions {
 		this.texts = undefined;
 
 		/**
-		 * Handlers for different CRUD operations to be operated against records.
+		 * Functions to execute different supported CRUD operations.
 		 * User must supply these functions for the CMS to work.
-		 * @type {CBQHandlers}
+		 * @type {CBQActions}
 		 */
-		this.handlers = undefined;
+		this.actions = undefined;
 
 		/**
 		 * Function to be called in case of error. Defaults to console.error.
@@ -132,8 +136,8 @@ class CBQOptions {
 			return field;
 		});
 
-		this.handlers = new CBQHandlers(this.handlers);
-		this.handlers.validateAndCoerce();
+		this.actions = new CBQActions(this.actions);
+		this.actions.validateAndCoerce();
 
 		this.views = new CBQViews(this.views);
 		this.texts = new CBQTexts(this.texts);
@@ -147,6 +151,6 @@ class CBQOptions {
 }
 
 module.exports = {
-	CBQHandlers,
+	CBQActions,
 	CBQOptions,
 };

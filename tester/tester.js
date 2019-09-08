@@ -46,11 +46,11 @@ app.use(
 			}),
 		],
 		recordId: 'id',
-		handlers: {
-			list: ctx => {
+		actions: {
+			getList: ctx => {
 				return data;
 			},
-			single: (ctx, id) => {
+			getSingle: (ctx, id) => {
 				return data.find(item => String(item.id) === String(id));
 			},
 			create: (ctx, payload) => {

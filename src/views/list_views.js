@@ -37,7 +37,7 @@ module.exports.listHeader = (ctx, data) => {
 module.exports.listAbove = (ctx, data) => {
 	return `
 		<h2>${ctx.options.texts.listTitle(ctx)}</h2>
-		${ctx.options.handlers.create ? ctx.options.views.listCreateButton(ctx, data) : ''}
+		${ctx.options.actions.create ? ctx.options.views.listCreateButton(ctx, data) : ''}
 	`;
 };
 
@@ -214,8 +214,8 @@ module.exports.listCell = (ctx, data, record, index, field) => {
 module.exports.listControlsCell = (ctx, data, record, index) => {
 	return `
 		<td class="text-nowrap">
-			${ctx.options.handlers.update ? ctx.options.views.listEditButton(ctx, data, record, index) : ''}
-			${ctx.options.handlers.delete ? ctx.options.views.listDeleteButton(ctx, data, record, index) : ''}
+			${ctx.options.actions.update ? ctx.options.views.listEditButton(ctx, data, record, index) : ''}
+			${ctx.options.actions.delete ? ctx.options.views.listDeleteButton(ctx, data, record, index) : ''}
 		</td>
 	`;
 };

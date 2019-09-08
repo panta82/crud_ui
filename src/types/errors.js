@@ -5,20 +5,20 @@ class CBQError extends Error {
 	}
 }
 
-class CBQOperationNotSupportedError extends CBQError {
-	constructor(op) {
-		super(`Operation is not supported: ${op}`, 500);
-		this.op = op;
+class CBQActionNotSupportedError extends CBQError {
+	constructor(action) {
+		super(`Action "${action}" is not supported`, 500);
+		this.action = action;
 	}
 
 	static assert(handlers, op) {
 		if (typeof handlers[op] !== 'function') {
-			throw new CBQOperationNotSupportedError(op);
+			throw new CBQActionNotSupportedError(op);
 		}
 	}
 }
 
 module.exports = {
 	CBQError,
-	CBQOperationNotSupportedError,
+	CBQActionNotSupportedError,
 };
