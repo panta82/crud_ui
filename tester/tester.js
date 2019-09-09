@@ -76,7 +76,6 @@ app.use(
 				type: FIELD_TYPES.select,
 				name: 'gender',
 				label: 'Gender',
-				defaultValue: 'male',
 				values: ['male', 'female', 'other'],
 				nullOption: true,
 			}),

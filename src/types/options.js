@@ -2,6 +2,7 @@ const { assertType, makeObjectAsserters, escapeHTML } = require('../tools');
 const { CBQTexts } = require('./texts');
 const { CBQField } = require('./fields');
 const { CBQViews } = require('./views');
+const { CBQUrls } = require('./urls');
 const { CBQNavigation } = require('./navigation');
 
 /**
@@ -76,6 +77,19 @@ class CBQOptions {
 		this.fields = undefined;
 
 		/**
+		 * Functions to execute different supported CRUD operations.
+		 * User must supply these functions for the CMS to work.
+		 * @type {CBQActions}
+		 */
+		this.actions = undefined;
+
+		/**
+		 * Optional spec for the main navigation bar, at the top of page.
+		 * @type {CBQNavigation}
+		 */
+		this.navigation = undefined;
+
+		/**
 		 * Functions which will be used to render HTML of various pages in the user interface.
 		 * They will call into each other, and also call into "texts". You can override any or none of them.
 		 * @type {CBQViews}
@@ -89,17 +103,10 @@ class CBQOptions {
 		this.texts = undefined;
 
 		/**
-		 * Functions to execute different supported CRUD operations.
-		 * User must supply these functions for the CMS to work.
-		 * @type {CBQActions}
+		 * URLS to use for various pages of CMS. Rarely needed to be altered by user
+		 * @type {CBQUrls}
 		 */
-		this.actions = undefined;
-
-		/**
-		 * Optional spec for the main navigation bar, at the top of page.
-		 * @type {CBQNavigation}
-		 */
-		this.navigation = undefined;
+		this.urls = undefined;
 
 		/**
 		 * Function to be called in case of error. Defaults to console.error.
@@ -146,14 +153,15 @@ class CBQOptions {
 		this.actions = new CBQActions(this.actions);
 		this.actions.validateAndCoerce();
 
-		this.views = new CBQViews(this.views);
-		this.texts = new CBQTexts(this.texts);
-
 		if (this.navigation) {
 			asserters.type('navigation', 'object');
 			this.navigation = new CBQNavigation(this.navigation);
 			this.navigation.validateAndCoerce();
 		}
+
+		this.views = new CBQViews(this.views);
+		this.texts = new CBQTexts(this.texts);
+		this.urls = new CBQUrls(this.urls);
 
 		if (this.onError === undefined) {
 			this.onError = (ctx, err) => {

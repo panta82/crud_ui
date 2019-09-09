@@ -1,7 +1,8 @@
 const { CBQ_FIELD_TYPES } = require('../types/consts');
 const { CBQContext } = require('../types/context');
-const { CBQError, CBQActionNotSupportedError } = require('../types/errors');
+const { CBQError, CBQActionNotSupportedError, CBQValidationError } = require('../types/errors');
 const { CBQRedirectResponse } = require('../types/responses');
+const { capitalize } = require('../tools');
 
 // *********************************************************************************************************************
 
@@ -11,6 +12,7 @@ const { CBQRedirectResponse } = require('../types/responses');
  */
 function coerceAndValidateEditPayload(fields, body) {
 	const payload = {};
+	const validationErrors = [];
 	for (const field of fields) {
 		if (field.noEdit) {
 			continue;
@@ -29,10 +31,26 @@ function coerceAndValidateEditPayload(fields, body) {
 			}
 		}
 
-		// TODO: Do some real validation here
+		// TODO
+		if ((field.name === 'name' || field.name === 'gender') && !value) {
+			validationErrors.push({
+				field,
+				value,
+				message: 'must not be empty',
+				toString() {
+					return capitalize(this.field.label) + ' ' + this.message;
+				},
+			});
+		}
 
 		payload[field.name] = value;
 	}
+
+	if (validationErrors.length) {
+		// Validation failed
+		throw new CBQValidationError(validationErrors);
+	}
+
 	return payload;
 }
 
@@ -81,16 +99,30 @@ function createPage(ctx) {
 function createAction(ctx) {
 	CBQActionNotSupportedError.assert(ctx.options.actions, 'create');
 
-	const payload = coerceAndValidateEditPayload(ctx.options.fields, ctx.body);
-
 	return Promise.resolve()
-		.then(() => ctx.options.actions.create(ctx, payload))
-		.then(createResult => {
-			return new CBQRedirectResponse(
-				ctx.url('/'),
-				resultToFlash(ctx, ctx.options.texts.flashMessageRecordCreated, createResult)
-			);
-		});
+		.then(() => {
+			const payload = coerceAndValidateEditPayload(ctx.options.fields, ctx.body);
+			return ctx.options.actions.create(ctx, payload);
+		})
+		.then(
+			createResult => {
+				return new CBQRedirectResponse(
+					ctx.url(ctx.options.urls.indexPage),
+					resultToFlash(ctx, ctx.options.texts.flashMessageRecordCreated, createResult)
+				);
+			},
+			error => {
+				if (error instanceof CBQValidationError) {
+					// Show errors on page
+					return new CBQRedirectResponse(ctx.url(ctx.options.urls.createPage), {
+						error,
+					});
+				}
+
+				// Pass through other errors
+				throw error;
+			}
+		);
 }
 
 /**
@@ -114,16 +146,30 @@ function editPage(ctx) {
 function editAction(ctx) {
 	CBQActionNotSupportedError.assert(ctx.options.actions, 'update');
 
-	const payload = coerceAndValidateEditPayload(ctx.options.fields, ctx.body);
-
 	return Promise.resolve()
-		.then(() => ctx.options.actions.update(ctx, ctx.idParam, payload))
-		.then(updateResult => {
-			return new CBQRedirectResponse(
-				ctx.url('/'),
-				resultToFlash(ctx, ctx.options.texts.flashMessageRecordUpdated, updateResult)
-			);
-		});
+		.then(() => {
+			const payload = coerceAndValidateEditPayload(ctx.options.fields, ctx.body);
+			return ctx.options.actions.update(ctx, ctx.idParam, payload);
+		})
+		.then(
+			updateResult => {
+				return new CBQRedirectResponse(
+					ctx.url(ctx.options.urls.indexPage),
+					resultToFlash(ctx, ctx.options.texts.flashMessageRecordUpdated, updateResult)
+				);
+			},
+			error => {
+				if (error instanceof CBQValidationError) {
+					// Show errors on page
+					return new CBQRedirectResponse(ctx.url(ctx.options.urls.editPage(ctx.idParam)), {
+						error,
+					});
+				}
+
+				// Pass through other errors
+				throw error;
+			}
+		);
 }
 
 /**
@@ -136,7 +182,7 @@ function deleteAction(ctx) {
 		.then(() => ctx.options.actions.delete(ctx, ctx.idParam))
 		.then(deleteResult => {
 			return new CBQRedirectResponse(
-				ctx.url('/'),
+				ctx.url(ctx.options.urls.indexPage),
 				resultToFlash(ctx, ctx.options.texts.flashMessageRecordDeleted, deleteResult)
 			);
 		});

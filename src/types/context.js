@@ -3,6 +3,10 @@ const qs = require('querystring');
 const { ensureLeadingChar } = require('../tools');
 
 class CBQContext {
+	/**
+	 * @param {CBQOptions} options
+	 * @param {e.Request} req
+	 */
 	constructor(options, req) {
 		/**
 		 * Coerced and validated options passed to the router
@@ -23,6 +27,12 @@ class CBQContext {
 		this.body = req.body || null;
 
 		/**
+		 * Full URL of the request, from the root. So it includes both the part where CBQ is hosted and CBQ-specific path
+		 * @type {string}
+		 */
+		this.originalUrl = req.originalUrl;
+
+		/**
 		 * URL where CBQ handler is hosted. Eg. "/my/path" or "/"
 		 * @type {string}
 		 */
@@ -30,7 +40,7 @@ class CBQContext {
 
 		/**
 		 * Flash object extracted by FlashManager
-		 * @type {{message: string, flavor: string}}
+		 * @type {{message: string, flavor: string}|{error: CBQValidationError}}
 		 */
 		this.flash = req.flash || {};
 	}

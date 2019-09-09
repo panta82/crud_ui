@@ -44,6 +44,7 @@ class CBQViews {
 		this.editBelow = require('../views/edit_views.js').editBelow;
 		this.editFooter = require('../views/edit_views.js').editFooter;
 		this.editContent = require('../views/edit_views.js').editContent;
+		this.editError = require('../views/edit_views.js').editError;
 		this.editField = require('../views/edit_views.js').editField;
 		this.editFieldHelpText = require('../views/edit_views.js').editFieldHelpText;
 		this.editFieldString = require('../views/edit_views.js').editFieldString;

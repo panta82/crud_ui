@@ -27,15 +27,15 @@ function crudButQuick(options) {
 	router.use(bodyParser.urlencoded());
 	router.use(flashManager.middleware);
 
-	router.get('/', wrap(handlers.indexPage));
+	router.get(options.urls.indexPage, wrap(handlers.indexPage));
 
-	router.get('/create', wrap(handlers.createPage));
-	router.post('/create', wrap(handlers.createAction));
+	router.get(options.urls.createPage, wrap(handlers.createPage));
+	router.post(options.urls.createAction, wrap(handlers.createAction));
 
-	router.get('/edit/:id', wrap(handlers.editPage));
-	router.post('/edit/:id', wrap(handlers.editAction));
+	router.get(options.urls.editPage(':id'), wrap(handlers.editPage));
+	router.post(options.urls.editAction(':id'), wrap(handlers.editAction));
 
-	router.post('/delete/:id', wrap(handlers.deleteAction));
+	router.post(options.urls.deleteAction(':id'), wrap(handlers.deleteAction));
 
 	router.use((err, req, res, next) => {
 		const ctx = new CBQContext(options, req);

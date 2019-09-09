@@ -36,11 +36,13 @@ module.exports.editHeader = (ctx, record) => {
  * @param {Object} record
  */
 module.exports.editAbove = (ctx, record) => {
-	return `<h2>${
-		record
-			? ctx.options.texts.safe.editExistingTitle(ctx, record)
-			: ctx.options.texts.safe.editNewTitle(ctx)
-	}</h2>`;
+	return `
+		<h2>${
+			record
+				? ctx.options.texts.safe.editExistingTitle(ctx, record)
+				: ctx.options.texts.safe.editNewTitle(ctx)
+		}</h2>
+		${ctx.options.views.editError(ctx, record)}`;
 };
 
 /**
@@ -81,13 +83,43 @@ module.exports.editContent = (ctx, record) => {
 						? ctx.options.texts.safe.editExistingSave(ctx, record)
 						: ctx.options.texts.safe.editNewSave(ctx, record)
 				}</button>
-				<a href="${ctx.url('/')}" class="btn btn-light ml-1">${
+				<a href="${ctx.url(ctx.options.urls.indexPage)}" class="btn btn-light ml-1">${
 		record
 			? ctx.options.texts.safe.editExistingCancel(ctx, record)
 			: ctx.options.texts.safe.editNewCancel(ctx, record)
 	}</a>
 			</div>
 		</form>
+	`;
+};
+
+/**
+ * Render error in the form header, if one is present
+ * @param {CBQContext} ctx
+ * @param {Object} record
+ */
+module.exports.editError = (ctx, record) => {
+	if (!ctx.flash.error) {
+		return '';
+	}
+
+	let errorList = '';
+	if (ctx.flash.error.faults && ctx.flash.error.faults.length >= 2) {
+		errorList =
+			'<ul class="mt-3 mb-0">' +
+			ctx.flash.error.faults
+				.map(fault => {
+					return `<li>${fault.fullMessage}</li>`;
+				})
+				.join('\n') +
+			'</ul>';
+	}
+
+	return `
+		<div class="alert alert-danger my-4">
+			<h5 class="my-0">${ctx.flash.error.message}</h5>
+			${errorList}
+		</div>
 	`;
 };
 

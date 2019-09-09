@@ -50,7 +50,7 @@ module.exports.listAbove = (ctx, data) => {
  */
 module.exports.listCreateButton = (ctx, data) => {
 	return `
-		<a href="${ctx.url('/create')}" class="btn btn-primary mb-3 mt-1">
+		<a href="${ctx.url(ctx.options.urls.createPage)}" class="btn btn-primary mb-3 mt-1">
 			${ctx.options.texts.safe.listCreateButton(ctx)}
 		</a>
 	`;
@@ -110,7 +110,7 @@ module.exports.listDeleteModalScripting = (ctx, data) => {
 
 		const id = ctx.options.recordId(item);
 		deleteModalData[id] = {
-			action: ctx.url('/delete/' + id),
+			action: ctx.url(ctx.options.urls.deleteAction(id)),
 			texts: {
 				'modal-title': ctx.options.texts.modalConfirmDeleteTitle(ctx, data, item, index),
 				'delete-modal-question': ctx.options.texts.modalConfirmDeleteQuestion(
@@ -256,7 +256,9 @@ module.exports.listControlsCell = (ctx, data, record, index) => {
  */
 module.exports.listEditButton = (ctx, data, record, index) => {
 	return `
-		<a href="${ctx.url('/edit/' + ctx.options.recordId(record))}" class="btn btn-primary btn-sm">
+		<a href="${ctx.url(
+			ctx.options.urls.editPage(ctx.options.recordId(record))
+		)}" class="btn btn-primary btn-sm">
 			${ctx.options.texts.safe.listEditButton(ctx)}
 		</a>
 	`;
