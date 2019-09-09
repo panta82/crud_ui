@@ -8,10 +8,10 @@ class CBQUrls {
 		this.createPage = '/create';
 		this.createAction = '/create';
 
-		this.editPage = id => '/edit/' + encodeURIComponent(id);
-		this.editAction = id => '/edit/' + encodeURIComponent(id);
+		this.editPage = id => '/edit/' + encodeURI(id);
+		this.editAction = id => '/edit/' + encodeURI(id);
 
-		this.deleteAction = id => '/delete/' + encodeURIComponent(id);
+		this.deleteAction = id => '/delete/' + encodeURI(id);
 
 		Object.assign(this, source);
 	}

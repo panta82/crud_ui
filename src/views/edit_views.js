@@ -1,5 +1,5 @@
 const { CBQ_FIELD_TYPES } = require('../types/consts');
-const { assertEqual, getOrCall } = require('../tools');
+const { assertEqual, getOrCall, capitalize } = require('../tools');
 
 /**
  * Renders edit page. This covers both editing existing record and creating a new one
@@ -116,9 +116,13 @@ module.exports.editError = (ctx, record) => {
 	}
 
 	return `
-		<div class="alert alert-danger my-4">
+		<div class="alert alert-danger my-4 alert-dismissible fade show" role="alert">
 			<h5 class="my-0">${ctx.flash.error.message}</h5>
 			${errorList}
+			
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
 		</div>
 	`;
 };
@@ -147,14 +151,14 @@ module.exports.editField = (ctx, record, field, index) => {
 };
 
 /**
- * Utility function to prepare help block. Return empty string to leave out
+ * Utility function to prepare help block. Must return an object.
  * @param {CBQContext} ctx
  * @param {Object} record
  * @param {CBQField} field
  * @param {*} index
  * @return {{dom, aria}}
  */
-module.exports.editFieldHelpText = (ctx, record, field, index) => {
+module.exports.editFieldPrepareHelp = (ctx, record, field, index) => {
 	if (!field.helpText) {
 		// Do not render anything
 		return { dom: '', aria: '' };
@@ -170,6 +174,30 @@ module.exports.editFieldHelpText = (ctx, record, field, index) => {
 			index
 		)}</small>`,
 		aria: `aria-describedby="${id}"`,
+	};
+};
+
+/**
+ * Utility function to prepare an invalid field class and block. Must return an object.
+ * @param {CBQContext} ctx
+ * @param {Object} record
+ * @param {CBQField} field
+ * @param {*} index
+ * @return {{dom, class}}
+ */
+module.exports.editFieldPrepareError = (ctx, record, field, index) => {
+	const faults =
+		ctx.flash.error && ctx.flash.error.byFieldName && ctx.flash.error.byFieldName[field.name];
+	if (!faults || !faults.length) {
+		// Nothing to show
+		return { dom: '', class: '' };
+	}
+
+	const lines = faults.map(f => `<li>${capitalize(f.message)}</li>`).join('\n');
+
+	return {
+		dom: `<div class="invalid-feedback">${lines}</div>`,
+		class: 'is-invalid',
 	};
 };
 
@@ -192,12 +220,14 @@ module.exports.editFieldString = (ctx, record, field, index) => {
 		value = '';
 	}
 
-	const help = ctx.options.views.editFieldHelpText(ctx, record, field, index);
+	const help = ctx.options.views.editFieldPrepareHelp(ctx, record, field, index);
+	const error = ctx.options.views.editFieldPrepareError(ctx, record, field, index);
 
 	return `
 	  <div class="form-group">
 			<label for="${field.name}">${field.label}</label>
-			<input type="text" class="form-control" name="${field.name}" id="${field.name}" value="${value}" ${help.aria} />
+			<input type="text" class="form-control ${error.class}" name="${field.name}" id="${field.name}" value="${value}" ${help.aria} />
+			${error.dom}
 			${help.dom}
 		</div>
 	`;
@@ -222,12 +252,14 @@ module.exports.editFieldText = (ctx, record, field, index) => {
 		value = '';
 	}
 
-	const help = ctx.options.views.editFieldHelpText(ctx, record, field, index);
+	const help = ctx.options.views.editFieldPrepareHelp(ctx, record, field, index);
+	const error = ctx.options.views.editFieldPrepareError(ctx, record, field, index);
 
 	return `
 	  <div class="form-group">
 			<label for="${field.name}">${field.label}</label>
-			<textarea class="form-control" name="${field.name}" id="${field.name}" rows="3">${value}</textarea>
+			<textarea class="form-control ${error.class}" name="${field.name}" id="${field.name}" rows="3">${value}</textarea>
+			${error.dom}
 			${help.dom}
 		</div>
 	`;
@@ -249,7 +281,8 @@ module.exports.editFieldSelect = (ctx, record, field, index) => {
 		? getOrCall(field.defaultValue, ctx, field, index)
 		: '';
 
-	const help = ctx.options.views.editFieldHelpText(ctx, record, field, index);
+	const help = ctx.options.views.editFieldPrepareHelp(ctx, record, field, index);
+	const error = ctx.options.views.editFieldPrepareError(ctx, record, field, index);
 
 	const values = getOrCall(field.values, ctx, record, field, index);
 
@@ -272,7 +305,8 @@ module.exports.editFieldSelect = (ctx, record, field, index) => {
 	return `
 	  <div class="form-group">
 			<label for="${field.name}">${field.label}</label>
-			<select class="form-control" name="${field.name}" id="${field.name}">${options}</select>
+			<select class="form-control ${error.class}" name="${field.name}" id="${field.name}">${options}</select>
+			${error.dom}
 			${help.dom}
 		</div>
 	`;

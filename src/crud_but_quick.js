@@ -24,7 +24,11 @@ function crudButQuick(options) {
 	const router = express.Router();
 
 	router.use(express.static(libPath.resolve(__dirname, '../static')));
-	router.use(bodyParser.urlencoded());
+	router.use(
+		bodyParser.urlencoded({
+			extended: true,
+		})
+	);
 	router.use(flashManager.middleware);
 
 	router.get(options.urls.indexPage, wrap(handlers.indexPage));
