@@ -2,6 +2,7 @@ const { assertType, makeObjectAsserters } = require('../tools');
 const { CBQTexts } = require('./texts');
 const { CBQField } = require('./fields');
 const { CBQViews } = require('./views');
+const { CBQNavigation } = require('./navigation');
 
 /**
  * Functions to execute different supported CRUD operations.
@@ -95,6 +96,12 @@ class CBQOptions {
 		this.actions = undefined;
 
 		/**
+		 * Optional spec for the main navigation bar, at the top of page.
+		 * @type {CBQNavigation}
+		 */
+		this.navigation = undefined;
+
+		/**
 		 * Function to be called in case of error. Defaults to console.error.
 		 * @type {function(CBQContext, Error)}
 		 */
@@ -141,6 +148,12 @@ class CBQOptions {
 
 		this.views = new CBQViews(this.views);
 		this.texts = new CBQTexts(this.texts);
+
+		if (this.navigation) {
+			asserters.type('navigation', 'object');
+			this.navigation = new CBQNavigation(this.navigation);
+			this.navigation.validateAndCoerce();
+		}
 
 		if (this.onError === undefined) {
 			this.onError = (ctx, err) => {

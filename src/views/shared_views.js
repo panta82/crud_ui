@@ -71,6 +71,11 @@ module.exports.footer = ctx => {
  * @param {CBQContext} ctx
  */
 module.exports.navigation = ctx => {
+	if (!ctx.options.navigation) {
+		// No navigation
+		return '';
+	}
+
 	const left = ctx.options.navigation.left
 		? ctx.options.navigation.left
 				.map((item, index) => ctx.options.views.navigationItem(ctx, item, index, false))
@@ -85,7 +90,9 @@ module.exports.navigation = ctx => {
 	return `
 		<nav class="navbar navbar-expand-md navbar-light bg-light">
 			<div class="container d-flex justify-content-between">
-				<a class="navbar-brand" href="${ctx.options.navigation.brand.url}">${ctx.options.navigation.brand.title}</a>
+				<a class="navbar-brand" href="${ctx.options.navigation.brand.url || '#'}">
+					${ctx.options.navigation.brand.title}
+				</a>
 				<button class="navbar-toggler" type="button"
 						data-toggle="collapse" data-target="#navbar_content"
 						aria-controls="navbar_content" aria-expanded="false"
@@ -109,7 +116,7 @@ module.exports.navigation = ctx => {
 /**
  * Render navigation menu item
  * @param {CBQContext} ctx
- * @param item
+ * @param {CBQNavigationItem} item
  * @param {number} index
  * @param {boolean} isRight
  */
@@ -152,10 +159,10 @@ module.exports.navigationItem = (ctx, item, index, isRight) => {
 /**
  * Render an item inside a navigation menu dropdown list
  * @param {CBQContext} ctx
- * @param item
+ * @param {CBQNavigationItem} item
  * @param {number} index
  * @param {boolean} isRight
- * @param parentItem
+ * @param {CBQNavigationItem} parentItem
  * @param parentIndex
  */
 module.exports.navigationDropDownItem = (ctx, item, index, isRight, parentItem, parentIndex) => {
