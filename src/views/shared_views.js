@@ -68,52 +68,110 @@ module.exports.footer = ctx => {
 
 /**
  * Render navigation menu
+ * @param {CBQContext} ctx
  */
 module.exports.navigation = ctx => {
+	const left = ctx.options.navigation.left
+		? ctx.options.navigation.left
+				.map((item, index) => ctx.options.views.navigationItem(ctx, item, index, false))
+				.join('\n')
+		: '';
+	const right = ctx.options.navigation.right
+		? ctx.options.navigation.right
+				.map((item, index) => ctx.options.views.navigationItem(ctx, item, index, true))
+				.join('\n')
+		: '';
+
 	return `
 		<nav class="navbar navbar-expand-md navbar-light bg-light">
-
 			<div class="container d-flex justify-content-between">
-				<a class="navbar-brand" href="#">Navbar</a>
+				<a class="navbar-brand" href="${ctx.options.navigation.brand.url}">${ctx.options.navigation.brand.title}</a>
 				<button class="navbar-toggler" type="button"
-						data-toggle="collapse" data-target="#navbarsExampleDefault"
-						aria-controls="navbarsExampleDefault" aria-expanded="false"
+						data-toggle="collapse" data-target="#navbar_content"
+						aria-controls="navbar_content" aria-expanded="false"
 						aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>
 
-				<div class="collapse navbar-collapse" id="navbarsExampleDefault">
-					<ul class="navbar-nav mr-auto">
-						<li class="nav-item active">
-							<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="#">Link</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link disabled" href="#">Disabled</a>
-						</li>
-						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" href="#"
-									id="dropdown01" data-toggle="dropdown" aria-haspopup="true"
-									aria-expanded="false">Dropdown</a>
-							<div class="dropdown-menu" aria-labelledby="dropdown01">
-								<a class="dropdown-item" href="#">Action</a>
-								<a class="dropdown-item" href="#">Another action</a>
-								<a class="dropdown-item" href="#">Something else here</a>
-							</div>
-						</li>
+				<div class="collapse navbar-collapse" id="navbar_content">
+					<ul class="nav navbar-nav mr-auto">
+						${left}
 					</ul>
-					<form class="form-inline my-2 my-lg-0">
-						<input class="form-control mr-sm-2" type="text"
-								placeholder="Search" aria-label="Search">
-						<button class="btn btn-outline-default my-2 my-sm-0"
-								type="submit">Search</button>
-					</form>
+					<ul class="nav navbar-nav ml-auto">
+						${right}
+					</ul>
 				</div>
 			</div>
-
 		</nav>
+	`;
+};
+
+/**
+ * Render navigation menu item
+ * @param {CBQContext} ctx
+ * @param item
+ * @param {number} index
+ * @param {boolean} isRight
+ */
+module.exports.navigationItem = (ctx, item, index, isRight) => {
+	if (item.render) {
+		return item.render(ctx, item, index, isRight);
+	}
+
+	if (!item.items) {
+		// Render as plain item
+		const url = item.url || '#';
+		return `
+			<li class="nav-item ${url.indexOf(ctx.baseUrl) === 0 ? 'active' : ''}">
+				<a class="nav-link" href="${url}">${item.title}</a>
+			</li>
+		`;
+	}
+
+	// Render as dropdown menu
+	const menuItems = item.items
+		.map((menuItem, menuIndex) =>
+			ctx.options.views.navigationDropDownItem(ctx, menuItem, menuIndex, isRight, item, index)
+		)
+		.join('\n');
+
+	return `
+		<li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#"
+					id="cbq_navigation_dropdown" data-toggle="dropdown" aria-haspopup="true"
+					aria-expanded="false">${item.title}</a>
+			<div class="dropdown-menu ${
+				isRight ? 'dropdown-menu-right' : ''
+			}" aria-labelledby="cbq_navigation_dropdown">
+				${menuItems}
+			</div>
+		</li>
+	`;
+};
+
+/**
+ * Render an item inside a navigation menu dropdown list
+ * @param {CBQContext} ctx
+ * @param item
+ * @param {number} index
+ * @param {boolean} isRight
+ * @param parentItem
+ * @param parentIndex
+ */
+module.exports.navigationDropDownItem = (ctx, item, index, isRight, parentItem, parentIndex) => {
+	if (item.render) {
+		return item.render(ctx, item, index, isRight, parentItem, parentIndex);
+	}
+
+	if (item.title.indexOf('---') === 0) {
+		return `<div class="dropdown-divider"></div>`;
+	}
+
+	const url = item.url || '#';
+	return `
+		<a class="dropdown-item ${url.indexOf(ctx.baseUrl) === 0 ? 'active' : ''}" href="${url}">
+			${item.title}
+		</a>
 	`;
 };
 

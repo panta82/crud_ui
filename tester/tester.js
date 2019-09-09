@@ -16,9 +16,45 @@ const data = [
 ];
 
 app.use(
-	'/my/sub/route',
+	'/admin/users',
 	crudButQuick({
 		name: 'user',
+		recordId: 'id',
+		navigation: {
+			brand: {
+				title: 'Tester',
+				url: '/admin/users',
+			},
+			left: [
+				{
+					title: 'Users',
+					url: '/admin/users',
+				},
+				{
+					title: 'Projects',
+					url: '/admin/projects',
+				},
+			],
+			right: [
+				{
+					title: 'User',
+					items: [
+						{
+							title: 'Home',
+							url: '/admin/users',
+						},
+						{
+							title: '---',
+						},
+						{
+							render: (/** CBQContext */ ctx) => {
+								return `<button class="dropdown-item" onclick="alert('logout')">Log out</button>`;
+							},
+						},
+					],
+				},
+			],
+		},
 		fields: [
 			new CBQField({
 				type: FIELD_TYPES.string,
@@ -45,7 +81,6 @@ app.use(
 				nullOption: true,
 			}),
 		],
-		recordId: 'id',
 		actions: {
 			getList: ctx => {
 				return data;
@@ -84,7 +119,7 @@ app.get('/', (req, res) => {
 	<body>
 		<h1>This is just a tester</h1>
 		<h4>
-			<a href="/my/sub/route">Go to CMS</a>
+			<a href="/admin/users">Go to admin</a>
 		</h4>
 	</body>
 	`);
