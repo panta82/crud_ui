@@ -105,7 +105,7 @@ function ensureLeadingChar(leadingChar, str) {
  * @return {void | string | never}
  */
 function escapeHTML(str) {
-	return str && str.replace ? str.replace(/[&<>"']/g, m => ESCAPE_HTML_MAP[m]) : '';
+	return String(str).replace(/[&<>"']/g, m => ESCAPE_HTML_MAP[m]);
 }
 
 const ESCAPE_HTML_MAP = {
