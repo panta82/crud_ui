@@ -15,7 +15,7 @@ module.exports.layout = (ctx, content, head = '', scripts = '') => {
 		<meta name="description" content="">
 		<meta name="author" content="">
 
-		<title>${ctx.options.texts.listTitle(ctx)}</title>
+		<title>${ctx.options.texts.safe.listTitle(ctx)}</title>
 
 		<link rel="stylesheet" href="${ctx.url('/css/bootstrap.min.css')}" />
 		<link rel="stylesheet" href="${ctx.url('/css/styles.css')}" />
@@ -58,9 +58,9 @@ module.exports.footer = ctx => {
       <div class="container">
         <hr />
         <p class="float-right">
-          <a href="#">${ctx.options.texts.footerBackToTop(ctx)}</a>
+          <a href="#">${ctx.options.texts.safe.footerBackToTop(ctx)}</a>
         </p>
-        <p>${ctx.options.texts.footerCopyright(ctx)}</p>
+        <p>${ctx.options.texts.safe.footerCopyright(ctx)}</p>
       </div>
     </footer>
 	`;

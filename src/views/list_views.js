@@ -1,3 +1,5 @@
+const { escapeHTML, escapeScript } = require('../tools');
+
 /**
  * Render the entire list page. Embeds itself into layout, and renders all other parts of the list.
  * @param {CBQContext} ctx
@@ -36,7 +38,7 @@ module.exports.listHeader = (ctx, data) => {
  */
 module.exports.listAbove = (ctx, data) => {
 	return `
-		<h2>${ctx.options.texts.listTitle(ctx)}</h2>
+		<h2>${ctx.options.texts.safe.listTitle(ctx)}</h2>
 		${ctx.options.actions.create ? ctx.options.views.listCreateButton(ctx, data) : ''}
 	`;
 };
@@ -49,7 +51,7 @@ module.exports.listAbove = (ctx, data) => {
 module.exports.listCreateButton = (ctx, data) => {
 	return `
 		<a href="${ctx.url('/create')}" class="btn btn-primary mb-3 mt-1">
-			${ctx.options.texts.listCreateButton(ctx)}
+			${ctx.options.texts.safe.listCreateButton(ctx)}
 		</a>
 	`;
 };
@@ -97,6 +99,7 @@ module.exports.listScripts = (ctx, data) => {
 
 /**
  * Scripting to enable functionality of the delete record modal. Should produce result in pure javascript.
+ * WARNING: The product of this function must be escaped with escapeScript to be safely embedded in a script tag
  * @param {CBQContext} ctx
  * @param {Array} data
  */
@@ -122,14 +125,16 @@ module.exports.listDeleteModalScripting = (ctx, data) => {
 		};
 	}
 
-	return `
-	  var deleteModalData = ${JSON.stringify(deleteModalData)};
-	  function showDeleteModal(id) {
+	return `var deleteModalData = ${escapeScript(JSON.stringify(deleteModalData))};
+	  document.querySelectorAll('.cbq-list-delete-button').forEach(function (el) {
+	    var id = el.getAttribute('data-delete-id');
 	    var data = deleteModalData[id];
 	    if (data) {
-	      showModal('delete_modal', data.action, data.texts);
+	      el.addEventListener('click', function () {
+	        showModal('delete_modal', data.action, data.texts);
+	      });
 	    }
-	  }
+	  });
 	`;
 };
 
@@ -184,10 +189,12 @@ module.exports.listRow = (ctx, data, record, index) => {
 	const cols = ctx.options.fields
 		.map(field => ctx.options.views.listCell(ctx, data, record, index, field))
 		.join('\n');
-	return `<tr>
-		${cols}
-		${ctx.options.views.listControlsCell(ctx, data, record, index)}
-	</tr>`;
+	return `
+		<tr>
+			${cols}
+			${ctx.options.views.listControlsCell(ctx, data, record, index)}
+		</tr>
+	`;
 };
 
 /**
@@ -200,7 +207,26 @@ module.exports.listRow = (ctx, data, record, index) => {
  * @return {string}
  */
 module.exports.listCell = (ctx, data, record, index, field) => {
-	return `<td>${record[field.name] || ''}</td>`;
+	return `<td>${ctx.options.views.listValue(ctx, data, record, index, field)}</td>`;
+};
+
+/**
+ * Format and render CMS value in table view.
+ * WARNING: This output must be HTML escaped!
+ * @param {CBQContext} ctx
+ * @param {Array} data
+ * @param {*} record
+ * @param {Number} index
+ * @param {CBQField} field
+ * @return {string}
+ */
+module.exports.listValue = (ctx, data, record, index, field) => {
+	let value = record[field.name];
+	if (value === null || value === undefined) {
+		value = '';
+	}
+	// TODO: More formatting for different occasions.
+	return escapeHTML(value);
 };
 
 /**
@@ -231,7 +257,7 @@ module.exports.listControlsCell = (ctx, data, record, index) => {
 module.exports.listEditButton = (ctx, data, record, index) => {
 	return `
 		<a href="${ctx.url('/edit/' + ctx.options.recordId(record))}" class="btn btn-primary btn-sm">
-			${ctx.options.texts.listEditButton(ctx)}
+			${ctx.options.texts.safe.listEditButton(ctx)}
 		</a>
 	`;
 };
@@ -246,10 +272,10 @@ module.exports.listEditButton = (ctx, data, record, index) => {
  */
 module.exports.listDeleteButton = (ctx, data, record, index) => {
 	return `
-		<button type="submit" class="btn btn-danger btn-sm" onclick="showDeleteModal(${ctx.options.recordId(
-			record
-		)})">
-			${ctx.options.texts.listDeleteButton(ctx)}
+		<button type="submit" class="btn btn-danger btn-sm cbq-list-delete-button" data-delete-id="${escapeHTML(
+			ctx.options.recordId(record)
+		)}">
+			${ctx.options.texts.safe.listDeleteButton(ctx)}
 		</button>
 	`;
 };
@@ -291,5 +317,5 @@ module.exports.listDeleteConfirmationModal = (ctx, data) => {
  * @param {CBQContext} ctx
  */
 module.exports.listNoData = ctx => {
-	return `<tr><td colspan="100">${ctx.options.texts.listNoData(ctx)}</td></tr>`;
+	return `<tr><td colspan="100">${ctx.options.texts.safe.listNoData(ctx)}</td></tr>`;
 };

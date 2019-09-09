@@ -37,7 +37,9 @@ module.exports.editHeader = (ctx, record) => {
  */
 module.exports.editAbove = (ctx, record) => {
 	return `<h2>${
-		record ? ctx.options.texts.editExistingTitle(ctx, record) : ctx.options.texts.editNewTitle(ctx)
+		record
+			? ctx.options.texts.safe.editExistingTitle(ctx, record)
+			: ctx.options.texts.safe.editNewTitle(ctx)
 	}</h2>`;
 };
 
@@ -76,13 +78,13 @@ module.exports.editContent = (ctx, record) => {
 			<div>
 				<button type="submit" class="btn btn-success">${
 					record
-						? ctx.options.texts.editExistingSave(ctx, record)
-						: ctx.options.texts.editNewSave(ctx, record)
+						? ctx.options.texts.safe.editExistingSave(ctx, record)
+						: ctx.options.texts.safe.editNewSave(ctx, record)
 				}</button>
 				<a href="${ctx.url('/')}" class="btn btn-light ml-1">${
 		record
-			? ctx.options.texts.editExistingCancel(ctx, record)
-			: ctx.options.texts.editNewCancel(ctx, record)
+			? ctx.options.texts.safe.editExistingCancel(ctx, record)
+			: ctx.options.texts.safe.editNewCancel(ctx, record)
 	}</a>
 			</div>
 		</form>

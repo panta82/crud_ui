@@ -1,4 +1,4 @@
-const { assertType, makeObjectAsserters } = require('../tools');
+const { assertType, makeObjectAsserters, escapeHTML } = require('../tools');
 const { CBQTexts } = require('./texts');
 const { CBQField } = require('./fields');
 const { CBQViews } = require('./views');

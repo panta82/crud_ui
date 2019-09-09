@@ -1,4 +1,11 @@
-const { assertType, capitalize, uncapitalize, pluralize, singularize } = require('../tools');
+const {
+	assertType,
+	capitalize,
+	uncapitalize,
+	pluralize,
+	singularize,
+	escapeHTML,
+} = require('../tools');
 
 class CBQTexts {
 	constructor(/** CBQTexts */ source) {
@@ -59,20 +66,38 @@ class CBQTexts {
 		this.errorNotFound = (/** CBQContext */ ctx, id) =>
 			`${capitalize(singularize(ctx.options.name))} with id "${id}" couldn't be found`;
 
+		Object.assign(this, source);
+
+		/**
+		 * An object with safe versions of all the texts
+		 * @type {CBQTexts}
+		 */
+		this.safe = {};
+
 		// Turn all properties into functions
+		// Also, generate safe getters, for HTML escaping
 		Object.keys(this).forEach(key => {
+			if (key === 'safe') {
+				return;
+			}
+
 			let getter = makeGetter(this[key]);
+			let safeGetter = makeSafeGetter(getter);
 			Object.defineProperty(this, key, {
 				get() {
 					return getter;
 				},
 				set(newVal) {
 					getter = makeGetter(newVal);
+					safeGetter = makeSafeGetter(getter);
+				},
+			});
+			Object.defineProperty(this.safe, key, {
+				get() {
+					return safeGetter;
 				},
 			});
 		});
-
-		Object.assign(this, source);
 	}
 }
 
@@ -88,6 +113,10 @@ function makeGetter(val) {
 	} else {
 		throw new Error(`Invalid text value: ${val}. It must be either string or function`);
 	}
+}
+
+function makeSafeGetter(getter) {
+	return (...args) => escapeHTML(getter(...args));
 }
 
 module.exports = new CBQTexts();

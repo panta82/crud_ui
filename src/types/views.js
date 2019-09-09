@@ -29,6 +29,7 @@ class CBQViews {
 		this.listColumnHeader = require('../views/list_views.js').listColumnHeader;
 		this.listRow = require('../views/list_views.js').listRow;
 		this.listCell = require('../views/list_views.js').listCell;
+		this.listValue = require('../views/list_views.js').listValue;
 		this.listControlsCell = require('../views/list_views.js').listControlsCell;
 		this.listEditButton = require('../views/list_views.js').listEditButton;
 		this.listDeleteButton = require('../views/list_views.js').listDeleteButton;

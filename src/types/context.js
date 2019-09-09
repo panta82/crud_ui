@@ -49,7 +49,7 @@ class CBQContext {
 				result += '?' + qs.encode(query);
 			}
 		}
-		return result;
+		return encodeURI(result);
 	}
 }
 

@@ -97,13 +97,15 @@ function ensureLeadingChar(leadingChar, str) {
 	return typeof str === 'string' && str[0] !== leadingChar ? leadingChar + str : str;
 }
 
+// *********************************************************************************************************************
+
 /**
  * Escape an arbitrary text into a form that can appear inside HTML.
  * @param str
  * @return {void | string | never}
  */
 function escapeHTML(str) {
-	return str.replace(/[&<>"']/g, m => ESCAPE_HTML_MAP[m]);
+	return str && str.replace ? str.replace(/[&<>"']/g, m => ESCAPE_HTML_MAP[m]) : '';
 }
 
 const ESCAPE_HTML_MAP = {
@@ -113,6 +115,17 @@ const ESCAPE_HTML_MAP = {
 	'"': '&quot;',
 	"'": '&#039;',
 };
+
+/**
+ * Escape javascript code so that it can safely be embedded in a <script> tag.
+ * https://stackoverflow.com/questions/14780858/escape-in-script-tag-contents
+ * @param script
+ */
+function escapeScript(script) {
+	return script ? script.replace(/<\/script/gm, '</scri\\pt') : '';
+}
+
+// *********************************************************************************************************************
 
 module.exports = {
 	capitalize,
@@ -129,5 +142,7 @@ module.exports = {
 	isObject,
 	getOrCall,
 	ensureLeadingChar,
+
 	escapeHTML,
+	escapeScript,
 };
