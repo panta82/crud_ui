@@ -203,6 +203,14 @@ module.exports.flashMessage = ctx => {
 // *********************************************************************************************************************
 
 /**
+ * Render a CSRF field
+ * @param {CBQContext} ctx
+ */
+module.exports.csrfField = ctx => {
+	return `<input type="hidden" name="${ctx.csrf.field}" value="${ctx.csrf.value}" />`;
+};
+
+/**
  * Render error page, this is shown where everything else fails
  * @param {CBQContext} ctx
  * @param {Error} err

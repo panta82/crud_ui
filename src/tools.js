@@ -16,6 +16,21 @@ function singularize(str) {
 	return libPluralize.singular(str);
 }
 
+/**
+ * Generate a random string token
+ * @return {string}
+ */
+function randomToken() {
+	return (
+		Math.random()
+			.toString(32)
+			.slice(2) +
+		Math.random()
+			.toString(32)
+			.slice(2)
+	);
+}
+
 // *********************************************************************************************************************
 
 function assertEqual(value, expected, identifier = 'value') {
@@ -125,6 +140,34 @@ function escapeScript(script) {
 	return script ? script.replace(/<\/script/gm, '</scri\\pt') : '';
 }
 
+/**
+ * Extract cookie value from a cookie header value (eg. "a=b; c=d"). Returns null if nothing is found.
+ * @param {string} cookieStr
+ * @param {string} cookieName
+ * @return {string|null}
+ */
+function extractCookie(cookieStr, cookieName) {
+	if (!cookieStr) {
+		return null;
+	}
+
+	let startIndex = cookieStr.indexOf(cookieName);
+	if (startIndex < 0) {
+		return null;
+	}
+
+	while (cookieStr[startIndex] !== '=' && startIndex < cookieStr.length) {
+		startIndex++;
+	}
+	startIndex++;
+	let endIndex = startIndex;
+	while (endIndex !== ';' && endIndex < cookieStr.length) {
+		endIndex++;
+	}
+	const value = cookieStr.slice(startIndex, endIndex);
+	return value;
+}
+
 // *********************************************************************************************************************
 
 module.exports = {
@@ -132,6 +175,7 @@ module.exports = {
 	uncapitalize,
 	pluralize,
 	singularize,
+	randomToken,
 
 	assertEqual,
 	assertProvided,
@@ -145,4 +189,5 @@ module.exports = {
 
 	escapeHTML,
 	escapeScript,
+	extractCookie,
 };

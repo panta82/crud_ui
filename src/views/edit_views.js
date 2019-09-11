@@ -71,6 +71,7 @@ module.exports.editFooter = (ctx, record) => {
 module.exports.editContent = (ctx, record) => {
 	return `
 		<form method="post">
+			${ctx.options.views.csrfField(ctx)}
 			${ctx.options.fields
 				.map((field, index) => {
 					return ctx.options.views.editField(ctx, record, field, index);

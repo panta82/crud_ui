@@ -12,6 +12,7 @@ class CBQViews {
 		this.navigationItem = require('../views/shared_views.js').navigationItem;
 		this.navigationDropDownItem = require('../views/shared_views.js').navigationDropDownItem;
 		this.flashMessage = require('../views/shared_views.js').flashMessage;
+		this.csrfField = require('../views/shared_views.js').csrfField;
 		this.errorPage = require('../views/shared_views.js').errorPage;
 
 		// List

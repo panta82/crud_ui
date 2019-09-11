@@ -1,3 +1,5 @@
+const { extractCookie, randomToken } = require('../tools');
+
 class CBQFlashManagerOptions {
 	constructor(source) {
 		/**
@@ -50,25 +52,12 @@ function createFlashManager(options) {
 	 * @param next
 	 */
 	function middleware(req, res, next) {
-		const cookiesStr = req.headers.cookie;
-		if (!cookiesStr) {
+		const key = extractCookie(req.headers.cookie, options.cookie_name);
+		if (!key) {
+			// No flash message
 			return next();
 		}
 
-		let startIndex = cookiesStr.indexOf(options.cookie_name);
-		if (startIndex < 0) {
-			return next();
-		}
-
-		while (cookiesStr[startIndex] !== '=' && startIndex < cookiesStr.length) {
-			startIndex++;
-		}
-		startIndex++;
-		let endIndex = startIndex;
-		while (endIndex !== ';' && endIndex < cookiesStr.length) {
-			endIndex++;
-		}
-		const key = cookiesStr.slice(startIndex, endIndex);
 		const entry = _flashes.get(key);
 
 		_flashes.delete(key);
@@ -90,13 +79,7 @@ function createFlashManager(options) {
 	function setFlash(res, data) {
 		cleanOldFlashes();
 
-		const flashKey =
-			Math.random()
-				.toString(32)
-				.slice(2) +
-			Math.random()
-				.toString(32)
-				.slice(2);
+		const flashKey = randomToken();
 		_flashes.set(flashKey, { data, timestamp: new Date() });
 
 		res.cookie(options.cookie_name, flashKey, {

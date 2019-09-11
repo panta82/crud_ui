@@ -7,6 +7,7 @@ const { CBQOptions } = require('./types/options');
 const { CBQContext } = require('./types/context');
 const { createHandlerResponseWrapper } = require('./types/responses');
 const { createFlashManager } = require('./web/flash_manager');
+const { createCSRFMiddleware } = require('./web/csrf_middleware');
 const handlers = require('./web/handlers');
 
 /**
@@ -30,6 +31,7 @@ function crudButQuick(options) {
 		})
 	);
 	router.use(flashManager.middleware);
+	router.use(createCSRFMiddleware());
 
 	router.get(options.urls.indexPage, wrap(handlers.indexPage));
 

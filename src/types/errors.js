@@ -7,6 +7,12 @@ class CBQError extends Error {
 	}
 }
 
+class CBQCSRFError extends CBQError {
+	constructor() {
+		super('Invalid or missing CSRF token. Reload and try again', 403);
+	}
+}
+
 class CBQActionNotSupportedError extends CBQError {
 	constructor(action) {
 		super(`Action "${action}" is not supported`, 500);
@@ -92,6 +98,7 @@ class CBQValidationError extends CBQError {
 
 module.exports = {
 	CBQError,
+	CBQCSRFError,
 	CBQActionNotSupportedError,
 	CBQValidationFault,
 	CBQValidationError,

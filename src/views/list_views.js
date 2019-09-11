@@ -304,6 +304,7 @@ module.exports.listDeleteConfirmationModal = (ctx, data) => {
 					</div>
 					<div class="modal-footer">
 						<form method="post" action="" class="d-inline">
+							${ctx.options.views.csrfField(ctx)}
 							<button type="submit" class="btn btn-danger delete-modal-yes"></button>
 						</form>
 						<button type="button" class="btn btn-secondary delete-modal-no" data-dismiss="modal"></button>
