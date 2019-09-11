@@ -37,7 +37,7 @@ module.exports.editHeader = (ctx, record) => {
  */
 module.exports.editAbove = (ctx, record) => {
 	return `
-		<h2>${
+		<h2 class="mb-5">${
 			record
 				? ctx.options.texts.safe.editExistingTitle(ctx, record)
 				: ctx.options.texts.safe.editNewTitle(ctx)
@@ -116,7 +116,7 @@ module.exports.editError = (ctx, record) => {
 	}
 
 	return `
-		<div class="alert alert-danger my-4 alert-dismissible fade show" role="alert">
+		<div class="alert alert-danger mb-4 alert-dismissible fade show" role="alert">
 			<h5 class="my-0">${ctx.flash.error.message}</h5>
 			${errorList}
 			
@@ -202,6 +202,33 @@ module.exports.editFieldPrepareError = (ctx, record, field, index) => {
 };
 
 /**
+ * Utility function to prepare a value to be filled in edit field. Can be default value,
+ * existing value to edit or the restored value after validation error.
+ * @param {CBQContext} ctx
+ * @param {Object} record
+ * @param {CBQField} field
+ * @param {*} index
+ * @return {*}
+ */
+module.exports.editFieldPrepareValue = (ctx, record, field, index) => {
+	let value;
+	if (ctx.flash.error && ctx.flash.error.payload) {
+		// Restore value after error
+		value = ctx.flash.error.payload[field.name];
+	} else if (record) {
+		value = record[field.name];
+	} else if (field.defaultValue) {
+		value = getOrCall(field.defaultValue, ctx, field, index);
+	}
+
+	if (value === null || value === undefined) {
+		value = '';
+	}
+
+	return value;
+};
+
+/**
  * Render a string field. This maps to an ordinary text box.
  * @param {CBQContext} ctx
  * @param {Object} record
@@ -211,17 +238,9 @@ module.exports.editFieldPrepareError = (ctx, record, field, index) => {
 module.exports.editFieldString = (ctx, record, field, index) => {
 	assertEqual(field.type, CBQ_FIELD_TYPES.string, 'field type');
 
-	let value = record
-		? record[field.name]
-		: field.defaultValue
-		? getOrCall(field.defaultValue, ctx, field, index)
-		: '';
-	if (value === null || value === undefined) {
-		value = '';
-	}
-
 	const help = ctx.options.views.editFieldPrepareHelp(ctx, record, field, index);
 	const error = ctx.options.views.editFieldPrepareError(ctx, record, field, index);
+	const value = ctx.options.views.editFieldPrepareValue(ctx, record, field, index);
 
 	return `
 	  <div class="form-group">
@@ -243,17 +262,9 @@ module.exports.editFieldString = (ctx, record, field, index) => {
 module.exports.editFieldText = (ctx, record, field, index) => {
 	assertEqual(field.type, CBQ_FIELD_TYPES.text, 'field type');
 
-	let value = record
-		? record[field.name]
-		: field.defaultValue
-		? getOrCall(field.defaultValue, ctx, field, index)
-		: '';
-	if (value === null || value === undefined) {
-		value = '';
-	}
-
 	const help = ctx.options.views.editFieldPrepareHelp(ctx, record, field, index);
 	const error = ctx.options.views.editFieldPrepareError(ctx, record, field, index);
+	const value = ctx.options.views.editFieldPrepareValue(ctx, record, field, index);
 
 	return `
 	  <div class="form-group">
@@ -275,14 +286,9 @@ module.exports.editFieldText = (ctx, record, field, index) => {
 module.exports.editFieldSelect = (ctx, record, field, index) => {
 	assertEqual(field.type, CBQ_FIELD_TYPES.select, 'field type');
 
-	const selectedValue = record
-		? record[field.name]
-		: field.defaultValue
-		? getOrCall(field.defaultValue, ctx, field, index)
-		: '';
-
 	const help = ctx.options.views.editFieldPrepareHelp(ctx, record, field, index);
 	const error = ctx.options.views.editFieldPrepareError(ctx, record, field, index);
+	const selectedValue = ctx.options.views.editFieldPrepareValue(ctx, record, field, index);
 
 	const values = getOrCall(field.values, ctx, record, field, index);
 

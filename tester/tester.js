@@ -67,11 +67,24 @@ app.use(
 				name: 'name',
 				label: 'Name',
 				helpText: "Person's full name and surname",
+				validate: {
+					presence: {
+						allowEmpty: false,
+					},
+				},
+				validateEdit: {
+					length: { minimum: 20 },
+				},
 			}),
 			new CBQField({
 				type: FIELD_TYPES.text,
 				name: 'description',
 				label: 'Description',
+				validateCreate: (ctx, val) => {
+					if (val.indexOf('cheese') < 0) {
+						return 'must contain word cheese';
+					}
+				},
 			}),
 			new CBQField({
 				type: FIELD_TYPES.select,
@@ -79,6 +92,11 @@ app.use(
 				label: 'Gender',
 				values: ['male', 'female', 'other'],
 				nullOption: true,
+				validate: {
+					inclusion: {
+						within: ['male', 'female'],
+					},
+				},
 			}),
 		],
 		actions: {

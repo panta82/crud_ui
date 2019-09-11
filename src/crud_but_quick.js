@@ -16,7 +16,7 @@ const handlers = require('./web/handlers');
 function crudButQuick(options) {
 	options = new CBQOptions(options);
 
-	options.validateAndCoerce();
+	options._validateAndCoerce();
 
 	const flashManager = createFlashManager();
 	const wrap = createHandlerResponseWrapper(options, flashManager);

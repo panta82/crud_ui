@@ -1,24 +1,32 @@
+const vjs = require('validate.js');
+
 const { CBQ_FIELD_TYPES } = require('../types/consts');
 const { CBQContext } = require('../types/context');
-const { CBQError, CBQActionNotSupportedError, CBQValidationError } = require('../types/errors');
+const {
+	CBQError,
+	CBQActionNotSupportedError,
+	CBQValidationError,
+	CBQValidationFault,
+} = require('../types/errors');
 const { CBQRedirectResponse } = require('../types/responses');
 const { capitalize } = require('../tools');
 
 // *********************************************************************************************************************
 
 /**
- * @param {CBQField[]} fields
- * @param {Object} body
+ * @param {CBQContext} ctx
+ * @param {boolean} isCreate
  */
-function coerceAndValidateEditPayload(fields, body) {
+function coerceAndValidateEditPayload(ctx, isCreate) {
 	const payload = {};
-	const validationErrors = [];
-	for (const field of fields) {
+	const faults = [];
+
+	for (const field of ctx.options.fields) {
 		if (field.noEdit) {
 			continue;
 		}
 
-		let value = body[field.name];
+		let value = ctx.body[field.name];
 
 		if (field.type === CBQ_FIELD_TYPES.select) {
 			if (field.nullOption && !value) {
@@ -31,27 +39,60 @@ function coerceAndValidateEditPayload(fields, body) {
 			}
 		}
 
-		// TODO
-		if (!value) {
-			validationErrors.push({
-				field,
-				value,
-				message: 'must not be empty',
-				toString() {
-					return capitalize(this.field.label) + ' ' + this.message;
-				},
-			});
+		doValidate(field, 'validate');
+		if (isCreate) {
+			doValidate(field, 'validateCreate');
+		} else {
+			doValidate(field, 'validateEdit');
 		}
 
 		payload[field.name] = value;
 	}
 
-	if (validationErrors.length) {
+	if (faults.length) {
 		// Validation failed
-		throw new CBQValidationError(validationErrors);
+		throw new CBQValidationError(faults, payload);
 	}
 
 	return payload;
+
+	function doValidate(field, prop) {
+		const validate = field[prop];
+		if (!validate) {
+			return;
+		}
+
+		const value = ctx.body[field.name];
+
+		let errors;
+
+		if (typeof validate === 'function') {
+			// User-supplied validate function
+			errors = validate.call(field, ctx, value, ctx.body);
+			if (errors && typeof errors === 'string') {
+				// Allow user to just return a single error string
+				errors = [errors];
+			}
+		} else {
+			// Otherwise, use validate library
+			errors = vjs.single(value, validate, {
+				fullMessages: false,
+			});
+		}
+
+		if (Array.isArray(errors)) {
+			// Some faults found
+			for (const message of errors) {
+				faults.push(
+					new CBQValidationFault({
+						message,
+						field,
+						value,
+					})
+				);
+			}
+		}
+	}
 }
 
 /**
@@ -101,7 +142,7 @@ function createAction(ctx) {
 
 	return Promise.resolve()
 		.then(() => {
-			const payload = coerceAndValidateEditPayload(ctx.options.fields, ctx.body);
+			const payload = coerceAndValidateEditPayload(ctx, true);
 			return ctx.options.actions.create(ctx, payload);
 		})
 		.then(
@@ -148,7 +189,7 @@ function editAction(ctx) {
 
 	return Promise.resolve()
 		.then(() => {
-			const payload = coerceAndValidateEditPayload(ctx.options.fields, ctx.body);
+			const payload = coerceAndValidateEditPayload(ctx, false);
 			return ctx.options.actions.update(ctx, ctx.idParam, payload);
 		})
 		.then(

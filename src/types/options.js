@@ -47,7 +47,7 @@ class CBQActions {
 		Object.assign(this, source);
 	}
 
-	validateAndCoerce() {
+	_validateAndCoerce() {
 		const asserters = makeObjectAsserters(this, '"', '" action');
 
 		asserters.type('single', 'function');
@@ -117,7 +117,7 @@ class CBQOptions {
 		Object.assign(this, source);
 	}
 
-	validateAndCoerce() {
+	_validateAndCoerce() {
 		const asserters = makeObjectAsserters(this, 'Option "');
 
 		asserters.provided('name');
@@ -143,7 +143,7 @@ class CBQOptions {
 
 			field = new CBQField(field);
 			try {
-				field.validateAndCoerce();
+				field._validateAndCoerce();
 			} catch (err) {
 				throw new TypeError(`Invalid field #${index}: ${err.message}`);
 			}
@@ -151,12 +151,12 @@ class CBQOptions {
 		});
 
 		this.actions = new CBQActions(this.actions);
-		this.actions.validateAndCoerce();
+		this.actions._validateAndCoerce();
 
 		if (this.navigation) {
 			asserters.type('navigation', 'object');
 			this.navigation = new CBQNavigation(this.navigation);
-			this.navigation.validateAndCoerce();
+			this.navigation._validateAndCoerce();
 		}
 
 		this.views = new CBQViews(this.views);

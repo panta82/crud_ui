@@ -30,7 +30,7 @@ class CBQNavigationItem {
 		Object.assign(this, source);
 	}
 
-	validateAndCoerce() {
+	_validateAndCoerce() {
 		const asserters = makeObjectAsserters(this, 'Navigation item field "');
 
 		asserters.type('title', 'string');
@@ -77,7 +77,7 @@ class CBQNavigation {
 		Object.assign(this, source);
 	}
 
-	validateAndCoerce() {
+	_validateAndCoerce() {
 		const asserters = makeObjectAsserters(this, 'Navigation property "');
 
 		asserters.provided('brand');
@@ -86,13 +86,13 @@ class CBQNavigation {
 		asserters.type('left', 'array');
 		asserters.type('right', 'array');
 
-		this.brand = CBQNavigationItem.cast(this.brand).validateAndCoerce();
+		this.brand = CBQNavigationItem.cast(this.brand)._validateAndCoerce();
 
 		['left', 'right'].forEach(side => {
 			if (this[side]) {
 				this[side] = this[side].map((item, index) => {
 					try {
-						return CBQNavigationItem.cast(item).validateAndCoerce();
+						return CBQNavigationItem.cast(item)._validateAndCoerce();
 					} catch (err) {
 						throw new TypeError(
 							`Invalid item ${index} on the ${side} side of navbar: ${err.message}`

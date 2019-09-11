@@ -25,12 +25,6 @@ class CBQActionNotSupportedError extends CBQError {
 class CBQValidationFault {
 	constructor(/** CBQValidationFault */ source) {
 		/**
-		 * Validator name which caused the error
-		 * @type {string}
-		 */
-		this.validator = undefined;
-
-		/**
 		 * Short error message, excluding key name
 		 * @type {string}
 		 */
@@ -63,8 +57,9 @@ class CBQValidationFault {
 class CBQValidationError extends CBQError {
 	/**
 	 * @param {CBQValidationFault[]} faults
+	 * @param payload
 	 */
-	constructor(faults) {
+	constructor(faults, payload) {
 		let message;
 		if (!faults || !faults.length) {
 			message = 'Validation error';
@@ -73,7 +68,7 @@ class CBQValidationError extends CBQError {
 			message = faults;
 			faults = [];
 		} else if (faults.length === 1) {
-			message = `Validation error: ${faults[0]}`;
+			message = `Validation error: ${faults[0].fullMessage}`;
 		} else {
 			message = `${faults.length} validation errors`;
 		}
@@ -88,6 +83,8 @@ class CBQValidationError extends CBQError {
 			lookup[fault.field.name].push(fault);
 			return lookup;
 		}, {});
+
+		this.payload = payload;
 	}
 }
 
@@ -96,5 +93,6 @@ class CBQValidationError extends CBQError {
 module.exports = {
 	CBQError,
 	CBQActionNotSupportedError,
+	CBQValidationFault,
 	CBQValidationError,
 };

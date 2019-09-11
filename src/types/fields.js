@@ -54,10 +54,31 @@ class CBQField {
 		 */
 		this.values = undefined;
 
+		/**
+		 * How this field should be validated either during creation or updates.
+		 * Can be a custom function which returns a list of validation errors or validate.js compatible object.
+		 * @type {object|function(CBQContext, *, object):string[]}
+		 */
+		this.validate = undefined;
+
+		/**
+		 * Validations which will be performed only during create. Merged with general validate results.
+		 * Can be a custom function which returns a list of validation errors or validate.js compatible object.
+		 * @type {object|function(CBQContext, *, object):string[]}
+		 */
+		this.validateCreate = undefined;
+
+		/**
+		 * Validations which will be performed only during edit. Merged with general validate results.
+		 * Can be a custom function which returns a list of validation errors or validate.js compatible object.
+		 * @type {object|function(CBQContext, *, object):string[]}
+		 */
+		this.validateEdit = undefined;
+
 		Object.assign(this, source);
 	}
 
-	validateAndCoerce() {
+	_validateAndCoerce() {
 		const asserters = makeObjectAsserters(this, 'Field key "');
 
 		asserters.member('type', CBQ_FIELD_TYPES);
