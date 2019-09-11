@@ -1,10 +1,7 @@
-init();
+initFlashMessageDismiss();
+initClearInvalidFormElements();
 
 // *** END SYNCHRONOUS CODE ***
-
-function init() {
-	initFlashMessageDismiss();
-}
 
 function logError(message) {
 	typeof console === 'object' && console.error && console.error(message);
@@ -58,4 +55,15 @@ function showModal(id, action, texts) {
 	}
 
 	$(el).modal('show');
+}
+
+function initClearInvalidFormElements() {
+	document.querySelectorAll('.form-control.is-invalid').forEach(function(el) {
+		el.addEventListener('input', clearInvalid);
+		el.addEventListener('change', clearInvalid);
+
+		function clearInvalid() {
+			el.classList.remove('is-invalid');
+		}
+	});
 }

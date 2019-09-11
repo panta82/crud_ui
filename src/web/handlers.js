@@ -32,7 +32,7 @@ function coerceAndValidateEditPayload(fields, body) {
 		}
 
 		// TODO
-		if ((field.name === 'name' || field.name === 'gender') && !value) {
+		if (!value) {
 			validationErrors.push({
 				field,
 				value,

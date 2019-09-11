@@ -62,11 +62,12 @@ app.use(
 				label: 'ID',
 				noEdit: true,
 			}),
-			{
+			new CBQField({
 				type: FIELD_TYPES.string,
 				name: 'name',
 				label: 'Name',
-			},
+				helpText: "Person's full name and surname",
+			}),
 			new CBQField({
 				type: FIELD_TYPES.text,
 				name: 'description',
