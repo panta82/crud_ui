@@ -72,7 +72,7 @@ To summarize:
 
 ##### This library is NOT for you if:
 
-- You want a fully managed CMS solution with minimal coding (see ,for example, [strapi](https://strapi.io/) instead).
+- You want a fully managed CMS solution with minimal coding (instead, see [strapi](https://strapi.io/) , for example).
 
 - You want to serve an interface towards customers. Our UI is functional, but simple and generic looking. While you can overwrite every view with your own code, if you start doing that all the time, maybe it's time to put up a real UI :-)
 
