@@ -64,7 +64,7 @@ To summarize:
 
 - You don't want CMS to dictate your backend. You are using a 3rd party store, already have a database or just want to structure your backend and API how you like it.
 
-- You have simple straightforward UI requirements - basic server-side rendered CRUD with flat objects.
+- You have straightforward UI requirements - basic server-side rendered CRUD with flat objects.
 
 - You have relatively little data to manage (we don't support pagination yet).
 
@@ -74,7 +74,7 @@ To summarize:
 
 - You want a fully managed CMS solution with minimal coding (see ,for example, [strapi](https://strapi.io/) instead).
 
-- You want to serve an interface towards customers. Our UI is functional, but simple and generic looking. While you can overwrite every view with your own code, if you start doing that all the time, maybe it's time to put up a real project :-)
+- You want to serve an interface towards customers. Our UI is functional, but simple and generic looking. While you can overwrite every view with your own code, if you start doing that all the time, maybe it's time to put up a real UI :-)
 
 - You have a complicated object model, requiring advanced entity relations or crazy tree views
 
@@ -236,6 +236,10 @@ server.listen(port, () => {
 ### Development
 
 Follow the development and TODO-s here: <https://trello.com/b/3vSgeUxa/crudbutquick>
+
+#### NOTE
+
+**This project is in very early stages of development. Lots of things are still missing. Nothing is battle tested in production. At this stage, we don't recommend using it for mission critical systems.**
 
 ### License
 
