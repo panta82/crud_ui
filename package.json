@@ -35,6 +35,6 @@
 		"express": "^4.0.0"
 	},
 	"publishConfig": {
-		"registry": "https://npmjs.com"
+		"registry": "https://registry.npmjs.org"
 	}
 }
