@@ -1,42 +1,37 @@
 {
-  "name": "crud_but_quick",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "nodemon-tester": "nodemon tester/tester.js",
-    "test": "jest",
-    "generate-views": "node misc/generate_views.js > src/types/views.js"
-  },
-  "files": [
-    "/static/css/bootstrap.min.css",
-    "/static/js/bootstrap.min.js",
-    "/src",
-    "index.js"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/panta82/crud_but_quick.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/panta82/crud_but_quick/issues"
-  },
-  "homepage": "https://github.com/panta82/crud_but_quick#readme",
-  "dependencies": {
-    "pluralize": "^8.0.0",
-    "validate.js": "^0.13.1"
-  },
-  "peerDependencies": {
-    "body-parser": "^1.19.0",
-    "express": "^4.0.0"
-  },
-  "devDependencies": {
-    "jest": "^24.9.0",
-    "nodemon": "^1.19.1",
-    "prettier": "^1.18.2",
-    "body-parser": "^1.19.0",
-    "express": "^4.0.0"
-  }
+	"name": "crud-ui",
+	"version": "0.0.1",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"nodemon-tester": "nodemon testers/kitchen_sink/tester.js",
+		"test": "jest",
+		"generate-views": "node misc/generate_views.js > src/types/views.js"
+	},
+	"files": ["/static/css/bootstrap.min.css", "/static/js/bootstrap.min.js", "/src", "index.js"],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/panta82/crud_ui.git"
+	},
+	"author": "",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/panta82/crud_ui/issues"
+	},
+	"homepage": "https://github.com/panta82/crud_ui#readme",
+	"dependencies": {
+		"pluralize": "^8.0.0",
+		"validate.js": "^0.13.1"
+	},
+	"peerDependencies": {
+		"body-parser": "^1.19.0",
+		"express": "^4.0.0"
+	},
+	"devDependencies": {
+		"jest": "^24.9.0",
+		"nodemon": "^1.19.1",
+		"prettier": "^1.18.2",
+		"body-parser": "^1.19.0",
+		"express": "^4.0.0"
+	}
 }

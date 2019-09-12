@@ -1,5 +1,5 @@
 {
-	"name": "crud_but_quick_tester",
+	"name": "crud_ui_tester",
 	"version": "1.0.0",
 	"main": "tester.js",
 	"dependencies": {

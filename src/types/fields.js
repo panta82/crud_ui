@@ -50,7 +50,7 @@ class CUIField {
 		/**
 		 * Function getter or literal list of values to offer for select fields. Values can be just strings, or objects
 		 * in format {title, value}. Ignored for other field types.
-		 * @type {function(CUIContext, any, CUIField, number):string[]|string[]}
+		 * @type {function(CUIContext, *, CUIField, number):string[]|string[]}
 		 */
 		this.values = undefined;
 
@@ -81,8 +81,15 @@ class CUIField {
 	_validateAndCoerce() {
 		const asserters = makeObjectAsserters(this, 'Field key "');
 
-		asserters.member('type', CUI_FIELD_TYPES);
-
+		if (!this.type) {
+		  // Default field to string fields
+		  this.type = CUI_FIELD_TYPES.string;
+    }
+    asserters.member('type', CUI_FIELD_TYPES);
+    if (this.type === CUI_FIELD_TYPES.select) {
+      asserters.type('values', 'array', 'function');
+    }
+    
 		asserters.provided('name');
 		asserters.type('name', 'string');
 
@@ -90,10 +97,6 @@ class CUIField {
 		asserters.type('label', 'string');
 
 		asserters.type('helpText', 'string');
-
-		if (this.type === CUI_FIELD_TYPES.select) {
-			asserters.type('values', 'array', 'function');
-		}
 	}
 }
 

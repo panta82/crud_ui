@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectTasksOptions">
     <enabled-global>
+      <option value="Prettier on save (js)" />
+      <option value="Prettier on save (json)" />
       <option value="Prettier JS" />
     </enabled-global>
   </component>
