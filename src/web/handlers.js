@@ -1,20 +1,20 @@
 const vjs = require('validate.js');
 
-const { CBQ_FIELD_TYPES } = require('../types/consts');
-const { CBQContext } = require('../types/context');
+const { CUI_FIELD_TYPES } = require('../types/consts');
+const { CUIContext } = require('../types/context');
 const {
-	CBQError,
-	CBQActionNotSupportedError,
-	CBQValidationError,
-	CBQValidationFault,
+	CUIError,
+	CUIActionNotSupportedError,
+	CUIValidationError,
+	CUIValidationFault,
 } = require('../types/errors');
-const { CBQRedirectResponse } = require('../types/responses');
+const { CUIRedirectResponse } = require('../types/responses');
 const { capitalize } = require('../tools');
 
 // *********************************************************************************************************************
 
 /**
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {boolean} isCreate
  */
 function coerceAndValidateEditPayload(ctx, isCreate) {
@@ -28,14 +28,14 @@ function coerceAndValidateEditPayload(ctx, isCreate) {
 
 		let value = ctx.body[field.name];
 
-		if (field.type === CBQ_FIELD_TYPES.select) {
+		if (field.type === CUI_FIELD_TYPES.select) {
 			if (field.nullOption && !value) {
 				// Convert empty string value to null
 				value = null;
 			}
 			if (value !== null && !field.values.includes(value)) {
 				// Invalid value, user trying to be sneaky?
-				throw new CBQError(`Invalid ${field.name} value: "${value}".`);
+				throw new CUIError(`Invalid ${field.name} value: "${value}".`);
 			}
 		}
 
@@ -51,7 +51,7 @@ function coerceAndValidateEditPayload(ctx, isCreate) {
 
 	if (faults.length) {
 		// Validation failed
-		throw new CBQValidationError(faults, payload);
+		throw new CUIValidationError(faults, payload);
 	}
 
 	return payload;
@@ -84,7 +84,7 @@ function coerceAndValidateEditPayload(ctx, isCreate) {
 			// Some faults found
 			for (const message of errors) {
 				faults.push(
-					new CBQValidationFault({
+					new CUIValidationFault({
 						message,
 						field,
 						value,
@@ -97,7 +97,7 @@ function coerceAndValidateEditPayload(ctx, isCreate) {
 
 /**
  * Try to convert a result from user's method into a flash message object. Returns null if unable.
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param makeMessage
  * @param result
  */
@@ -113,14 +113,14 @@ function resultToFlash(ctx, makeMessage, result) {
 // *********************************************************************************************************************
 
 /**
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  */
 function indexPage(ctx) {
 	return Promise.resolve()
 		.then(() => ctx.options.actions.getList(ctx))
 		.then(data => {
 			if (!data) {
-				throw new CBQError(`Invalid data`);
+				throw new CUIError(`Invalid data`);
 			}
 
 			return ctx.options.views.listPage(ctx, data);
@@ -128,17 +128,17 @@ function indexPage(ctx) {
 }
 
 /**
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  */
 function createPage(ctx) {
 	return ctx.options.views.editPage(ctx, null);
 }
 
 /**
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  */
 function createAction(ctx) {
-	CBQActionNotSupportedError.assert(ctx.options.actions, 'create');
+	CUIActionNotSupportedError.assert(ctx.options.actions, 'create');
 
 	return Promise.resolve()
 		.then(() => {
@@ -147,15 +147,15 @@ function createAction(ctx) {
 		})
 		.then(
 			createResult => {
-				return new CBQRedirectResponse(
+				return new CUIRedirectResponse(
 					ctx.url(ctx.options.urls.indexPage),
 					resultToFlash(ctx, ctx.options.texts.flashMessageRecordCreated, createResult)
 				);
 			},
 			error => {
-				if (error instanceof CBQValidationError) {
+				if (error instanceof CUIValidationError) {
 					// Show errors on page
-					return new CBQRedirectResponse(ctx.url(ctx.options.urls.createPage), {
+					return new CUIRedirectResponse(ctx.url(ctx.options.urls.createPage), {
 						error,
 					});
 				}
@@ -167,14 +167,14 @@ function createAction(ctx) {
 }
 
 /**
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  */
 function editPage(ctx) {
 	return Promise.resolve()
 		.then(() => ctx.options.actions.getSingle(ctx, ctx.idParam))
 		.then(data => {
 			if (!data) {
-				throw new CBQError(ctx.options.texts.errorNotFound(ctx, ctx.idParam), 404);
+				throw new CUIError(ctx.options.texts.errorNotFound(ctx, ctx.idParam), 404);
 			}
 
 			return ctx.options.views.editPage(ctx, data);
@@ -182,10 +182,10 @@ function editPage(ctx) {
 }
 
 /**
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  */
 function editAction(ctx) {
-	CBQActionNotSupportedError.assert(ctx.options.actions, 'update');
+	CUIActionNotSupportedError.assert(ctx.options.actions, 'update');
 
 	return Promise.resolve()
 		.then(() => {
@@ -194,15 +194,15 @@ function editAction(ctx) {
 		})
 		.then(
 			updateResult => {
-				return new CBQRedirectResponse(
+				return new CUIRedirectResponse(
 					ctx.url(ctx.options.urls.indexPage),
 					resultToFlash(ctx, ctx.options.texts.flashMessageRecordUpdated, updateResult)
 				);
 			},
 			error => {
-				if (error instanceof CBQValidationError) {
+				if (error instanceof CUIValidationError) {
 					// Show errors on page
-					return new CBQRedirectResponse(ctx.url(ctx.options.urls.editPage(ctx.idParam)), {
+					return new CUIRedirectResponse(ctx.url(ctx.options.urls.editPage(ctx.idParam)), {
 						error,
 					});
 				}
@@ -214,15 +214,15 @@ function editAction(ctx) {
 }
 
 /**
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  */
 function deleteAction(ctx) {
-	CBQActionNotSupportedError.assert(ctx.options.actions, 'delete');
+	CUIActionNotSupportedError.assert(ctx.options.actions, 'delete');
 
 	return Promise.resolve()
 		.then(() => ctx.options.actions.delete(ctx, ctx.idParam))
 		.then(deleteResult => {
-			return new CBQRedirectResponse(
+			return new CUIRedirectResponse(
 				ctx.url(ctx.options.urls.indexPage),
 				resultToFlash(ctx, ctx.options.texts.flashMessageRecordDeleted, deleteResult)
 			);

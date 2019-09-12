@@ -3,19 +3,19 @@ const libPath = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const { CBQOptions } = require('./types/options');
-const { CBQContext } = require('./types/context');
+const { CUIOptions } = require('./types/options');
+const { CUIContext } = require('./types/context');
 const { createHandlerResponseWrapper } = require('./types/responses');
 const { createFlashManager } = require('./web/flash_manager');
 const { createCSRFMiddleware } = require('./web/csrf_middleware');
 const handlers = require('./web/handlers');
 
 /**
- * Create express.js router that will serve a CRUD ui
- * @param {CBQOptions} options
+ * Create express.js router that will serve a CRUD UI
+ * @param {CUIOptions} options
  */
-function crudButQuick(options) {
-	options = new CBQOptions(options);
+function crudUI(options) {
+	options = new CUIOptions(options);
 
 	options._validateAndCoerce();
 
@@ -44,7 +44,7 @@ function crudButQuick(options) {
 	router.post(options.urls.deleteAction(':id'), wrap(handlers.deleteAction));
 
 	router.use((err, req, res, next) => {
-		const ctx = new CBQContext(options, req);
+		const ctx = new CUIContext(options, req);
 
 		if (options.onError) {
 			options.onError(ctx, err);
@@ -61,5 +61,5 @@ function crudButQuick(options) {
 }
 
 module.exports = {
-	crudButQuick,
+  crudUI,
 };

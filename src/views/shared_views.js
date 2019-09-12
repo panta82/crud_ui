@@ -1,6 +1,6 @@
 /**
  * Main page layout. Common for all pages.
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param content
  * @param head
  * @param scripts
@@ -28,7 +28,7 @@ module.exports.layout = (ctx, content, head = '', scripts = '') => {
 		
 		<script src="${ctx.url('/js/jquery-3.4.1.slim.js')}"></script>
 		<script src="${ctx.url('/js/bootstrap.min.js')}"></script>
-		<script src="${ctx.url('/js/cbq-scripts.js')}"></script>
+		<script src="${ctx.url('/js/scripts.js')}"></script>
 		${scripts || ''}
 	</body>
 </html>
@@ -37,7 +37,7 @@ module.exports.layout = (ctx, content, head = '', scripts = '') => {
 
 /**
  * Standard header
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  */
 module.exports.header = ctx => {
 	return `
@@ -50,7 +50,7 @@ module.exports.header = ctx => {
 
 /**
  * Render standard page footer, with "back to top" link and copyright.
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  */
 module.exports.footer = ctx => {
 	return `
@@ -68,7 +68,7 @@ module.exports.footer = ctx => {
 
 /**
  * Render navigation menu
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  */
 module.exports.navigation = ctx => {
 	if (!ctx.options.navigation) {
@@ -115,8 +115,8 @@ module.exports.navigation = ctx => {
 
 /**
  * Render navigation menu item
- * @param {CBQContext} ctx
- * @param {CBQNavigationItem} item
+ * @param {CUIContext} ctx
+ * @param {CUINavigationItem} item
  * @param {number} index
  * @param {boolean} isRight
  */
@@ -145,11 +145,11 @@ module.exports.navigationItem = (ctx, item, index, isRight) => {
 	return `
 		<li class="nav-item dropdown">
 			<a class="nav-link dropdown-toggle" href="#"
-					id="cbq_navigation_dropdown" data-toggle="dropdown" aria-haspopup="true"
+					id="cui_navigation_dropdown" data-toggle="dropdown" aria-haspopup="true"
 					aria-expanded="false">${item.title}</a>
 			<div class="dropdown-menu ${
 				isRight ? 'dropdown-menu-right' : ''
-			}" aria-labelledby="cbq_navigation_dropdown">
+			}" aria-labelledby="cui_navigation_dropdown">
 				${menuItems}
 			</div>
 		</li>
@@ -158,11 +158,11 @@ module.exports.navigationItem = (ctx, item, index, isRight) => {
 
 /**
  * Render an item inside a navigation menu dropdown list
- * @param {CBQContext} ctx
- * @param {CBQNavigationItem} item
+ * @param {CUIContext} ctx
+ * @param {CUINavigationItem} item
  * @param {number} index
  * @param {boolean} isRight
- * @param {CBQNavigationItem} parentItem
+ * @param {CUINavigationItem} parentItem
  * @param parentIndex
  */
 module.exports.navigationDropDownItem = (ctx, item, index, isRight, parentItem, parentIndex) => {
@@ -184,14 +184,14 @@ module.exports.navigationDropDownItem = (ctx, item, index, isRight, parentItem, 
 
 /**
  * Render navigation menu
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  */
 module.exports.flashMessage = ctx => {
 	if (!ctx.flash.message) {
 		return '';
 	}
 	return `
-		<div class="cbq-flash-message alert alert-${ctx.flash.flavor ||
+		<div class="cui-flash-message alert alert-${ctx.flash.flavor ||
 			'success'} fade show px-0 py-1 position-absolute w-100 my-0" role="alert">
 			<div class="container">
 				${ctx.flash.message}
@@ -204,7 +204,7 @@ module.exports.flashMessage = ctx => {
 
 /**
  * Render a CSRF field
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  */
 module.exports.csrfField = ctx => {
 	return `<input type="hidden" name="${ctx.csrf.field}" value="${ctx.csrf.value}" />`;
@@ -212,7 +212,7 @@ module.exports.csrfField = ctx => {
 
 /**
  * Render error page, this is shown where everything else fails
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Error} err
  */
 module.exports.errorPage = (ctx, err) => {

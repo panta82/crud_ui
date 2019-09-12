@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 
 const port = process.env.PORT || 3000;
 
-const { crudButQuick, CBQField, FIELD_TYPES } = require('../');
+const { crudUI, CUIField, FIELD_TYPES } = require('../');
 
 const app = express();
 app.use(bodyParser.json());
@@ -17,7 +17,7 @@ const data = [
 
 app.use(
 	'/admin/users',
-	crudButQuick({
+	crudUI({
 		name: 'user',
 		recordId: 'id',
 		navigation: {
@@ -47,7 +47,7 @@ app.use(
 							title: '---',
 						},
 						{
-							render: (/** CBQContext */ ctx) => {
+							render: (/** CUIContext */ ctx) => {
 								return `<button class="dropdown-item" onclick="alert('logout')">Log out</button>`;
 							},
 						},
@@ -56,13 +56,13 @@ app.use(
 			],
 		},
 		fields: [
-			new CBQField({
+			new CUIField({
 				type: FIELD_TYPES.string,
 				name: 'id',
 				label: 'ID',
 				noEdit: true,
 			}),
-			new CBQField({
+			new CUIField({
 				type: FIELD_TYPES.string,
 				name: 'name',
 				label: 'Name',
@@ -76,7 +76,7 @@ app.use(
 					length: { minimum: 20 },
 				},
 			}),
-			new CBQField({
+			new CUIField({
 				type: FIELD_TYPES.text,
 				name: 'description',
 				label: 'Description',
@@ -86,7 +86,7 @@ app.use(
 					}
 				},
 			}),
-			new CBQField({
+			new CUIField({
 				type: FIELD_TYPES.select,
 				name: 'gender',
 				label: 'Gender',

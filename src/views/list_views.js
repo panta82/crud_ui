@@ -2,7 +2,7 @@ const { escapeHTML, escapeScript } = require('../tools');
 
 /**
  * Render the entire list page. Embeds itself into layout, and renders all other parts of the list.
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Array} data
  */
 module.exports.listPage = (ctx, data) => {
@@ -24,7 +24,7 @@ module.exports.listPage = (ctx, data) => {
 
 /**
  * Header for the list page
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Array} data
  */
 module.exports.listHeader = (ctx, data) => {
@@ -33,7 +33,7 @@ module.exports.listHeader = (ctx, data) => {
 
 /**
  * Content to be rendered above the main table
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Array} data
  */
 module.exports.listAbove = (ctx, data) => {
@@ -45,7 +45,7 @@ module.exports.listAbove = (ctx, data) => {
 
 /**
  * Render Create new record button. Only called if create new is enabled.
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Array} data
  */
 module.exports.listCreateButton = (ctx, data) => {
@@ -58,7 +58,7 @@ module.exports.listCreateButton = (ctx, data) => {
 
 /**
  * Content to be rendered below the main table
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Array} data
  */
 module.exports.listBelow = (ctx, data) => {
@@ -67,7 +67,7 @@ module.exports.listBelow = (ctx, data) => {
 
 /**
  * Footer for the list page
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Array} data
  */
 module.exports.listFooter = (ctx, data) => {
@@ -79,7 +79,7 @@ module.exports.listFooter = (ctx, data) => {
 
 /**
  * Stuff to add to head of the list page (styles, meta-tags...)
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Array} data
  */
 module.exports.listHead = (ctx, data) => {
@@ -88,7 +88,7 @@ module.exports.listHead = (ctx, data) => {
 
 /**
  * Stuff to add at the very bottom, in the scripts section.
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Array} data
  */
 module.exports.listScripts = (ctx, data) => {
@@ -100,7 +100,7 @@ module.exports.listScripts = (ctx, data) => {
 /**
  * Scripting to enable functionality of the delete record modal. Should produce result in pure javascript.
  * WARNING: The product of this function must be escaped with escapeScript to be safely embedded in a script tag
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Array} data
  */
 module.exports.listDeleteModalScripting = (ctx, data) => {
@@ -126,7 +126,7 @@ module.exports.listDeleteModalScripting = (ctx, data) => {
 	}
 
 	return `var deleteModalData = ${escapeScript(JSON.stringify(deleteModalData))};
-	  document.querySelectorAll('.cbq-list-delete-button').forEach(function (el) {
+	  document.querySelectorAll('.cui-list-delete-button').forEach(function (el) {
 	    var id = el.getAttribute('data-delete-id');
 	    var data = deleteModalData[id];
 	    if (data) {
@@ -140,7 +140,7 @@ module.exports.listDeleteModalScripting = (ctx, data) => {
 
 /**
  * Render a table of items, or "no data" message
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Array} data
  */
 module.exports.listContent = (ctx, data) => {
@@ -151,7 +151,7 @@ module.exports.listContent = (ctx, data) => {
 		${ctx.options.fields
 			.map((field, index) => ctx.options.views.listColumnHeader(ctx, data, field, index))
 			.join('\n')}
-		<th class="shrink-cell"></th>
+		<th class="cui-shrink-cell"></th>
 	</tr>
 </thead>
 <tbody>
@@ -167,9 +167,9 @@ module.exports.listContent = (ctx, data) => {
 
 /**
  * Render table header for each field
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Array} data
- * @param {CBQField} field
+ * @param {CUIField} field
  * @param {Number} index
  * @return {string}
  */
@@ -179,7 +179,7 @@ module.exports.listColumnHeader = (ctx, data, field, index) => {
 
 /**
  * Render a single row in list view
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Array} data
  * @param {*} record
  * @param {Number} index
@@ -199,11 +199,11 @@ module.exports.listRow = (ctx, data, record, index) => {
 
 /**
  * Render single field of a single row in list view.
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Array} data
  * @param {*} record
  * @param {Number} index
- * @param {CBQField} field
+ * @param {CUIField} field
  * @return {string}
  */
 module.exports.listCell = (ctx, data, record, index, field) => {
@@ -213,11 +213,11 @@ module.exports.listCell = (ctx, data, record, index, field) => {
 /**
  * Format and render CMS value in table view.
  * WARNING: This output must be HTML escaped!
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Array} data
  * @param {*} record
  * @param {Number} index
- * @param {CBQField} field
+ * @param {CUIField} field
  * @return {string}
  */
 module.exports.listValue = (ctx, data, record, index, field) => {
@@ -231,7 +231,7 @@ module.exports.listValue = (ctx, data, record, index, field) => {
 
 /**
  * Render a cell with item controls (edit, delete, etc.)
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Array} data
  * @param {*} record
  * @param {Number} index
@@ -248,7 +248,7 @@ module.exports.listControlsCell = (ctx, data, record, index) => {
 
 /**
  * Render the edit form and button for a single item in the list view
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Array} data
  * @param {*} record
  * @param {Number} index
@@ -266,7 +266,7 @@ module.exports.listEditButton = (ctx, data, record, index) => {
 
 /**
  * Render the delete form and button for a single item in the list view
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Array} data
  * @param {*} record
  * @param {Number} index
@@ -274,7 +274,7 @@ module.exports.listEditButton = (ctx, data, record, index) => {
  */
 module.exports.listDeleteButton = (ctx, data, record, index) => {
 	return `
-		<button type="submit" class="btn btn-danger btn-sm cbq-list-delete-button" data-delete-id="${escapeHTML(
+		<button type="submit" class="btn btn-danger btn-sm cui-list-delete-button" data-delete-id="${escapeHTML(
 			ctx.options.recordId(record)
 		)}">
 			${ctx.options.texts.safe.listDeleteButton(ctx)}
@@ -284,7 +284,7 @@ module.exports.listDeleteButton = (ctx, data, record, index) => {
 
 /**
  * Render "are you sure?" modal for deleting items.
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Array} data
  * @return {string}
  */
@@ -317,7 +317,7 @@ module.exports.listDeleteConfirmationModal = (ctx, data) => {
 
 /**
  * Render "no data" message when list of items is empty
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  */
 module.exports.listNoData = ctx => {
 	return `<tr><td colspan="100">${ctx.options.texts.safe.listNoData(ctx)}</td></tr>`;

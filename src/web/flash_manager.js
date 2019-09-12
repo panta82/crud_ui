@@ -1,12 +1,12 @@
 const { extractCookie, randomToken } = require('../tools');
 
-class CBQFlashManagerOptions {
+class CUIFlashManagerOptions {
 	constructor(source) {
 		/**
 		 * How to name the cookie used to track flash
 		 * @type {string}
 		 */
-		this.cookie_name = 'CBQ_flash';
+		this.cookie_name = 'CUI_flash';
 
 		/**
 		 * How many milliseconds can a flash live before it is consumed
@@ -20,15 +20,15 @@ class CBQFlashManagerOptions {
 
 /**
  * Use cookies to provide "flash message" functionality
- * @param {CBQFlashManagerOptions} options
- * @return {CBQFlashManager}
+ * @param {CUIFlashManagerOptions} options
+ * @return {CUIFlashManager}
  */
 function createFlashManager(options) {
-	options = new CBQFlashManagerOptions(options);
+	options = new CUIFlashManagerOptions(options);
 
 	const _flashes = new Map();
 
-	return /** @lends CBQFlashManager.prototype */ {
+	return /** @lends CUIFlashManager.prototype */ {
 		_flashes,
 
 		middleware,
@@ -90,6 +90,6 @@ function createFlashManager(options) {
 }
 
 module.exports = {
-	CBQFlashManagerOptions,
+	CUIFlashManagerOptions,
 	createFlashManager,
 };

@@ -8,7 +8,7 @@ function logError(message) {
 }
 
 function initFlashMessageDismiss() {
-	var el = document.querySelector('.cbq-flash-message');
+	var el = document.querySelector('.cui-flash-message');
 	if (!el) {
 		return;
 	}

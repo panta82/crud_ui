@@ -1,8 +1,8 @@
 /**
  * Define URL-s to use for various pages
  */
-class CBQUrls {
-	constructor(/** CBQUrls */ source) {
+class CUIUrls {
+	constructor(/** CUIUrls */ source) {
 		this.indexPage = '/';
 
 		this.createPage = '/create';
@@ -17,5 +17,5 @@ class CBQUrls {
 	}
 }
 
-module.exports = new CBQUrls();
-module.exports.CBQUrls = CBQUrls;
+module.exports = new CUIUrls();
+module.exports.CUIUrls = CUIUrls;

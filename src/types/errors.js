@@ -1,19 +1,19 @@
 const { capitalize } = require('../tools');
 
-class CBQError extends Error {
+class CUIError extends Error {
 	constructor(message, code = 500) {
 		super(message);
 		this.code = code;
 	}
 }
 
-class CBQCSRFError extends CBQError {
+class CUICSRFError extends CUIError {
 	constructor() {
 		super('Invalid or missing CSRF token. Reload and try again', 403);
 	}
 }
 
-class CBQActionNotSupportedError extends CBQError {
+class CUIActionNotSupportedError extends CUIError {
 	constructor(action) {
 		super(`Action "${action}" is not supported`, 500);
 		this.action = action;
@@ -21,15 +21,15 @@ class CBQActionNotSupportedError extends CBQError {
 
 	static assert(handlers, op) {
 		if (typeof handlers[op] !== 'function') {
-			throw new CBQActionNotSupportedError(op);
+			throw new CUIActionNotSupportedError(op);
 		}
 	}
 }
 
 // *********************************************************************************************************************
 
-class CBQValidationFault {
-	constructor(/** CBQValidationFault */ source) {
+class CUIValidationFault {
+	constructor(/** CUIValidationFault */ source) {
 		/**
 		 * Short error message, excluding key name
 		 * @type {string}
@@ -38,7 +38,7 @@ class CBQValidationFault {
 
 		/**
 		 * Field for which this error is
-		 * @type {CBQField}
+		 * @type {CUIField}
 		 */
 		this.field = undefined;
 
@@ -56,13 +56,13 @@ class CBQValidationFault {
 	}
 
 	static cast(x) {
-		return x instanceof CBQValidationFault ? x : new CBQValidationFault(x);
+		return x instanceof CUIValidationFault ? x : new CUIValidationFault(x);
 	}
 }
 
-class CBQValidationError extends CBQError {
+class CUIValidationError extends CUIError {
 	/**
-	 * @param {CBQValidationFault[]} faults
+	 * @param {CUIValidationFault[]} faults
 	 * @param payload
 	 */
 	constructor(faults, payload) {
@@ -80,10 +80,10 @@ class CBQValidationError extends CBQError {
 		}
 		super(message, 400);
 
-		/** @type {CBQValidationFault[]} */
-		this.faults = faults.map(f => CBQValidationFault.cast(f));
+		/** @type {CUIValidationFault[]} */
+		this.faults = faults.map(f => CUIValidationFault.cast(f));
 
-		/** @type {Object.<string, CBQValidationFault[]>} */
+		/** @type {Object.<string, CUIValidationFault[]>} */
 		this.byFieldName = this.faults.reduce((lookup, fault) => {
 			lookup[fault.field.name] = lookup[fault.field.name] || [];
 			lookup[fault.field.name].push(fault);
@@ -97,9 +97,9 @@ class CBQValidationError extends CBQError {
 // *********************************************************************************************************************
 
 module.exports = {
-	CBQError,
-	CBQCSRFError,
-	CBQActionNotSupportedError,
-	CBQValidationFault,
-	CBQValidationError,
+	CUIError,
+	CUICSRFError,
+	CUIActionNotSupportedError,
+	CUIValidationFault,
+	CUIValidationError,
 };

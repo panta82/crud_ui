@@ -7,11 +7,11 @@ const {
 	escapeHTML,
 } = require('../tools');
 
-class CBQTexts {
-	constructor(/** CBQTexts */ source) {
+class CUITexts {
+	constructor(/** CUITexts */ source) {
 		/**
 		 * Text description of a particular record. Defaults to #id. So we would get text like "deleted user #13".
-		 * @param {CBQContext} ctx
+		 * @param {CUIContext} ctx
 		 * @param record
 		 * @return {string}
 		 */
@@ -19,58 +19,58 @@ class CBQTexts {
 
 		/**
 		 * Generate title of a particular record, used for messages about that record. For example, "User #13".
-		 * @param {CBQContext} ctx
+		 * @param {CUIContext} ctx
 		 * @param record
 		 * @return {string}
 		 */
 		this.recordTitle = (ctx, record) =>
 			`${singularize(ctx.options.name)} ${ctx.options.texts.recordDescriptor(ctx, record)}`;
 
-		this.flashMessageRecordCreated = (/** CBQContext */ ctx, record) =>
+		this.flashMessageRecordCreated = (/** CUIContext */ ctx, record) =>
 			`${capitalize(ctx.options.texts.recordTitle(ctx, record))} created`;
-		this.flashMessageRecordUpdated = (/** CBQContext */ ctx, record) =>
+		this.flashMessageRecordUpdated = (/** CUIContext */ ctx, record) =>
 			`${capitalize(ctx.options.texts.recordTitle(ctx, record))} updated`;
-		this.flashMessageRecordDeleted = (/** CBQContext */ ctx, record) =>
+		this.flashMessageRecordDeleted = (/** CUIContext */ ctx, record) =>
 			`${capitalize(ctx.options.texts.recordTitle(ctx, record))} deleted`;
 
-		this.listTitle = (/** CBQContext */ ctx) => pluralize(capitalize(ctx.options.name));
+		this.listTitle = (/** CUIContext */ ctx) => pluralize(capitalize(ctx.options.name));
 		this.listNoData = 'No data is available';
-		this.listCreateButton = (/** CBQContext */ ctx) =>
+		this.listCreateButton = (/** CUIContext */ ctx) =>
 			'Create a new ' + uncapitalize(singularize(ctx.options.name));
 		this.listEditButton = 'Edit';
 		this.listDeleteButton = 'Delete';
 
 		this.footerBackToTop = 'Back to top';
-		this.footerCopyright = (/** CBQContext */ ctx) => {
+		this.footerCopyright = (/** CUIContext */ ctx) => {
 			return `Copyright ${new Date().getFullYear()}, All rights reserved.`;
 		};
 
-		this.editNewTitle = (/** CBQContext */ ctx) =>
+		this.editNewTitle = (/** CUIContext */ ctx) =>
 			`Create a new ${uncapitalize(singularize(ctx.options.name))}`;
 		this.editNewSave = 'Create';
 		this.editNewCancel = 'Cancel';
 
-		this.editExistingTitle = (/** CBQContext */ ctx, record) =>
+		this.editExistingTitle = (/** CUIContext */ ctx, record) =>
 			`Edit ${uncapitalize(ctx.options.texts.recordTitle(ctx, record))}`;
 		this.editExistingSave = 'Save changes';
 		this.editExistingCancel = 'Cancel';
 
 		this.modalConfirmDeleteTitle = 'Are you sure?';
-		this.modalConfirmDeleteQuestion = (/** CBQContext */ ctx, data, record, index) =>
+		this.modalConfirmDeleteQuestion = (/** CUIContext */ ctx, data, record, index) =>
 			`You are about to delete ${uncapitalize(
 				ctx.options.texts.recordTitle(ctx, record)
 			)}. Proceed?`;
 		this.modalConfirmDeleteYes = 'Delete';
 		this.modalConfirmDeleteNo = 'Cancel';
 
-		this.errorNotFound = (/** CBQContext */ ctx, id) =>
+		this.errorNotFound = (/** CUIContext */ ctx, id) =>
 			`${capitalize(singularize(ctx.options.name))} with id "${id}" couldn't be found`;
 
 		Object.assign(this, source);
 
 		/**
 		 * An object with safe versions of all the texts
-		 * @type {CBQTexts}
+		 * @type {CUITexts}
 		 */
 		this.safe = {};
 
@@ -119,5 +119,5 @@ function makeSafeGetter(getter) {
 	return (...args) => escapeHTML(getter(...args));
 }
 
-module.exports = new CBQTexts();
-module.exports.CBQTexts = CBQTexts;
+module.exports = new CUITexts();
+module.exports.CUITexts = CUITexts;

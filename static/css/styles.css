@@ -1,10 +1,10 @@
-.shrink-cell {
+.cui-shrink-cell {
 	width: 0.1%;
 }
 
-.cbq-flash-message {
+.cui-flash-message {
 	cursor: pointer;
 }
-.cbq-flash-message.show:hover {
+.cui-flash-message.show:hover {
 	opacity: 0.8;
 }

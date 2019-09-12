@@ -1,9 +1,9 @@
-const { CBQ_FIELD_TYPES } = require('../types/consts');
+const { CUI_FIELD_TYPES } = require('../types/consts');
 const { assertEqual, getOrCall, capitalize } = require('../tools');
 
 /**
  * Renders edit page. This covers both editing existing record and creating a new one
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Object} record
  */
 module.exports.editPage = (ctx, record) => {
@@ -23,7 +23,7 @@ module.exports.editPage = (ctx, record) => {
 
 /**
  * Header for the edit page
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Object} record
  */
 module.exports.editHeader = (ctx, record) => {
@@ -32,7 +32,7 @@ module.exports.editHeader = (ctx, record) => {
 
 /**
  * Content to be rendered above the edit form. Should probably include the title.
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Object} record
  */
 module.exports.editAbove = (ctx, record) => {
@@ -47,7 +47,7 @@ module.exports.editAbove = (ctx, record) => {
 
 /**
  * Content to be rendered below the main form
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Object} record
  */
 module.exports.editBelow = (ctx, record) => {
@@ -56,7 +56,7 @@ module.exports.editBelow = (ctx, record) => {
 
 /**
  * Footer for the edit page
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Object} record
  */
 module.exports.editFooter = (ctx, record) => {
@@ -65,7 +65,7 @@ module.exports.editFooter = (ctx, record) => {
 
 /**
  * Render a form to edit data
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Object} record
  */
 module.exports.editContent = (ctx, record) => {
@@ -96,7 +96,7 @@ module.exports.editContent = (ctx, record) => {
 
 /**
  * Render error in the form header, if one is present
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Object} record
  */
 module.exports.editError = (ctx, record) => {
@@ -130,9 +130,9 @@ module.exports.editError = (ctx, record) => {
 
 /**
  * Render an individual edit field
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Object} record
- * @param {CBQField} field
+ * @param {CUIField} field
  * @param {*} index
  */
 module.exports.editField = (ctx, record, field, index) => {
@@ -141,11 +141,11 @@ module.exports.editField = (ctx, record, field, index) => {
 		return null;
 	}
 	switch (field.type) {
-		case CBQ_FIELD_TYPES.string:
+		case CUI_FIELD_TYPES.string:
 			return module.exports.editFieldString(ctx, record, field, index);
-		case CBQ_FIELD_TYPES.text:
+		case CUI_FIELD_TYPES.text:
 			return module.exports.editFieldText(ctx, record, field, index);
-		case CBQ_FIELD_TYPES.select:
+		case CUI_FIELD_TYPES.select:
 			return module.exports.editFieldSelect(ctx, record, field, index);
 	}
 	throw new TypeError(`Invalid field type: ${field.type}`);
@@ -153,9 +153,9 @@ module.exports.editField = (ctx, record, field, index) => {
 
 /**
  * Utility function to prepare help block. Must return an object.
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Object} record
- * @param {CBQField} field
+ * @param {CUIField} field
  * @param {*} index
  * @return {{dom, aria}}
  */
@@ -180,9 +180,9 @@ module.exports.editFieldPrepareHelp = (ctx, record, field, index) => {
 
 /**
  * Utility function to prepare an invalid field class and block. Must return an object.
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Object} record
- * @param {CBQField} field
+ * @param {CUIField} field
  * @param {*} index
  * @return {{dom, class}}
  */
@@ -205,9 +205,9 @@ module.exports.editFieldPrepareError = (ctx, record, field, index) => {
 /**
  * Utility function to prepare a value to be filled in edit field. Can be default value,
  * existing value to edit or the restored value after validation error.
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Object} record
- * @param {CBQField} field
+ * @param {CUIField} field
  * @param {*} index
  * @return {*}
  */
@@ -231,13 +231,13 @@ module.exports.editFieldPrepareValue = (ctx, record, field, index) => {
 
 /**
  * Render a string field. This maps to an ordinary text box.
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Object} record
- * @param {CBQField} field
+ * @param {CUIField} field
  * @param {*} index
  */
 module.exports.editFieldString = (ctx, record, field, index) => {
-	assertEqual(field.type, CBQ_FIELD_TYPES.string, 'field type');
+	assertEqual(field.type, CUI_FIELD_TYPES.string, 'field type');
 
 	const help = ctx.options.views.editFieldPrepareHelp(ctx, record, field, index);
 	const error = ctx.options.views.editFieldPrepareError(ctx, record, field, index);
@@ -255,13 +255,13 @@ module.exports.editFieldString = (ctx, record, field, index) => {
 
 /**
  * Render a text field. This maps to a text area.
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Object} record
- * @param {CBQField} field
+ * @param {CUIField} field
  * @param {*} index
  */
 module.exports.editFieldText = (ctx, record, field, index) => {
-	assertEqual(field.type, CBQ_FIELD_TYPES.text, 'field type');
+	assertEqual(field.type, CUI_FIELD_TYPES.text, 'field type');
 
 	const help = ctx.options.views.editFieldPrepareHelp(ctx, record, field, index);
 	const error = ctx.options.views.editFieldPrepareError(ctx, record, field, index);
@@ -279,13 +279,13 @@ module.exports.editFieldText = (ctx, record, field, index) => {
 
 /**
  * Render a select field. Uses DOM select element
- * @param {CBQContext} ctx
+ * @param {CUIContext} ctx
  * @param {Object} record
- * @param {CBQField} field
+ * @param {CUIField} field
  * @param {*} index
  */
 module.exports.editFieldSelect = (ctx, record, field, index) => {
-	assertEqual(field.type, CBQ_FIELD_TYPES.select, 'field type');
+	assertEqual(field.type, CUI_FIELD_TYPES.select, 'field type');
 
 	const help = ctx.options.views.editFieldPrepareHelp(ctx, record, field, index);
 	const error = ctx.options.views.editFieldPrepareError(ctx, record, field, index);

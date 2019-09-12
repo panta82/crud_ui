@@ -1,7 +1,7 @@
 const { makeObjectAsserters } = require('../tools');
 
-class CBQNavigationItem {
-	constructor(/** CBQNavigation */ source) {
+class CUINavigationItem {
+	constructor(/** CUINavigation */ source) {
 		/**
 		 * What will be written on the menu item
 		 * @type {string}
@@ -16,14 +16,14 @@ class CBQNavigationItem {
 
 		/**
 		 * If provided, item will be rendered as a drop-down menu, with given sub-items
-		 * @type {CBQNavigationItem[]}
+		 * @type {CUINavigationItem[]}
 		 */
 		this.items = undefined;
 
 		/**
 		 * If provided, this will be called to produce custom HTML instead of default rendering.
 		 * Useful if you want custom functionality for a menu item (call a javascript, for example).
-		 * @type {function(CBQContext, CBQNavigationItem, number, boolean)}
+		 * @type {function(CUIContext, CUINavigationItem, number, boolean)}
 		 */
 		this.render = undefined;
 
@@ -46,31 +46,31 @@ class CBQNavigationItem {
 	}
 
 	static cast(item) {
-		if (!(item instanceof CBQNavigationItem)) {
-			item = new CBQNavigationItem(item);
+		if (!(item instanceof CUINavigationItem)) {
+			item = new CUINavigationItem(item);
 		}
 		return item;
 	}
 }
 
-class CBQNavigation {
-	constructor(/** CBQNavigation */ source) {
+class CUINavigation {
+	constructor(/** CUINavigation */ source) {
 		/**
 		 * Main application brand link, displayed in the left corner of navbar.
 		 * Required.
-		 * @type {CBQNavigationItem}
+		 * @type {CUINavigationItem}
 		 */
 		this.brand = undefined;
 
 		/**
 		 * Menu items that will stick to the left side of menu
-		 * @type {CBQNavigationItem[]}
+		 * @type {CUINavigationItem[]}
 		 */
 		this.left = undefined;
 
 		/**
 		 * Menu items that will hang in the right corner. This is usually a drop down menu or similar.
-		 * @type {CBQNavigationItem[]}
+		 * @type {CUINavigationItem[]}
 		 */
 		this.right = undefined;
 
@@ -86,13 +86,13 @@ class CBQNavigation {
 		asserters.type('left', 'array');
 		asserters.type('right', 'array');
 
-		this.brand = CBQNavigationItem.cast(this.brand)._validateAndCoerce();
+		this.brand = CUINavigationItem.cast(this.brand)._validateAndCoerce();
 
 		['left', 'right'].forEach(side => {
 			if (this[side]) {
 				this[side] = this[side].map((item, index) => {
 					try {
-						return CBQNavigationItem.cast(item)._validateAndCoerce();
+						return CUINavigationItem.cast(item)._validateAndCoerce();
 					} catch (err) {
 						throw new TypeError(
 							`Invalid item ${index} on the ${side} side of navbar: ${err.message}`
@@ -104,4 +104,4 @@ class CBQNavigation {
 	}
 }
 
-module.exports = { CBQNavigation, CBQNavigationItem };
+module.exports = { CUINavigation, CUINavigationItem };

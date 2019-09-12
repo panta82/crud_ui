@@ -1,32 +1,32 @@
 const { assertType, makeObjectAsserters, escapeHTML } = require('../tools');
-const { CBQTexts } = require('./texts');
-const { CBQField } = require('./fields');
-const { CBQViews } = require('./views');
-const { CBQUrls } = require('./urls');
-const { CBQNavigation } = require('./navigation');
+const { CUITexts } = require('./texts');
+const { CUIField } = require('./fields');
+const { CUIViews } = require('./views');
+const { CUIUrls } = require('./urls');
+const { CUINavigation } = require('./navigation');
 
 /**
  * Functions to execute different supported CRUD operations.
  * User must supply these functions for the CMS to work.
  */
-class CBQActions {
-	constructor(/** CBQActions */ source) {
+class CUIActions {
+	constructor(/** CUIActions */ source) {
 		/**
 		 * Produce list of items to be edited. If this is provided, main view will be a table with these items.
-		 * @type {function(CBQContext):Promise<Array>|Array}
+		 * @type {function(CUIContext):Promise<Array>|Array}
 		 */
 		this.getList = undefined;
 
 		/**
 		 * Get single item for edit view. It will be called with recird id, and should return either an object or null, if none is found.
-		 * @type {function(CBQContext, id):Promise<Array>|Array}
+		 * @type {function(CUIContext, id):Promise<Array>|Array}
 		 */
 		this.getSingle = undefined;
 
 		/**
 		 * Create a new record with given payload. If not provided, creation will be disabled.
 		 * To display a flash message, return either a string or created record.
-		 * @type {function(CBQContext, Object)}
+		 * @type {function(CUIContext, Object)}
 		 */
 		this.create = undefined;
 
@@ -34,13 +34,13 @@ class CBQActions {
 		 * Update the record with given id. It will be called with a record id and update payload.
 		 * If not provided, editing will be disabled.
 		 * To display a flash message, return either a string or updated record.
-		 * @type {function(CBQContext, id, Object)}
+		 * @type {function(CUIContext, id, Object)}
 		 */
 		this.update = undefined;
 
 		/**
 		 * Delete a record. It will be called with a record id. If not provided, deletion will be disabled.
-		 * @type {function(CBQContext, id)}
+		 * @type {function(CUIContext, id)}
 		 */
 		this.delete = undefined;
 
@@ -55,8 +55,8 @@ class CBQActions {
 	}
 }
 
-class CBQOptions {
-	constructor(/** CBQOptions */ source) {
+class CUIOptions {
+	constructor(/** CUIOptions */ source) {
 		/**
 		 * Resource name. For example "user", "pay slip". This will be used to generate names all over the interface.
 		 * @type {string}
@@ -71,46 +71,46 @@ class CBQOptions {
 		this.recordId = undefined;
 
 		/**
-		 * List of fields that will constitute data. Each member must duck-type to CBQField interface.
-		 * @type {CBQField[]}
+		 * List of fields that will constitute data. Each member must duck-type to CUIField interface.
+		 * @type {CUIField[]}
 		 */
 		this.fields = undefined;
 
 		/**
 		 * Functions to execute different supported CRUD operations.
 		 * User must supply these functions for the CMS to work.
-		 * @type {CBQActions}
+		 * @type {CUIActions}
 		 */
 		this.actions = undefined;
 
 		/**
 		 * Optional spec for the main navigation bar, at the top of page.
-		 * @type {CBQNavigation}
+		 * @type {CUINavigation}
 		 */
 		this.navigation = undefined;
 
 		/**
 		 * Functions which will be used to render HTML of various pages in the user interface.
 		 * They will call into each other, and also call into "texts". You can override any or none of them.
-		 * @type {CBQViews}
+		 * @type {CUIViews}
 		 */
 		this.views = undefined;
 
 		/**
 		 * Texts or functions to produce texts which will be rendered on screen or in messages.
-		 * @type {CBQTexts}
+		 * @type {CUITexts}
 		 */
 		this.texts = undefined;
 
 		/**
 		 * URLS to use for various pages of CMS. Rarely needed to be altered by user
-		 * @type {CBQUrls}
+		 * @type {CUIUrls}
 		 */
 		this.urls = undefined;
 
 		/**
 		 * Function to be called in case of error. Defaults to console.error.
-		 * @type {function(CBQContext, Error)}
+		 * @type {function(CUIContext, Error)}
 		 */
 		this.onError = undefined;
 
@@ -141,7 +141,7 @@ class CBQOptions {
 		this.fields = this.fields.map((field, index) => {
 			assertType(field, 'Field #' + index, 'object');
 
-			field = new CBQField(field);
+			field = new CUIField(field);
 			try {
 				field._validateAndCoerce();
 			} catch (err) {
@@ -150,18 +150,18 @@ class CBQOptions {
 			return field;
 		});
 
-		this.actions = new CBQActions(this.actions);
+		this.actions = new CUIActions(this.actions);
 		this.actions._validateAndCoerce();
 
 		if (this.navigation) {
 			asserters.type('navigation', 'object');
-			this.navigation = new CBQNavigation(this.navigation);
+			this.navigation = new CUINavigation(this.navigation);
 			this.navigation._validateAndCoerce();
 		}
 
-		this.views = new CBQViews(this.views);
-		this.texts = new CBQTexts(this.texts);
-		this.urls = new CBQUrls(this.urls);
+		this.views = new CUIViews(this.views);
+		this.texts = new CUITexts(this.texts);
+		this.urls = new CUIUrls(this.urls);
 
 		if (this.onError === undefined) {
 			this.onError = (ctx, err) => {
@@ -172,6 +172,6 @@ class CBQOptions {
 }
 
 module.exports = {
-	CBQActions,
-	CBQOptions,
+	CUIActions,
+	CUIOptions,
 };

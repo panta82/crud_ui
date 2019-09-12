@@ -1,10 +1,10 @@
 const { makeObjectAsserters } = require('../tools');
-const { CBQ_FIELD_TYPES } = require('./consts');
+const { CUI_FIELD_TYPES } = require('./consts');
 
-class CBQField {
-	constructor(/** CBQField */ source) {
+class CUIField {
+	constructor(/** CUIField */ source) {
 		/**
-		 * One of CBQ_FIELD_TYPES-s
+		 * One of CUI_FIELD_TYPES-s
 		 * @type {string}
 		 */
 		this.type = undefined;
@@ -35,7 +35,7 @@ class CBQField {
 
 		/**
 		 * Function or literal default value to pre-fill when creating a new record
-		 * @type {function(CBQContext, CBQField, number)|*}
+		 * @type {function(CUIContext, CUIField, number)|*}
 		 */
 		this.defaultValue = undefined;
 
@@ -50,28 +50,28 @@ class CBQField {
 		/**
 		 * Function getter or literal list of values to offer for select fields. Values can be just strings, or objects
 		 * in format {title, value}. Ignored for other field types.
-		 * @type {function(CBQContext, any, CBQField, number):string[]|string[]}
+		 * @type {function(CUIContext, any, CUIField, number):string[]|string[]}
 		 */
 		this.values = undefined;
 
 		/**
 		 * How this field should be validated either during creation or updates.
 		 * Can be a custom function which returns a list of validation errors or validate.js compatible object.
-		 * @type {object|function(CBQContext, *, object):string[]}
+		 * @type {object|function(CUIContext, *, object):string[]}
 		 */
 		this.validate = undefined;
 
 		/**
 		 * Validations which will be performed only during create. Merged with general validate results.
 		 * Can be a custom function which returns a list of validation errors or validate.js compatible object.
-		 * @type {object|function(CBQContext, *, object):string[]}
+		 * @type {object|function(CUIContext, *, object):string[]}
 		 */
 		this.validateCreate = undefined;
 
 		/**
 		 * Validations which will be performed only during edit. Merged with general validate results.
 		 * Can be a custom function which returns a list of validation errors or validate.js compatible object.
-		 * @type {object|function(CBQContext, *, object):string[]}
+		 * @type {object|function(CUIContext, *, object):string[]}
 		 */
 		this.validateEdit = undefined;
 
@@ -81,7 +81,7 @@ class CBQField {
 	_validateAndCoerce() {
 		const asserters = makeObjectAsserters(this, 'Field key "');
 
-		asserters.member('type', CBQ_FIELD_TYPES);
+		asserters.member('type', CUI_FIELD_TYPES);
 
 		asserters.provided('name');
 		asserters.type('name', 'string');
@@ -91,12 +91,12 @@ class CBQField {
 
 		asserters.type('helpText', 'string');
 
-		if (this.type === CBQ_FIELD_TYPES.select) {
+		if (this.type === CUI_FIELD_TYPES.select) {
 			asserters.type('values', 'array', 'function');
 		}
 	}
 }
 
 module.exports = {
-	CBQField,
+	CUIField,
 };
