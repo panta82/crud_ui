@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 
 const port = process.env.PORT || 3000;
 
-const { crudUI, CUIField, FIELD_TYPES } = require('../../');
+const { crudUI, CUIField, FIELD_TYPES, CUINavigationItem, CUITexts, CUIIcons } = require('../../');
 
 const app = express();
 app.use(bodyParser.json());
@@ -64,7 +64,6 @@ const actions = list => ({
 		return item;
 	},
 	update: (ctx, id, payload) => {
-		throw new Error('Temporary');
 		const existing = list.find(item => String(item.id) === String(id));
 		if (!existing) {
 			throw new Error(`Not found: ${id}`);
@@ -88,6 +87,15 @@ app.use(
 		name: 'user',
 		recordId: 'id',
 		navigation,
+		texts: new CUITexts({
+			listEditButton: 'Change',
+			listDeleteButton: '',
+			modalConfirmDeleteNoButton: '',
+		}),
+		icons: new CUIIcons({
+			listCreateButton: 'fa-plus',
+			listEditButton: null,
+		}),
 		fields: [
 			new CUIField({
 				type: FIELD_TYPES.string,

@@ -1,10 +1,13 @@
+/** Helper to shrink cells in table view */
 .cui-shrink-cell {
 	width: 0.1%;
 }
 
+/** Flash messages */
 .cui-flash-message {
 	cursor: pointer;
 }
 .cui-flash-message.show:hover {
 	opacity: 0.8;
 }
+

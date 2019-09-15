@@ -49,9 +49,11 @@ module.exports.listAbove = (ctx, data) => {
  * @param {Array} data
  */
 module.exports.listCreateButton = (ctx, data) => {
+	const label = ctx.options.texts.safe.listCreateButton(ctx);
 	return `
 		<a href="${ctx.url(ctx.options.urls.createPage)}" class="btn btn-primary mb-3 mt-1">
-			${ctx.options.texts.safe.listCreateButton(ctx)}
+			${ctx.options.views.icon(ctx, ctx.options.icons.listCreateButton, label && 'mr-1')}
+			${label}
 		</a>
 	`;
 };
@@ -119,8 +121,8 @@ module.exports.listDeleteModalScripting = (ctx, data) => {
 					item,
 					index
 				),
-				'delete-modal-yes': ctx.options.texts.modalConfirmDeleteYes(ctx, data, item, index),
-				'delete-modal-no': ctx.options.texts.modalConfirmDeleteNo(ctx, data, item, index),
+				'delete-modal-yes': ctx.options.texts.modalConfirmDeleteYesButton(ctx, data, item, index),
+				'delete-modal-no': ctx.options.texts.modalConfirmDeleteNoButton(ctx, data, item, index),
 			},
 		};
 	}
@@ -273,11 +275,13 @@ module.exports.listControlsCell = (ctx, data, record, index) => {
  * @return {string}
  */
 module.exports.listEditButton = (ctx, data, record, index) => {
+	const label = ctx.options.texts.safe.listEditButton(ctx);
 	return `
 		<a href="${ctx.url(
 			ctx.options.urls.editPage(ctx.options.recordId(record))
 		)}" class="btn btn-primary btn-sm">
-			${ctx.options.texts.safe.listEditButton(ctx)}
+			${ctx.options.views.icon(ctx, ctx.options.icons.listEditButton, label && 'mr-1')}
+			${label}
 		</a>
 	`;
 };
@@ -291,11 +295,13 @@ module.exports.listEditButton = (ctx, data, record, index) => {
  * @return {string}
  */
 module.exports.listDeleteButton = (ctx, data, record, index) => {
+	const label = ctx.options.texts.safe.listDeleteButton(ctx);
 	return `
 		<button type="submit" class="btn btn-danger btn-sm cui-list-delete-button" data-delete-id="${escapeHTML(
 			ctx.options.recordId(record)
 		)}">
-			${ctx.options.texts.safe.listDeleteButton(ctx)}
+			${ctx.options.views.icon(ctx, ctx.options.icons.listDeleteButton, label && 'mr-1')}
+			${label}
 		</button>
 	`;
 };
@@ -307,6 +313,8 @@ module.exports.listDeleteButton = (ctx, data, record, index) => {
  * @return {string}
  */
 module.exports.listDeleteConfirmationModal = (ctx, data) => {
+	// NOTE: We are not accounting for margin in buttons if user sets no text. No easy way to do it with current system,
+	//       and probably not worth worrying about it for a pretty niche use case. Revisit if it turns out to matter.
 	return `
 		<div class="modal fade" tabindex="-1" role="dialog" id="delete_modal">
 			<div class="modal-dialog" role="document">
@@ -323,9 +331,15 @@ module.exports.listDeleteConfirmationModal = (ctx, data) => {
 					<div class="modal-footer">
 						<form method="post" action="" class="d-inline">
 							${ctx.options.views.csrfField(ctx)}
-							<button type="submit" class="btn btn-danger delete-modal-yes"></button>
+							<button type="submit" class="btn btn-danger">
+								${ctx.options.views.icon(ctx, ctx.options.icons.modalConfirmDeleteYesButton, 'mr-1')}
+								<span class="delete-modal-yes"></span>
+							</button>
 						</form>
-						<button type="button" class="btn btn-secondary delete-modal-no" data-dismiss="modal"></button>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">
+							${ctx.options.views.icon(ctx, ctx.options.icons.modalConfirmDeleteNoButton, 'mr-1')}
+							<span class="delete-modal-no"></span>
+						</button>
 					</div>
 				</div>
 			</div>

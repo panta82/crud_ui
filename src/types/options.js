@@ -1,5 +1,6 @@
-const { assertType, makeObjectAsserters, escapeHTML } = require('../tools');
+const { assertType, makeObjectAsserters, cast } = require('../tools');
 const { CUITexts } = require('./texts');
+const { CUIIcons } = require('./icons');
 const { CUIField } = require('./fields');
 const { CUIViews } = require('./views');
 const { CUIUrls } = require('./urls');
@@ -103,6 +104,12 @@ class CUIOptions {
 		this.texts = undefined;
 
 		/**
+		 * Icons to use for various elements of UI. Set any icon to null to hide the icon from UI element.
+		 * @type {CUIIcons}
+		 */
+		this.icons = undefined;
+
+		/**
 		 * URLS to use for various pages of CMS. Rarely needed to be altered by user
 		 * @type {CUIUrls}
 		 */
@@ -170,7 +177,7 @@ class CUIOptions {
 			return field;
 		});
 
-		this.actions = new CUIActions(this.actions);
+		this.actions = cast(CUIActions, this.actions);
 		this.actions._validateAndCoerce();
 
 		if (this.navigation) {
@@ -179,9 +186,10 @@ class CUIOptions {
 			this.navigation._validateAndCoerce();
 		}
 
-		this.views = new CUIViews(this.views);
-		this.texts = new CUITexts(this.texts);
-		this.urls = new CUIUrls(this.urls);
+		this.views = cast(CUIViews, this.views);
+		this.texts = cast(CUITexts, this.texts);
+		this.icons = cast(CUIIcons, this.icons);
+		this.urls = cast(CUIUrls, this.urls);
 
 		if (this.onError === undefined) {
 			this.onError = (ctx, err) => {

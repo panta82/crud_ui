@@ -12,6 +12,7 @@ class CUIViews {
 		this.navigationItem = require('../views/shared_views.js').navigationItem;
 		this.navigationDropDownItem = require('../views/shared_views.js').navigationDropDownItem;
 		this.flashMessage = require('../views/shared_views.js').flashMessage;
+		this.icon = require('../views/shared_views.js').icon;
 		this.csrfField = require('../views/shared_views.js').csrfField;
 		this.errorPage = require('../views/shared_views.js').errorPage;
 
@@ -45,6 +46,8 @@ class CUIViews {
 		this.editBelow = require('../views/edit_views.js').editBelow;
 		this.editFooter = require('../views/edit_views.js').editFooter;
 		this.editContent = require('../views/edit_views.js').editContent;
+		this.editSaveButton = require('../views/edit_views.js').editSaveButton;
+		this.editCancelButton = require('../views/edit_views.js').editCancelButton;
 		this.editError = require('../views/edit_views.js').editError;
 		this.editField = require('../views/edit_views.js').editField;
 		this.editFieldPrepareHelp = require('../views/edit_views.js').editFieldPrepareHelp;

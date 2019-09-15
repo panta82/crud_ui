@@ -79,18 +79,50 @@ module.exports.editContent = (ctx, record) => {
 				.filter(Boolean)
 				.join('\n')}
 			<div>
-				<button type="submit" class="btn btn-success">${
-					record
-						? ctx.options.texts.safe.editExistingSave(ctx, record)
-						: ctx.options.texts.safe.editNewSave(ctx, record)
-				}</button>
-				<a href="${ctx.url(ctx.options.urls.indexPage)}" class="btn btn-light ml-1">${
-		record
-			? ctx.options.texts.safe.editExistingCancel(ctx, record)
-			: ctx.options.texts.safe.editNewCancel(ctx, record)
-	}</a>
+				${ctx.options.views.editSaveButton(ctx, record)}
+				${ctx.options.views.editCancelButton(ctx, record)}
 			</div>
 		</form>
+	`;
+};
+
+/**
+ * Save button on the edit form
+ * @param {CUIContext} ctx
+ * @param {Object} record
+ */
+module.exports.editSaveButton = (ctx, record) => {
+	const label = record
+		? ctx.options.texts.safe.editExistingSaveButton(ctx, record)
+		: ctx.options.texts.safe.editNewSaveButton(ctx, record);
+	const icon = record
+		? ctx.options.views.icon(ctx, ctx.options.icons.editExistingSaveButton, label && 'mr-1')
+		: ctx.options.views.icon(ctx, ctx.options.icons.editNewSaveButton, label && 'mr-1');
+	return `
+		<button type="submit" class="btn btn-success">
+			${icon}
+			${label}
+		</button>
+	`;
+};
+
+/**
+ * Cancel button on the edit form
+ * @param {CUIContext} ctx
+ * @param {Object} record
+ */
+module.exports.editCancelButton = (ctx, record) => {
+	const label = record
+		? ctx.options.texts.safe.editExistingCancelButton(ctx, record)
+		: ctx.options.texts.safe.editNewCancelButton(ctx, record);
+	const icon = record
+		? ctx.options.views.icon(ctx, ctx.options.icons.editExistingCancelButton, label && 'mr-1')
+		: ctx.options.views.icon(ctx, ctx.options.icons.editNewCancelButton, label && 'mr-1');
+	return `
+		<a href="${ctx.url(ctx.options.urls.indexPage)}" class="btn btn-light ml-1">
+			${icon}
+			${label}
+		</a>
 	`;
 };
 

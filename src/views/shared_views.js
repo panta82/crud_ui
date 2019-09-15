@@ -17,7 +17,8 @@ module.exports.layout = (ctx, content, head = '', scripts = '') => {
 
 		<title>${ctx.options.texts.safe.listTitle(ctx)}</title>
 
-		<link rel="stylesheet" href="${ctx.url('/css/bootstrap.min.css')}" />
+		<link rel="stylesheet" href="${ctx.url('/css/bootstrap.css')}" />
+		<link rel="stylesheet" href="${ctx.url('/css/fontawesome.css')}" />
 		<link rel="stylesheet" href="${ctx.url('/css/styles.css')}" />
 		${head || ''}
 	</head>
@@ -27,7 +28,7 @@ module.exports.layout = (ctx, content, head = '', scripts = '') => {
 		${content}
 		
 		<script src="${ctx.url('/js/jquery-3.4.1.slim.js')}"></script>
-		<script src="${ctx.url('/js/bootstrap.min.js')}"></script>
+		<script src="${ctx.url('/js/bootstrap.js')}"></script>
 		<script src="${ctx.url('/js/scripts.js')}"></script>
 		${scripts || ''}
 	</body>
@@ -198,6 +199,27 @@ module.exports.flashMessage = ctx => {
 			</div>
 		</div>
 	`;
+};
+
+/**
+ * Render icon. Takes icon name, by default one of font awesome names (with or without fa- prefix).
+ * For use in menus, buttons. You can optionally supply additional class (eg. for margins).
+ * @param {CUIContext} ctx
+ * @param iconName
+ * @param className
+ */
+module.exports.icon = (ctx, iconName, className = '') => {
+	if (!iconName) {
+		return '';
+	}
+	if (typeof iconName === 'function') {
+		// Treat icon name as a custom render function
+		return iconName(ctx, className);
+	}
+	if (!iconName.startsWith('fa-')) {
+		iconName = 'fa-' + iconName;
+	}
+	return `<i class="fa ${iconName} ${className || ''}"></i>`;
 };
 
 // *********************************************************************************************************************

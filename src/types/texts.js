@@ -47,21 +47,21 @@ class CUITexts {
 
 		this.editNewTitle = (/** CUIContext */ ctx) =>
 			`Create a new ${uncapitalize(singularize(ctx.options.name))}`;
-		this.editNewSave = 'Create';
-		this.editNewCancel = 'Cancel';
+		this.editNewSaveButton = 'Create';
+		this.editNewCancelButton = 'Cancel';
 
 		this.editExistingTitle = (/** CUIContext */ ctx, record) =>
 			`Edit ${uncapitalize(ctx.options.texts.recordTitle(ctx, record))}`;
-		this.editExistingSave = 'Save changes';
-		this.editExistingCancel = 'Cancel';
+		this.editExistingSaveButton = 'Save changes';
+		this.editExistingCancelButton = 'Cancel';
 
 		this.modalConfirmDeleteTitle = 'Are you sure?';
 		this.modalConfirmDeleteQuestion = (/** CUIContext */ ctx, data, record, index) =>
 			`You are about to delete ${uncapitalize(
 				ctx.options.texts.recordTitle(ctx, record)
 			)}. Proceed?`;
-		this.modalConfirmDeleteYes = 'Delete';
-		this.modalConfirmDeleteNo = 'Cancel';
+		this.modalConfirmDeleteYesButton = 'Delete';
+		this.modalConfirmDeleteNoButton = 'Cancel';
 
 		this.errorNotFound = (/** CUIContext */ ctx, id) =>
 			`${capitalize(singularize(ctx.options.name))} with id "${id}" couldn't be found`;
