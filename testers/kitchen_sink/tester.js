@@ -9,59 +9,85 @@ const { crudUI, CUIField, FIELD_TYPES } = require('../../');
 const app = express();
 app.use(bodyParser.json());
 
-const data = [
-	{ id: 1, name: 'Axe' },
-	{ id: 2, name: 'Barry', description: 'This\nIs\nBarry!' },
-	{ id: 3, name: 'Cindy', gender: 'female' },
-];
+const data = {
+	users: [
+		{ id: 1, name: 'Axe' },
+		{ id: 2, name: 'Barry', description: 'This\nIs\nBarry!' },
+		{ id: 3, name: 'Cindy', gender: 'female' },
+	],
+	projects: [
+		{ id: 1, name: 'Axe store', link: 'https://axes.com' },
+		{ id: 2, name: 'Blog', link: 'https://blog.com' },
+	],
+};
+
+const navigation = {
+	brand: {
+		title: 'Tester',
+		url: '/admin/users',
+	},
+	left: [
+		{
+			title: 'Users',
+			url: '/admin/users',
+		},
+		{
+			title: 'Projects',
+			url: '/admin/projects',
+		},
+	],
+	right: [
+		{
+			title: 'User',
+			items: [
+				{
+					render: (/** CUIContext */ ctx) => {
+						return `<button class="dropdown-item" onclick="alert('logout')">Log out</button>`;
+					},
+				},
+			],
+		},
+	],
+};
+
+const actions = list => ({
+	getList: ctx => {
+		return list;
+	},
+	getSingle: (ctx, id) => {
+		return list.find(item => String(item.id) === String(id));
+	},
+	create: (ctx, payload) => {
+		const id = list.reduce((max, item) => Math.max(item.id, max), 0) + 1;
+		const item = { ...payload, id };
+		list.push(item);
+		return item;
+	},
+	update: (ctx, id, payload) => {
+		const existing = list.find(item => String(item.id) === String(id));
+		if (!existing) {
+			throw new Error(`Not found: ${id}`);
+		}
+		Object.assign(existing, payload);
+		return existing;
+	},
+	delete: (ctx, id) => {
+		const index = list.findIndex(item => String(item.id) === String(id));
+		if (index < 0) {
+			throw new Error(`Not found: ${id}`);
+		}
+		const item = list.splice(index, 1)[0];
+		return item;
+	},
+});
 
 app.use(
 	'/admin/users',
 	crudUI({
 		name: 'user',
 		recordId: 'id',
-		navigation: {
-			brand: {
-				title: 'Tester',
-				url: '/admin/users',
-			},
-			left: [
-				{
-					title: 'Users',
-					url: '/admin/users',
-				},
-				{
-					title: 'Projects',
-					url: '/admin/projects',
-				},
-			],
-			right: [
-				{
-					title: 'User',
-					items: [
-						{
-							title: 'Home',
-							url: '/admin/users',
-						},
-						{
-							title: '---',
-						},
-						{
-							render: (/** CUIContext */ ctx) => {
-								return `<button class="dropdown-item" onclick="alert('logout')">Log out</button>`;
-							},
-						},
-					],
-				},
-			],
-		},
+		navigation,
 		fields: [
-			new CUIField({
-				type: FIELD_TYPES.string,
-				name: 'id',
-				label: 'ID',
-				noEdit: true,
-			}),
 			new CUIField({
 				type: FIELD_TYPES.string,
 				name: 'name',
@@ -99,36 +125,33 @@ app.use(
 				},
 			}),
 		],
-		actions: {
-			getList: ctx => {
-				return data;
-			},
-			getSingle: (ctx, id) => {
-				return data.find(item => String(item.id) === String(id));
-			},
-			create: (ctx, payload) => {
-				const id = data.reduce((max, item) => Math.max(item.id, max), 0) + 1;
-				const item = { ...payload, id };
-				data.push(item);
-				return item;
-			},
-			update: (ctx, id, payload) => {
-				const existing = data.find(item => String(item.id) === String(id));
-				if (!existing) {
-					throw new Error(`Not found: ${id}`);
-				}
-				Object.assign(existing, payload);
-				return existing;
-			},
-			delete: (ctx, id) => {
-				const index = data.findIndex(item => String(item.id) === String(id));
-				if (index < 0) {
-					throw new Error(`Not found: ${id}`);
-				}
-				const item = data.splice(index, 1)[0];
-				return item;
-			},
-		},
+		actions: actions(data.users),
+	})
+);
+
+app.use(
+	'/admin/projects',
+	crudUI({
+		name: 'project',
+		navigation,
+		fields: [
+			new CUIField({
+				name: 'name',
+				helpText: 'Project name',
+				validate: {
+					length: { minimum: 3 },
+				},
+			}),
+			new CUIField({
+				name: 'link',
+				validate: {
+					url: true,
+				},
+				listView: link =>
+					`<a href="${link}" target="_blank" rel="nofollow noreferrer noopener">URL</a>`,
+			}),
+		],
+		actions: actions(data.projects),
 	})
 );
 

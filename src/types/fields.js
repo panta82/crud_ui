@@ -1,4 +1,4 @@
-const { makeObjectAsserters } = require('../tools');
+const { makeObjectAsserters, capitalize, deslugify } = require('../tools');
 const { CUI_FIELD_TYPES } = require('./consts');
 
 class CUIField {
@@ -10,13 +10,14 @@ class CUIField {
 		this.type = undefined;
 
 		/**
-		 * Name of the field, this will be mapped to a record key
+		 * Name of the field. We will use this to get values out of the record (record[field.name]), so this should
+		 * probably be a javascript-safe string ([a-zA-Z0-9_]+)
 		 * @type {string}
 		 */
 		this.name = undefined;
 
 		/**
-		 * Label to use in the form
+		 * Label to use when referring to field.
 		 * @type {string}
 		 */
 		this.label = undefined;
@@ -28,10 +29,18 @@ class CUIField {
 		this.helpText = undefined;
 
 		/**
-		 * If true, field will not appear in the edit screen.
-		 * @type {boolean}
+		 * Customized render function to present the field value in the list view (table cell).
+		 * Set to false to disable this column in the table.
+		 * @type {boolean|function(value:*, record:*, ctx:CUIContext, field:CUIField, data:array, index:number)}
 		 */
-		this.noEdit = undefined;
+		this.listView = undefined;
+
+		/**
+		 * Customized render function for field editor.
+		 * Set to false or return false to hide the field from the editor.
+		 * @type {boolean|function(value:*, record:*, ctx:CUIContext, field:CUIField, index:number)}
+		 */
+		this.editView = undefined;
 
 		/**
 		 * Function or literal default value to pre-fill when creating a new record
@@ -82,21 +91,26 @@ class CUIField {
 		const asserters = makeObjectAsserters(this, 'Field key "');
 
 		if (!this.type) {
-		  // Default field to string fields
-		  this.type = CUI_FIELD_TYPES.string;
-    }
-    asserters.member('type', CUI_FIELD_TYPES);
-    if (this.type === CUI_FIELD_TYPES.select) {
-      asserters.type('values', 'array', 'function');
-    }
-    
+			// Default field to string fields
+			this.type = CUI_FIELD_TYPES.string;
+		}
+		asserters.member('type', CUI_FIELD_TYPES);
+		if (this.type === CUI_FIELD_TYPES.select) {
+			asserters.type('values', 'array', 'function');
+		}
+
 		asserters.provided('name');
 		asserters.type('name', 'string');
 
-		asserters.provided('label');
+		if (this.label === undefined) {
+			this.label = capitalize(deslugify(this.name));
+		}
 		asserters.type('label', 'string');
 
 		asserters.type('helpText', 'string');
+
+		asserters.type('listView', 'boolean', 'function');
+		asserters.type('editView', 'boolean', 'function');
 	}
 }
 

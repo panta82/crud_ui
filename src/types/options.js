@@ -126,7 +126,9 @@ class CUIOptions {
 		asserters.provided('fields');
 		asserters.type('fields', 'array');
 
-		asserters.provided('recordId');
+		if (this.recordId === undefined) {
+			this.recordId = 'id';
+		}
 		asserters.type('recordId', 'string', 'function');
 		// Turn record id into a getter
 		if (typeof this.recordId === 'string') {

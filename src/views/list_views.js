@@ -150,6 +150,7 @@ module.exports.listContent = (ctx, data) => {
 	<tr>
 		${ctx.options.fields
 			.map((field, index) => ctx.options.views.listColumnHeader(ctx, data, field, index))
+			.filter(Boolean)
 			.join('\n')}
 		<th class="cui-shrink-cell"></th>
 	</tr>
@@ -158,7 +159,10 @@ module.exports.listContent = (ctx, data) => {
 	${
 		!data.length
 			? ctx.options.views.listNoData(ctx)
-			: data.map((record, index) => ctx.options.views.listRow(ctx, data, record, index)).join('\n')
+			: data
+					.map((record, index) => ctx.options.views.listRow(ctx, data, record, index))
+					.filter(Boolean)
+					.join('\n')
 	}
 </tbody>
 </table>
@@ -174,6 +178,9 @@ module.exports.listContent = (ctx, data) => {
  * @return {string}
  */
 module.exports.listColumnHeader = (ctx, data, field, index) => {
+	if (field.listView === false) {
+		return null;
+	}
 	return `<th>${field.label}</th>`;
 };
 
@@ -188,7 +195,9 @@ module.exports.listColumnHeader = (ctx, data, field, index) => {
 module.exports.listRow = (ctx, data, record, index) => {
 	const cols = ctx.options.fields
 		.map(field => ctx.options.views.listCell(ctx, data, record, index, field))
+		.filter(Boolean)
 		.join('\n');
+
 	return `
 		<tr>
 			${cols}
@@ -207,6 +216,10 @@ module.exports.listRow = (ctx, data, record, index) => {
  * @return {string}
  */
 module.exports.listCell = (ctx, data, record, index, field) => {
+	if (field.listView === false) {
+		return null;
+	}
+
 	return `<td>${ctx.options.views.listValue(ctx, data, record, index, field)}</td>`;
 };
 
@@ -221,6 +234,11 @@ module.exports.listCell = (ctx, data, record, index, field) => {
  * @return {string}
  */
 module.exports.listValue = (ctx, data, record, index, field) => {
+	if (typeof field.listView === 'function') {
+		// Use custom renderer
+		return field.listView(record[field.name], record, ctx, field, data, index);
+	}
+
 	let value = record[field.name];
 	if (value === null || value === undefined) {
 		value = '';

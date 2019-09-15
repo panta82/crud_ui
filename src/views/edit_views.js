@@ -136,10 +136,16 @@ module.exports.editError = (ctx, record) => {
  * @param {*} index
  */
 module.exports.editField = (ctx, record, field, index) => {
-	if (field.noEdit) {
+	if (field.editView === false) {
 		// Do not display field at all
 		return null;
 	}
+
+	if (typeof field.editView === 'function') {
+		// Render custom editor
+		return field.editView(record[field.name], record, ctx, field, index);
+	}
+
 	switch (field.type) {
 		case CUI_FIELD_TYPES.string:
 			return module.exports.editFieldString(ctx, record, field, index);

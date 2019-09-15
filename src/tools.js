@@ -17,6 +17,14 @@ function singularize(str) {
 }
 
 /**
+ * Take a slug-like string ("string_with_things") and convert it into a conversational string ("string with things")
+ * @param str
+ */
+function deslugify(str) {
+	return str.replace(/[_\-]/g, ' ');
+}
+
+/**
  * Generate a random string token
  * @return {string}
  */
@@ -175,6 +183,7 @@ module.exports = {
 	uncapitalize,
 	pluralize,
 	singularize,
+	deslugify,
 	randomToken,
 
 	assertEqual,
