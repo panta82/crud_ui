@@ -24,14 +24,14 @@ class CUITexts {
 		 * @return {string}
 		 */
 		this.recordTitle = (ctx, record) =>
-			`${singularize(ctx.options.name)} ${ctx.options.texts.recordDescriptor(ctx, record)}`;
+			`${singularize(ctx.options.name)} ${ctx.texts.recordDescriptor(ctx, record)}`;
 
 		this.flashMessageRecordCreated = (/** CUIContext */ ctx, record) =>
-			`${capitalize(ctx.options.texts.recordTitle(ctx, record))} created`;
+			`${capitalize(ctx.texts.recordTitle(ctx, record))} created`;
 		this.flashMessageRecordUpdated = (/** CUIContext */ ctx, record) =>
-			`${capitalize(ctx.options.texts.recordTitle(ctx, record))} updated`;
+			`${capitalize(ctx.texts.recordTitle(ctx, record))} updated`;
 		this.flashMessageRecordDeleted = (/** CUIContext */ ctx, record) =>
-			`${capitalize(ctx.options.texts.recordTitle(ctx, record))} deleted`;
+			`${capitalize(ctx.texts.recordTitle(ctx, record))} deleted`;
 
 		this.listTitle = (/** CUIContext */ ctx) => pluralize(capitalize(ctx.options.name));
 		this.listNoData = 'No data is available';
@@ -51,14 +51,14 @@ class CUITexts {
 		this.editNewCancelButton = 'Cancel';
 
 		this.editExistingTitle = (/** CUIContext */ ctx, record) =>
-			`Edit ${uncapitalize(ctx.options.texts.recordTitle(ctx, record))}`;
+			`Edit ${uncapitalize(ctx.texts.recordTitle(ctx, record))}`;
 		this.editExistingSaveButton = 'Save changes';
 		this.editExistingCancelButton = 'Cancel';
 
 		this.modalConfirmDeleteTitle = 'Are you sure?';
 		this.modalConfirmDeleteQuestion = (/** CUIContext */ ctx, data, record, index) =>
 			`You are about to delete ${uncapitalize(
-				ctx.options.texts.recordTitle(ctx, record)
+				ctx.texts.recordTitle(ctx, record)
 			)}. Proceed?`;
 		this.modalConfirmDeleteYesButton = 'Delete';
 		this.modalConfirmDeleteNoButton = 'Cancel';

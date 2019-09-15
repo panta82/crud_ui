@@ -21,7 +21,7 @@ function coerceAndValidateEditPayload(ctx, isCreate) {
 	const payload = {};
 	const faults = [];
 
-	for (const field of ctx.options.fields) {
+	for (const field of ctx.fields) {
 		if (field.noEdit) {
 			continue;
 		}
@@ -117,13 +117,13 @@ function resultToFlash(ctx, makeMessage, result) {
  */
 function indexPage(ctx) {
 	return Promise.resolve()
-		.then(() => ctx.options.actions.getList(ctx))
+		.then(() => ctx.actions.getList(ctx))
 		.then(data => {
 			if (!data) {
 				throw new CUIError(`Invalid data`);
 			}
 
-			return ctx.options.views.listPage(ctx, data);
+			return ctx.views.listPage(ctx, data);
 		});
 }
 
@@ -131,31 +131,31 @@ function indexPage(ctx) {
  * @param {CUIContext} ctx
  */
 function createPage(ctx) {
-	return ctx.options.views.editPage(ctx, null);
+	return ctx.views.editPage(ctx, null);
 }
 
 /**
  * @param {CUIContext} ctx
  */
 function createAction(ctx) {
-	CUIActionNotSupportedError.assert(ctx.options.actions, 'create');
+	CUIActionNotSupportedError.assert(ctx.actions, 'create');
 
 	return Promise.resolve()
 		.then(() => {
 			const payload = coerceAndValidateEditPayload(ctx, true);
-			return ctx.options.actions.create(ctx, payload);
+			return ctx.actions.create(ctx, payload);
 		})
 		.then(
 			createResult => {
 				return new CUIRedirectResponse(
-					ctx.url(ctx.options.urls.indexPage),
-					resultToFlash(ctx, ctx.options.texts.flashMessageRecordCreated, createResult)
+					ctx.url(ctx.urls.indexPage),
+					resultToFlash(ctx, ctx.texts.flashMessageRecordCreated, createResult)
 				);
 			},
 			error => {
 				if (error instanceof CUIValidationError) {
 					// Show errors on page
-					return new CUIRedirectResponse(ctx.url(ctx.options.urls.createPage), {
+					return new CUIRedirectResponse(ctx.url(ctx.urls.createPage), {
 						error,
 					});
 				}
@@ -171,13 +171,13 @@ function createAction(ctx) {
  */
 function editPage(ctx) {
 	return Promise.resolve()
-		.then(() => ctx.options.actions.getSingle(ctx, ctx.idParam))
+		.then(() => ctx.actions.getSingle(ctx, ctx.idParam))
 		.then(data => {
 			if (!data) {
-				throw new CUIError(ctx.options.texts.errorNotFound(ctx, ctx.idParam), 404);
+				throw new CUIError(ctx.texts.errorNotFound(ctx, ctx.idParam), 404);
 			}
 
-			return ctx.options.views.editPage(ctx, data);
+			return ctx.views.editPage(ctx, data);
 		});
 }
 
@@ -185,24 +185,24 @@ function editPage(ctx) {
  * @param {CUIContext} ctx
  */
 function editAction(ctx) {
-	CUIActionNotSupportedError.assert(ctx.options.actions, 'update');
+	CUIActionNotSupportedError.assert(ctx.actions, 'update');
 
 	return Promise.resolve()
 		.then(() => {
 			const payload = coerceAndValidateEditPayload(ctx, false);
-			return ctx.options.actions.update(ctx, ctx.idParam, payload);
+			return ctx.actions.update(ctx, ctx.idParam, payload);
 		})
 		.then(
 			updateResult => {
 				return new CUIRedirectResponse(
-					ctx.url(ctx.options.urls.indexPage),
-					resultToFlash(ctx, ctx.options.texts.flashMessageRecordUpdated, updateResult)
+					ctx.url(ctx.urls.indexPage),
+					resultToFlash(ctx, ctx.texts.flashMessageRecordUpdated, updateResult)
 				);
 			},
 			error => {
 				if (error instanceof CUIValidationError) {
 					// Show errors on page
-					return new CUIRedirectResponse(ctx.url(ctx.options.urls.editPage(ctx.idParam)), {
+					return new CUIRedirectResponse(ctx.url(ctx.urls.editPage(ctx.idParam)), {
 						error,
 					});
 				}
@@ -217,14 +217,14 @@ function editAction(ctx) {
  * @param {CUIContext} ctx
  */
 function deleteAction(ctx) {
-	CUIActionNotSupportedError.assert(ctx.options.actions, 'delete');
+	CUIActionNotSupportedError.assert(ctx.actions, 'delete');
 
 	return Promise.resolve()
-		.then(() => ctx.options.actions.delete(ctx, ctx.idParam))
+		.then(() => ctx.actions.delete(ctx, ctx.idParam))
 		.then(deleteResult => {
 			return new CUIRedirectResponse(
-				ctx.url(ctx.options.urls.indexPage),
-				resultToFlash(ctx, ctx.options.texts.flashMessageRecordDeleted, deleteResult)
+				ctx.url(ctx.urls.indexPage),
+				resultToFlash(ctx, ctx.texts.flashMessageRecordDeleted, deleteResult)
 			);
 		});
 }

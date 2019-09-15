@@ -37,7 +37,7 @@ class CUIContext {
 		 * @type {string}
 		 */
 		this.baseUrl = req.baseUrl;
-		
+
 		/**
 		 * Flash object extracted by FlashManager
 		 * @type {{message: string, flavor: string}|{error: CUIValidationError}}
@@ -66,6 +66,54 @@ class CUIContext {
 			}
 		}
 		return encodeURI(result);
+	}
+
+	/**
+	 * Convenience shortcut to actions
+	 * @type {CUIActions}
+	 */
+	get actions() {
+		return this.options.actions;
+	}
+
+	/**
+	 * Convenience shortcut to fields
+	 * @type {CUIField[]}
+	 */
+	get fields() {
+		return this.options.fields;
+	}
+
+	/**
+	 * Convenience shortcut to views
+	 * @type {CUIViews}
+	 */
+	get views() {
+		return this.options.views;
+	}
+
+	/**
+	 * Convenience shortcut to texts
+	 * @type {CUITexts}
+	 */
+	get texts() {
+		return this.options.texts;
+	}
+
+	/**
+	 * Convenience shortcut to icons
+	 * @type {CUIIcons}
+	 */
+	get icons() {
+		return this.options.icons;
+	}
+
+	/**
+	 * Convenience shortcut to urls
+	 * @type {CUIUrls}
+	 */
+	get urls() {
+		return this.options.urls;
 	}
 }
 

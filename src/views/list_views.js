@@ -6,19 +6,19 @@ const { escapeHTML, escapeScript } = require('../tools');
  * @param {Array} data
  */
 module.exports.listPage = (ctx, data) => {
-	return ctx.options.views.layout(
+	return ctx.views.layout(
 		ctx,
 		`
-		${ctx.options.views.listHeader(ctx, data)}
+		${ctx.views.listHeader(ctx, data)}
 		<main role="main" class="container mt-4 mb-4">
-			${ctx.options.views.listAbove(ctx, data)}
-			${ctx.options.views.listContent(ctx, data)}
-			${ctx.options.views.listBelow(ctx, data)}
+			${ctx.views.listAbove(ctx, data)}
+			${ctx.views.listContent(ctx, data)}
+			${ctx.views.listBelow(ctx, data)}
 		</main>
-		${ctx.options.views.listFooter(ctx, data)}
+		${ctx.views.listFooter(ctx, data)}
 	`,
-		ctx.options.views.listHead(ctx, data),
-		ctx.options.views.listScripts(ctx, data)
+		ctx.views.listHead(ctx, data),
+		ctx.views.listScripts(ctx, data)
 	);
 };
 
@@ -28,7 +28,7 @@ module.exports.listPage = (ctx, data) => {
  * @param {Array} data
  */
 module.exports.listHeader = (ctx, data) => {
-	return ctx.options.views.header(ctx);
+	return ctx.views.header(ctx);
 };
 
 /**
@@ -38,8 +38,8 @@ module.exports.listHeader = (ctx, data) => {
  */
 module.exports.listAbove = (ctx, data) => {
 	return `
-		<h2>${ctx.options.texts.safe.listTitle(ctx)}</h2>
-		${ctx.options.actions.create ? ctx.options.views.listCreateButton(ctx, data) : ''}
+		<h2>${ctx.texts.safe.listTitle(ctx)}</h2>
+		${ctx.actions.create ? ctx.views.listCreateButton(ctx, data) : ''}
 	`;
 };
 
@@ -49,10 +49,10 @@ module.exports.listAbove = (ctx, data) => {
  * @param {Array} data
  */
 module.exports.listCreateButton = (ctx, data) => {
-	const label = ctx.options.texts.safe.listCreateButton(ctx);
+	const label = ctx.texts.safe.listCreateButton(ctx);
 	return `
-		<a href="${ctx.url(ctx.options.urls.createPage)}" class="btn btn-primary mb-3 mt-1">
-			${ctx.options.views.icon(ctx, ctx.options.icons.listCreateButton, label && 'mr-1')}
+		<a href="${ctx.url(ctx.urls.createPage)}" class="btn btn-primary mb-3 mt-1">
+			${ctx.views.icon(ctx, ctx.icons.listCreateButton, label && 'mr-1')}
 			${label}
 		</a>
 	`;
@@ -74,8 +74,8 @@ module.exports.listBelow = (ctx, data) => {
  */
 module.exports.listFooter = (ctx, data) => {
 	return `
-		${ctx.options.views.footer(ctx)}
-		${ctx.options.views.listDeleteConfirmationModal(ctx, data)}
+		${ctx.views.footer(ctx)}
+		${ctx.views.listDeleteConfirmationModal(ctx, data)}
 	`;
 };
 
@@ -95,7 +95,7 @@ module.exports.listHead = (ctx, data) => {
  */
 module.exports.listScripts = (ctx, data) => {
 	return `
-		<script>${module.exports.listDeleteModalScripting(ctx, data)}</script>
+		<script>${ctx.views.listDeleteModalScripting(ctx, data)}</script>
 	`;
 };
 
@@ -112,17 +112,12 @@ module.exports.listDeleteModalScripting = (ctx, data) => {
 
 		const id = ctx.options.recordId(item);
 		deleteModalData[id] = {
-			action: ctx.url(ctx.options.urls.deleteAction(id)),
+			action: ctx.url(ctx.urls.deleteAction(id)),
 			texts: {
-				'modal-title': ctx.options.texts.modalConfirmDeleteTitle(ctx, data, item, index),
-				'delete-modal-question': ctx.options.texts.modalConfirmDeleteQuestion(
-					ctx,
-					data,
-					item,
-					index
-				),
-				'delete-modal-yes': ctx.options.texts.modalConfirmDeleteYesButton(ctx, data, item, index),
-				'delete-modal-no': ctx.options.texts.modalConfirmDeleteNoButton(ctx, data, item, index),
+				'modal-title': ctx.texts.modalConfirmDeleteTitle(ctx, data, item, index),
+				'delete-modal-question': ctx.texts.modalConfirmDeleteQuestion(ctx, data, item, index),
+				'delete-modal-yes': ctx.texts.modalConfirmDeleteYesButton(ctx, data, item, index),
+				'delete-modal-no': ctx.texts.modalConfirmDeleteNoButton(ctx, data, item, index),
 			},
 		};
 	}
@@ -150,8 +145,8 @@ module.exports.listContent = (ctx, data) => {
 <table class="table table-bordered table-sm">
 <thead>
 	<tr>
-		${ctx.options.fields
-			.map((field, index) => ctx.options.views.listColumnHeader(ctx, data, field, index))
+		${ctx.fields
+			.map((field, index) => ctx.views.listColumnHeader(ctx, data, field, index))
 			.filter(Boolean)
 			.join('\n')}
 		<th class="cui-shrink-cell"></th>
@@ -160,9 +155,9 @@ module.exports.listContent = (ctx, data) => {
 <tbody>
 	${
 		!data.length
-			? ctx.options.views.listNoData(ctx)
+			? ctx.views.listNoData(ctx)
 			: data
-					.map((record, index) => ctx.options.views.listRow(ctx, data, record, index))
+					.map((record, index) => ctx.views.listRow(ctx, data, record, index))
 					.filter(Boolean)
 					.join('\n')
 	}
@@ -195,15 +190,15 @@ module.exports.listColumnHeader = (ctx, data, field, index) => {
  * @return {string}
  */
 module.exports.listRow = (ctx, data, record, index) => {
-	const cols = ctx.options.fields
-		.map(field => ctx.options.views.listCell(ctx, data, record, index, field))
+	const cols = ctx.fields
+		.map(field => ctx.views.listCell(ctx, data, record, index, field))
 		.filter(Boolean)
 		.join('\n');
 
 	return `
 		<tr>
 			${cols}
-			${ctx.options.views.listControlsCell(ctx, data, record, index)}
+			${ctx.views.listControlsCell(ctx, data, record, index)}
 		</tr>
 	`;
 };
@@ -222,7 +217,7 @@ module.exports.listCell = (ctx, data, record, index, field) => {
 		return null;
 	}
 
-	return `<td>${ctx.options.views.listValue(ctx, data, record, index, field)}</td>`;
+	return `<td>${ctx.views.listValue(ctx, data, record, index, field)}</td>`;
 };
 
 /**
@@ -260,8 +255,8 @@ module.exports.listValue = (ctx, data, record, index, field) => {
 module.exports.listControlsCell = (ctx, data, record, index) => {
 	return `
 		<td class="text-nowrap">
-			${ctx.options.actions.update ? ctx.options.views.listEditButton(ctx, data, record, index) : ''}
-			${ctx.options.actions.delete ? ctx.options.views.listDeleteButton(ctx, data, record, index) : ''}
+			${ctx.actions.update ? ctx.views.listEditButton(ctx, data, record, index) : ''}
+			${ctx.actions.delete ? ctx.views.listDeleteButton(ctx, data, record, index) : ''}
 		</td>
 	`;
 };
@@ -275,12 +270,12 @@ module.exports.listControlsCell = (ctx, data, record, index) => {
  * @return {string}
  */
 module.exports.listEditButton = (ctx, data, record, index) => {
-	const label = ctx.options.texts.safe.listEditButton(ctx);
+	const label = ctx.texts.safe.listEditButton(ctx);
 	return `
 		<a href="${ctx.url(
-			ctx.options.urls.editPage(ctx.options.recordId(record))
+			ctx.urls.editPage(ctx.options.recordId(record))
 		)}" class="btn btn-primary btn-sm">
-			${ctx.options.views.icon(ctx, ctx.options.icons.listEditButton, label && 'mr-1')}
+			${ctx.views.icon(ctx, ctx.icons.listEditButton, label && 'mr-1')}
 			${label}
 		</a>
 	`;
@@ -295,12 +290,12 @@ module.exports.listEditButton = (ctx, data, record, index) => {
  * @return {string}
  */
 module.exports.listDeleteButton = (ctx, data, record, index) => {
-	const label = ctx.options.texts.safe.listDeleteButton(ctx);
+	const label = ctx.texts.safe.listDeleteButton(ctx);
 	return `
 		<button type="submit" class="btn btn-danger btn-sm cui-list-delete-button" data-delete-id="${escapeHTML(
 			ctx.options.recordId(record)
 		)}">
-			${ctx.options.views.icon(ctx, ctx.options.icons.listDeleteButton, label && 'mr-1')}
+			${ctx.views.icon(ctx, ctx.icons.listDeleteButton, label && 'mr-1')}
 			${label}
 		</button>
 	`;
@@ -330,14 +325,14 @@ module.exports.listDeleteConfirmationModal = (ctx, data) => {
 					</div>
 					<div class="modal-footer">
 						<form method="post" action="" class="d-inline">
-							${ctx.options.views.csrfField(ctx)}
+							${ctx.views.csrfField(ctx)}
 							<button type="submit" class="btn btn-danger">
-								${ctx.options.views.icon(ctx, ctx.options.icons.modalConfirmDeleteYesButton, 'mr-1')}
+								${ctx.views.icon(ctx, ctx.icons.modalConfirmDeleteYesButton, 'mr-1')}
 								<span class="delete-modal-yes"></span>
 							</button>
 						</form>
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">
-							${ctx.options.views.icon(ctx, ctx.options.icons.modalConfirmDeleteNoButton, 'mr-1')}
+							${ctx.views.icon(ctx, ctx.icons.modalConfirmDeleteNoButton, 'mr-1')}
 							<span class="delete-modal-no"></span>
 						</button>
 					</div>
@@ -352,5 +347,5 @@ module.exports.listDeleteConfirmationModal = (ctx, data) => {
  * @param {CUIContext} ctx
  */
 module.exports.listNoData = ctx => {
-	return `<tr><td colspan="100">${ctx.options.texts.safe.listNoData(ctx)}</td></tr>`;
+	return `<tr><td colspan="100">${ctx.texts.safe.listNoData(ctx)}</td></tr>`;
 };

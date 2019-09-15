@@ -7,16 +7,16 @@ const { assertEqual, getOrCall, capitalize } = require('../tools');
  * @param {Object} record
  */
 module.exports.editPage = (ctx, record) => {
-	return ctx.options.views.layout(
+	return ctx.views.layout(
 		ctx,
 		`
-		${ctx.options.views.editHeader(ctx)}
+		${ctx.views.editHeader(ctx)}
 		<main role="main" class="container mt-4 mb-4">
-			${ctx.options.views.editAbove(ctx, record)}
-			${ctx.options.views.editContent(ctx, record)}
-			${ctx.options.views.editBelow(ctx, record)}
+			${ctx.views.editAbove(ctx, record)}
+			${ctx.views.editContent(ctx, record)}
+			${ctx.views.editBelow(ctx, record)}
 		</main>
-		${ctx.options.views.editFooter(ctx, record)}
+		${ctx.views.editFooter(ctx, record)}
 	`
 	);
 };
@@ -27,7 +27,7 @@ module.exports.editPage = (ctx, record) => {
  * @param {Object} record
  */
 module.exports.editHeader = (ctx, record) => {
-	return ctx.options.views.header(ctx);
+	return ctx.views.header(ctx);
 };
 
 /**
@@ -38,11 +38,9 @@ module.exports.editHeader = (ctx, record) => {
 module.exports.editAbove = (ctx, record) => {
 	return `
 		<h2 class="mb-5">${
-			record
-				? ctx.options.texts.safe.editExistingTitle(ctx, record)
-				: ctx.options.texts.safe.editNewTitle(ctx)
+			record ? ctx.texts.safe.editExistingTitle(ctx, record) : ctx.texts.safe.editNewTitle(ctx)
 		}</h2>
-		${ctx.options.views.editError(ctx, record)}`;
+		${ctx.views.editError(ctx, record)}`;
 };
 
 /**
@@ -60,7 +58,7 @@ module.exports.editBelow = (ctx, record) => {
  * @param {Object} record
  */
 module.exports.editFooter = (ctx, record) => {
-	return ctx.options.views.footer(ctx);
+	return ctx.views.footer(ctx);
 };
 
 /**
@@ -71,16 +69,16 @@ module.exports.editFooter = (ctx, record) => {
 module.exports.editContent = (ctx, record) => {
 	return `
 		<form method="post">
-			${ctx.options.views.csrfField(ctx)}
-			${ctx.options.fields
+			${ctx.views.csrfField(ctx)}
+			${ctx.fields
 				.map((field, index) => {
-					return ctx.options.views.editField(ctx, record, field, index);
+					return ctx.views.editField(ctx, record, field, index);
 				})
 				.filter(Boolean)
 				.join('\n')}
 			<div>
-				${ctx.options.views.editSaveButton(ctx, record)}
-				${ctx.options.views.editCancelButton(ctx, record)}
+				${ctx.views.editSaveButton(ctx, record)}
+				${ctx.views.editCancelButton(ctx, record)}
 			</div>
 		</form>
 	`;
@@ -93,11 +91,11 @@ module.exports.editContent = (ctx, record) => {
  */
 module.exports.editSaveButton = (ctx, record) => {
 	const label = record
-		? ctx.options.texts.safe.editExistingSaveButton(ctx, record)
-		: ctx.options.texts.safe.editNewSaveButton(ctx, record);
+		? ctx.texts.safe.editExistingSaveButton(ctx, record)
+		: ctx.texts.safe.editNewSaveButton(ctx, record);
 	const icon = record
-		? ctx.options.views.icon(ctx, ctx.options.icons.editExistingSaveButton, label && 'mr-1')
-		: ctx.options.views.icon(ctx, ctx.options.icons.editNewSaveButton, label && 'mr-1');
+		? ctx.views.icon(ctx, ctx.icons.editExistingSaveButton, label && 'mr-1')
+		: ctx.views.icon(ctx, ctx.icons.editNewSaveButton, label && 'mr-1');
 	return `
 		<button type="submit" class="btn btn-success">
 			${icon}
@@ -113,13 +111,13 @@ module.exports.editSaveButton = (ctx, record) => {
  */
 module.exports.editCancelButton = (ctx, record) => {
 	const label = record
-		? ctx.options.texts.safe.editExistingCancelButton(ctx, record)
-		: ctx.options.texts.safe.editNewCancelButton(ctx, record);
+		? ctx.texts.safe.editExistingCancelButton(ctx, record)
+		: ctx.texts.safe.editNewCancelButton(ctx, record);
 	const icon = record
-		? ctx.options.views.icon(ctx, ctx.options.icons.editExistingCancelButton, label && 'mr-1')
-		: ctx.options.views.icon(ctx, ctx.options.icons.editNewCancelButton, label && 'mr-1');
+		? ctx.views.icon(ctx, ctx.icons.editExistingCancelButton, label && 'mr-1')
+		: ctx.views.icon(ctx, ctx.icons.editNewCancelButton, label && 'mr-1');
 	return `
-		<a href="${ctx.url(ctx.options.urls.indexPage)}" class="btn btn-light ml-1">
+		<a href="${ctx.url(ctx.urls.indexPage)}" class="btn btn-light ml-1">
 			${icon}
 			${label}
 		</a>
@@ -277,9 +275,9 @@ module.exports.editFieldPrepareValue = (ctx, record, field, index) => {
 module.exports.editFieldString = (ctx, record, field, index) => {
 	assertEqual(field.type, CUI_FIELD_TYPES.string, 'field type');
 
-	const help = ctx.options.views.editFieldPrepareHelp(ctx, record, field, index);
-	const error = ctx.options.views.editFieldPrepareError(ctx, record, field, index);
-	const value = ctx.options.views.editFieldPrepareValue(ctx, record, field, index);
+	const help = ctx.views.editFieldPrepareHelp(ctx, record, field, index);
+	const error = ctx.views.editFieldPrepareError(ctx, record, field, index);
+	const value = ctx.views.editFieldPrepareValue(ctx, record, field, index);
 
 	return `
 	  <div class="form-group">
@@ -301,9 +299,9 @@ module.exports.editFieldString = (ctx, record, field, index) => {
 module.exports.editFieldText = (ctx, record, field, index) => {
 	assertEqual(field.type, CUI_FIELD_TYPES.text, 'field type');
 
-	const help = ctx.options.views.editFieldPrepareHelp(ctx, record, field, index);
-	const error = ctx.options.views.editFieldPrepareError(ctx, record, field, index);
-	const value = ctx.options.views.editFieldPrepareValue(ctx, record, field, index);
+	const help = ctx.views.editFieldPrepareHelp(ctx, record, field, index);
+	const error = ctx.views.editFieldPrepareError(ctx, record, field, index);
+	const value = ctx.views.editFieldPrepareValue(ctx, record, field, index);
 
 	return `
 	  <div class="form-group">
@@ -325,9 +323,9 @@ module.exports.editFieldText = (ctx, record, field, index) => {
 module.exports.editFieldSelect = (ctx, record, field, index) => {
 	assertEqual(field.type, CUI_FIELD_TYPES.select, 'field type');
 
-	const help = ctx.options.views.editFieldPrepareHelp(ctx, record, field, index);
-	const error = ctx.options.views.editFieldPrepareError(ctx, record, field, index);
-	const selectedValue = ctx.options.views.editFieldPrepareValue(ctx, record, field, index);
+	const help = ctx.views.editFieldPrepareHelp(ctx, record, field, index);
+	const error = ctx.views.editFieldPrepareError(ctx, record, field, index);
+	const selectedValue = ctx.views.editFieldPrepareValue(ctx, record, field, index);
 
 	const values = getOrCall(field.values, ctx, record, field, index);
 

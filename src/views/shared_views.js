@@ -15,7 +15,7 @@ module.exports.layout = (ctx, content, head = '', scripts = '') => {
 		<meta name="description" content="">
 		<meta name="author" content="">
 
-		<title>${ctx.options.texts.safe.listTitle(ctx)}</title>
+		<title>${ctx.texts.safe.listTitle(ctx)}</title>
 
 		<link rel="stylesheet" href="${ctx.url('/css/bootstrap.css')}" />
 		<link rel="stylesheet" href="${ctx.url('/css/fontawesome.css')}" />
@@ -43,8 +43,8 @@ module.exports.layout = (ctx, content, head = '', scripts = '') => {
 module.exports.header = ctx => {
 	return `
 		<div class="mb-5">
-			${ctx.options.views.navigation(ctx)}
-			${ctx.options.views.flashMessage(ctx)}
+			${ctx.views.navigation(ctx)}
+			${ctx.views.flashMessage(ctx)}
 		</div>
 	`;
 };
@@ -59,9 +59,9 @@ module.exports.footer = ctx => {
       <div class="container">
         <hr />
         <p class="float-right">
-          <a href="#">${ctx.options.texts.safe.footerBackToTop(ctx)}</a>
+          <a href="#">${ctx.texts.safe.footerBackToTop(ctx)}</a>
         </p>
-        <p>${ctx.options.texts.safe.footerCopyright(ctx)}</p>
+        <p>${ctx.texts.safe.footerCopyright(ctx)}</p>
       </div>
     </footer>
 	`;
@@ -79,12 +79,12 @@ module.exports.navigation = ctx => {
 
 	const left = ctx.options.navigation.left
 		? ctx.options.navigation.left
-				.map((item, index) => ctx.options.views.navigationItem(ctx, item, index, false))
+				.map((item, index) => ctx.views.navigationItem(ctx, item, index, false))
 				.join('\n')
 		: '';
 	const right = ctx.options.navigation.right
 		? ctx.options.navigation.right
-				.map((item, index) => ctx.options.views.navigationItem(ctx, item, index, true))
+				.map((item, index) => ctx.views.navigationItem(ctx, item, index, true))
 				.join('\n')
 		: '';
 
@@ -132,7 +132,7 @@ module.exports.navigationItem = (ctx, item, index, isRight) => {
 		return `
 			<li class="nav-item ${url.indexOf(ctx.baseUrl) === 0 ? 'active' : ''}">
 				<a class="nav-link" href="${url}">
-					${ctx.options.views.icon(ctx, item.icon)}
+					${ctx.views.icon(ctx, item.icon)}
 					${item.title}
 				</a>
 			</li>
@@ -142,7 +142,7 @@ module.exports.navigationItem = (ctx, item, index, isRight) => {
 	// Render as dropdown menu
 	const menuItems = item.items
 		.map((menuItem, menuIndex) =>
-			ctx.options.views.navigationDropDownItem(ctx, menuItem, menuIndex, isRight, item, index)
+			ctx.views.navigationDropDownItem(ctx, menuItem, menuIndex, isRight, item, index)
 		)
 		.join('\n');
 
@@ -181,7 +181,7 @@ module.exports.navigationDropDownItem = (ctx, item, index, isRight, parentItem, 
 	const url = item.url || '#';
 	return `
 		<a class="dropdown-item ${url.indexOf(ctx.baseUrl) === 0 ? 'active' : ''}" href="${url}">
-			${ctx.options.views.icon(ctx, item.icon)}
+			${ctx.views.icon(ctx, item.icon)}
 			${item.title}
 		</a>
 	`;
@@ -245,10 +245,10 @@ module.exports.csrfField = ctx => {
  * @param {Error} err
  */
 module.exports.errorPage = (ctx, err) => {
-	return ctx.options.views.layout(
+	return ctx.views.layout(
 		ctx,
 		`
-		${ctx.options.views.header(ctx)}
+		${ctx.views.header(ctx)}
 		<main class="container">
 			<div class="row">
 				<div class="col-md-6 offset-md-3">
