@@ -120,6 +120,18 @@ function ensureLeadingChar(leadingChar, str) {
 	return typeof str === 'string' && str[0] !== leadingChar ? leadingChar + str : str;
 }
 
+/**
+ * Cast an object into a constructor
+ * @param Ctr
+ * @param ob
+ */
+function cast(Ctr, ob) {
+	if (ob instanceof Ctr) {
+		return ob;
+	}
+	return new Ctr(ob);
+}
+
 // *********************************************************************************************************************
 
 /**
@@ -169,7 +181,7 @@ function extractCookie(cookieStr, cookieName) {
 	}
 	startIndex++;
 	let endIndex = startIndex;
-	while (endIndex !== ';' && endIndex < cookieStr.length) {
+	while (cookieStr[endIndex] !== ';' && endIndex < cookieStr.length) {
 		endIndex++;
 	}
 	const value = cookieStr.slice(startIndex, endIndex);
@@ -195,6 +207,7 @@ module.exports = {
 	isObject,
 	getOrCall,
 	ensureLeadingChar,
+	cast,
 
 	escapeHTML,
 	escapeScript,
