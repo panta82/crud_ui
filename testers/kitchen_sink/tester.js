@@ -98,6 +98,9 @@ app.use(
 			listCreateButton: 'fa-plus',
 			listEditButton: null,
 		}),
+		tweaks: {
+			showValidationErrorSummary: false,
+		},
 		fields: [
 			new CUIField({
 				type: FIELD_TYPES.string,

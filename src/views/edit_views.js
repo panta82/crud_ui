@@ -40,7 +40,7 @@ module.exports.editAbove = (ctx, record) => {
 		<h2 class="mb-5">${
 			record ? ctx.texts.safe.editExistingTitle(ctx, record) : ctx.texts.safe.editNewTitle(ctx)
 		}</h2>
-		${ctx.views.editError(ctx, record)}`;
+		${ctx.views.editErrorSummary(ctx, record)}`;
 };
 
 /**
@@ -125,12 +125,17 @@ module.exports.editCancelButton = (ctx, record) => {
 };
 
 /**
- * Render error in the form header, if one is present
+ * If error is present and error summary is enabled,
+ * renders a red box with error message and all faults above the form.
  * @param {CUIContext} ctx
  * @param {Object} record
  */
-module.exports.editError = (ctx, record) => {
+module.exports.editErrorSummary = (ctx, record) => {
 	if (!ctx.flash.error) {
+		return '';
+	}
+
+	if (!ctx.options.tweaks.showValidationErrorSummary) {
 		return '';
 	}
 

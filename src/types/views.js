@@ -48,7 +48,7 @@ class CUIViews {
 		this.editContent = require('../views/edit_views.js').editContent;
 		this.editSaveButton = require('../views/edit_views.js').editSaveButton;
 		this.editCancelButton = require('../views/edit_views.js').editCancelButton;
-		this.editError = require('../views/edit_views.js').editError;
+		this.editErrorSummary = require('../views/edit_views.js').editErrorSummary;
 		this.editField = require('../views/edit_views.js').editField;
 		this.editFieldPrepareHelp = require('../views/edit_views.js').editFieldPrepareHelp;
 		this.editFieldPrepareError = require('../views/edit_views.js').editFieldPrepareError;

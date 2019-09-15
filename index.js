@@ -8,8 +8,9 @@ const {
 	CUIActionNotSupportedError,
 } = require('./src/types/errors');
 const { CUINavigation, CUINavigationItem } = require('./src/types/navigation');
-const { CUIOptions, CUIActions } = require('./src/types/options');
+const { CUIOptions } = require('./src/types/options');
 const { CUIField } = require('./src/types/fields');
+const { CUIActions } = require('./src/types/actions');
 const { CUIViews } = require('./src/types/views');
 const { CUITexts } = require('./src/types/texts');
 const { CUIIcons, ICON_NAMES } = require('./src/types/icons');
@@ -31,9 +32,9 @@ module.exports.CUINavigationItem = CUINavigationItem;
 
 module.exports.CUIOptions = CUIOptions;
 
-module.exports.CUIActions = CUIActions;
-
 module.exports.CUIField = CUIField;
+
+module.exports.CUIActions = CUIActions;
 
 module.exports.CUIViews = CUIViews;
 /** @type {CUIViews} */
