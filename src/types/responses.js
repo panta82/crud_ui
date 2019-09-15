@@ -1,3 +1,5 @@
+'use strict';
+
 const { CUIContext } = require('../types/context');
 const { CUIError } = require('../types/errors');
 

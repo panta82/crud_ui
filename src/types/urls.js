@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Define URL-s to use for various pages
  */

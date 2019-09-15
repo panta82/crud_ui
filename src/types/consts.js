@@ -1,3 +1,5 @@
+'use strict';
+
 const CUI_FIELD_TYPES = {
 	string: 'string',
 	text: 'text',

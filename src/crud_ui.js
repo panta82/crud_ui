@@ -1,3 +1,5 @@
+'use strict';
+
 const libPath = require('path');
 
 const express = require('express');
@@ -50,7 +52,7 @@ function crudUI(options) {
 			options.onError(ctx, err);
 		}
 
-		const errHtml = views.errorPage(ctx, err);
+		const errHtml = options.views.errorPage(ctx, err);
 		res
 			.status(err.code || 500)
 			.header('Content-Type', 'text/html')

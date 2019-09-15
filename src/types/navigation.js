@@ -1,3 +1,5 @@
+'use strict';
+
 const { makeObjectAsserters } = require('../tools');
 
 class CUINavigationItem {

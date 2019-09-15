@@ -1,3 +1,5 @@
+'use strict';
+
 const { extractCookie, randomToken } = require('../tools');
 const { CUICSRFError } = require('../types/errors');
 

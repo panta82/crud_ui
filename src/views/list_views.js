@@ -1,3 +1,5 @@
+'use strict';
+
 const { escapeHTML, escapeScript } = require('../tools');
 
 /**

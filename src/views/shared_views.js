@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Main page layout. Common for all pages.
  * @param {CUIContext} ctx

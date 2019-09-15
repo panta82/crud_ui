@@ -1,3 +1,5 @@
+'use strict';
+
 const {
 	assertType,
 	capitalize,
@@ -57,9 +59,7 @@ class CUITexts {
 
 		this.modalConfirmDeleteTitle = 'Are you sure?';
 		this.modalConfirmDeleteQuestion = (/** CUIContext */ ctx, data, record, index) =>
-			`You are about to delete ${uncapitalize(
-				ctx.texts.recordTitle(ctx, record)
-			)}. Proceed?`;
+			`You are about to delete ${uncapitalize(ctx.texts.recordTitle(ctx, record))}. Proceed?`;
 		this.modalConfirmDeleteYesButton = 'Delete';
 		this.modalConfirmDeleteNoButton = 'Cancel';
 
@@ -110,9 +110,8 @@ function makeGetter(val) {
 	} else if (typeof val === 'function') {
 		// Function getter
 		return val;
-	} else {
-		throw new Error(`Invalid text value: ${val}. It must be either string or function`);
 	}
+	throw new Error(`Invalid text value: ${val}. It must be either string or function`);
 }
 
 function makeSafeGetter(getter) {

@@ -1,3 +1,5 @@
+'use strict';
+
 const libPluralize = require('pluralize');
 
 function capitalize(str) {
@@ -21,7 +23,7 @@ function singularize(str) {
  * @param str
  */
 function deslugify(str) {
-	return str.replace(/[_\-]/g, ' ');
+	return str.replace(/[_-]/g, ' ');
 }
 
 /**

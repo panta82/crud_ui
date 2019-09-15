@@ -1,7 +1,8 @@
+'use strict';
+
 const vjs = require('validate.js');
 
 const { CUI_FIELD_TYPES } = require('../types/consts');
-const { CUIContext } = require('../types/context');
 const {
 	CUIError,
 	CUIActionNotSupportedError,
@@ -9,7 +10,6 @@ const {
 	CUIValidationFault,
 } = require('../types/errors');
 const { CUIRedirectResponse } = require('../types/responses');
-const { capitalize } = require('../tools');
 
 // *********************************************************************************************************************
 

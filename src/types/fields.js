@@ -1,3 +1,5 @@
+'use strict';
+
 const { makeObjectAsserters, capitalize, deslugify } = require('../tools');
 const { CUI_FIELD_TYPES } = require('./consts');
 

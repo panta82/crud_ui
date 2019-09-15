@@ -1,3 +1,5 @@
+'use strict';
+
 const { assertType, makeObjectAsserters, cast } = require('../tools');
 const { CUIField } = require('./fields');
 const { CUIActions } = require('./actions');
@@ -41,7 +43,7 @@ class CUIOptions {
 		 * @type {CUINavigation}
 		 */
 		this.navigation = undefined;
-		
+
 		/**
 		 * Options which the default views will utilize to customize UI appearance.
 		 * @type {CUITweaks}
@@ -137,7 +139,7 @@ class CUIOptions {
 
 		this.actions = cast(CUIActions, this.actions);
 		this.actions._validateAndCoerce();
-		
+
 		this.tweaks = cast(CUITweaks, this.tweaks);
 		this.tweaks._validateAndCoerce();
 

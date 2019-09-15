@@ -1,3 +1,5 @@
+'use strict';
+
 const { capitalize } = require('../tools');
 
 class CUIError extends Error {

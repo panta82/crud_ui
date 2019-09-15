@@ -1,3 +1,5 @@
+'use strict';
+
 const { crudUI } = require('./src/crud_ui');
 const { CUI_FIELD_TYPES } = require('./src/types/consts');
 const {

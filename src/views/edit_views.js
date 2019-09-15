@@ -1,3 +1,5 @@
+'use strict';
+
 const { CUI_FIELD_TYPES } = require('../types/consts');
 const { assertEqual, getOrCall, capitalize } = require('../tools');
 

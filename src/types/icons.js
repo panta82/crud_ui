@@ -1,3 +1,5 @@
+'use strict';
+
 const ICON_NAMES = {
 	ad: 'ad',
 	address_book: 'address-book',
