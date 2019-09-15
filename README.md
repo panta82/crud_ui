@@ -235,7 +235,9 @@ server.listen(port, () => {
 
 ### Development
 
-Follow the development and TODO-s here: <https://trello.com/b/3vSgeUxa/crudbutquick>
+Follow the development and TODO-s here: <https://trello.com/b/3vSgeUxa/crudui>
+
+Release log can be found [here](docs/releases.md).
 
 #### NOTE
 
