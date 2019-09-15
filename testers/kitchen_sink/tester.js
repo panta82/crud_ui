@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 
 const port = process.env.PORT || 3000;
 
-const { crudUI, CUIField, FIELD_TYPES, CUINavigationItem, CUITexts, CUIIcons } = require('../../');
+const { crudUI, CUIField, FIELD_TYPES, CUITexts, CUIIcons, ICON_NAMES } = require('../../');
 
 const app = express();
 app.use(bodyParser.json());
@@ -30,10 +30,12 @@ const navigation = {
 		{
 			title: 'Users',
 			url: '/admin/users',
+			icon: ICON_NAMES.users,
 		},
 		{
 			title: 'Projects',
 			url: '/admin/projects',
+			icon: ICON_NAMES.list_alt,
 		},
 	],
 	right: [

@@ -131,7 +131,10 @@ module.exports.navigationItem = (ctx, item, index, isRight) => {
 		const url = item.url || '#';
 		return `
 			<li class="nav-item ${url.indexOf(ctx.baseUrl) === 0 ? 'active' : ''}">
-				<a class="nav-link" href="${url}">${item.title}</a>
+				<a class="nav-link" href="${url}">
+					${ctx.options.views.icon(ctx, item.icon)}
+					${item.title}
+				</a>
 			</li>
 		`;
 	}
@@ -178,6 +181,7 @@ module.exports.navigationDropDownItem = (ctx, item, index, isRight, parentItem, 
 	const url = item.url || '#';
 	return `
 		<a class="dropdown-item ${url.indexOf(ctx.baseUrl) === 0 ? 'active' : ''}" href="${url}">
+			${ctx.options.views.icon(ctx, item.icon)}
 			${item.title}
 		</a>
 	`;

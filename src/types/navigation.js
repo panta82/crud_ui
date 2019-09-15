@@ -9,6 +9,12 @@ class CUINavigationItem {
 		this.title = undefined;
 
 		/**
+		 * Icon name to use for this menu item.
+		 * @type {string}
+		 */
+		this.icon = undefined;
+
+		/**
 		 * If provided, item will be rendered as a link leading to given (relative or absolute )URL.
 		 * @type {string}
 		 */
@@ -23,7 +29,7 @@ class CUINavigationItem {
 		/**
 		 * If provided, this will be called to produce custom HTML instead of default rendering.
 		 * Useful if you want custom functionality for a menu item (call a javascript, for example).
-		 * @type {function(CUIContext, CUINavigationItem, number, boolean)}
+		 * @type {function(CUIContext, CUINavigationItem, number, boolean, CUINavigationItem?, number?)}
 		 */
 		this.render = undefined;
 
@@ -34,6 +40,7 @@ class CUINavigationItem {
 		const asserters = makeObjectAsserters(this, 'Navigation item field "');
 
 		asserters.type('title', 'string');
+		asserters.type('icon', 'string');
 		asserters.type('url', 'string');
 		asserters.type('items', 'array');
 		asserters.type('render', 'function');
