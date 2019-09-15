@@ -4,6 +4,12 @@ const { CUICSRFError } = require('../types/errors');
 class CUICSRFMiddlewareOptions {
 	constructor(/** CUICSRFMiddlewareOptions */ source) {
 		/**
+		 * Whether CSRF creation and checking is enabled. Set to false to live dangerously.
+		 * @type {boolean}
+		 */
+		this.enabled = true;
+
+		/**
 		 * Name of the form field to store the token in
 		 * @type {string}
 		 */
@@ -29,9 +35,10 @@ class CUICSRFInfo {
 /**
  * Middleware that generates and checks CSRF tokens
  * @param {CUICSRFMiddlewareOptions} options
+ * @param {function} debugLog
  * @return {function(req, res, next)}
  */
-function createCSRFMiddleware(options) {
+function createCSRFMiddleware(options, debugLog) {
 	options = new CUICSRFMiddlewareOptions(options);
 
 	return middleware;
@@ -43,25 +50,35 @@ function createCSRFMiddleware(options) {
 	 * @param next
 	 */
 	function middleware(req, res, next) {
-		// Extract CSRF, if any
-		const existingCSRF = extractCookie(req.headers.cookie, options.cookie_name);
+		if (!options.enabled) {
+			return next();
+		}
+
+		// Extract CSRF session
+		let csrf = extractCookie(req.headers.cookie, options.cookie_name);
 
 		// Check that CSRF is present in case we have a body
 		if (req.method === 'POST' || req.method === 'PUT' || req.method === 'DELETE') {
 			const submittedCSRF = req.body[options.field_name];
-			if (!existingCSRF || !submittedCSRF || existingCSRF !== submittedCSRF) {
+			if (!csrf || !submittedCSRF || csrf !== submittedCSRF) {
 				// Invalid CSRF
 				return next(new CUICSRFError());
 			}
 		}
 
-		// Generate and attach next CSRF
-		const newCSRF = randomToken();
-		req.csrf = new CUICSRFInfo(options.field_name, newCSRF);
-		res.cookie(options.cookie_name, newCSRF, {
-			httpOnly: true,
-			sameSite: true,
-		});
+		// If csrf is not present, set it now
+		if (!csrf) {
+			csrf = randomToken();
+			res.cookie(options.cookie_name, csrf, {
+				httpOnly: true,
+				sameSite: true,
+				path: req.baseUrl,
+			});
+			debugLog(`CSRF set to "${csrf}" for ${req.baseUrl}`);
+		}
+
+		// Tell services downstream what csrf to use
+		req.csrf = new CUICSRFInfo(options.field_name, csrf);
 
 		return next();
 	}

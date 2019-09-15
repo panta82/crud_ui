@@ -207,6 +207,9 @@ module.exports.flashMessage = ctx => {
  * @param {CUIContext} ctx
  */
 module.exports.csrfField = ctx => {
+	if (!ctx.csrf) {
+		return '';
+	}
 	return `<input type="hidden" name="${ctx.csrf.field}" value="${ctx.csrf.value}" />`;
 };
 

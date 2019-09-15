@@ -37,7 +37,7 @@ class CUIContext {
 		 * @type {string}
 		 */
 		this.baseUrl = req.baseUrl;
-
+		
 		/**
 		 * Flash object extracted by FlashManager
 		 * @type {{message: string, flavor: string}|{error: CUIValidationError}}

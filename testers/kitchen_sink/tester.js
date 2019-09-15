@@ -64,6 +64,7 @@ const actions = list => ({
 		return item;
 	},
 	update: (ctx, id, payload) => {
+		throw new Error('Temporary');
 		const existing = list.find(item => String(item.id) === String(id));
 		if (!existing) {
 			throw new Error(`Not found: ${id}`);
@@ -126,6 +127,7 @@ app.use(
 			}),
 		],
 		actions: actions(data.users),
+		debugLog: true,
 	})
 );
 

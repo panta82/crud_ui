@@ -21,9 +21,10 @@ class CUIFlashManagerOptions {
 /**
  * Use cookies to provide "flash message" functionality
  * @param {CUIFlashManagerOptions} options
+ * @param {function} debugLog
  * @return {CUIFlashManager}
  */
-function createFlashManager(options) {
+function createFlashManager(options, debugLog) {
 	options = new CUIFlashManagerOptions(options);
 
 	const _flashes = new Map();
@@ -41,6 +42,7 @@ function createFlashManager(options) {
 			if (now - timestamp - timestamp > options.max_age) {
 				// Delete outdated flash
 				_flashes.delete(key);
+				debugLog(`Cleaned outdated flash "${key}"`);
 			}
 		}
 	}
@@ -65,6 +67,7 @@ function createFlashManager(options) {
 
 		if (entry) {
 			req.flash = entry.data;
+			debugLog(`Consumed flash "${key}"`);
 		}
 
 		return next();
@@ -81,10 +84,12 @@ function createFlashManager(options) {
 
 		const flashKey = randomToken();
 		_flashes.set(flashKey, { data, timestamp: new Date() });
+		debugLog(`Set flash "${flashKey}": ${JSON.stringify(data)}`);
 
 		res.cookie(options.cookie_name, flashKey, {
 			httpOnly: true,
 			sameSite: true,
+			// NOTE: We are not setting path here because we want all crudUI routers to share flashes
 		});
 	}
 }

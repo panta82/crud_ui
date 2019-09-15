@@ -19,7 +19,7 @@ function crudUI(options) {
 
 	options._validateAndCoerce();
 
-	const flashManager = createFlashManager();
+	const flashManager = createFlashManager(options.flashOptions, options.debugLog);
 	const wrap = createHandlerResponseWrapper(options, flashManager);
 
 	const router = express.Router();
@@ -31,7 +31,7 @@ function crudUI(options) {
 		})
 	);
 	router.use(flashManager.middleware);
-	router.use(createCSRFMiddleware());
+	router.use(createCSRFMiddleware(options.csrfOptions, options.debugLog));
 
 	router.get(options.urls.indexPage, wrap(handlers.indexPage));
 
@@ -61,5 +61,5 @@ function crudUI(options) {
 }
 
 module.exports = {
-  crudUI,
+	crudUI,
 };
