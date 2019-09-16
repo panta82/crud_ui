@@ -21,9 +21,12 @@ module.exports.layout = (ctx, title, className, content, head = '', scripts = ''
 
 		<title>${title}</title>
 
-		<link rel="stylesheet" href="${ctx.url('/css/bootstrap.css')}" />
-		<link rel="stylesheet" href="${ctx.url('/css/fontawesome.css')}" />
-		<link rel="stylesheet" href="${ctx.url('/css/styles.css')}" />
+		${ctx.options.tweaks.globalCSS
+			.map(makePath => makePath(ctx))
+			.filter(Boolean)
+			.map(path => `<link rel="stylesheet" href="${ctx.url(path)}" />`)
+			.join('\n')}
+		
 		${head || ''}
 	</head>
 
@@ -31,9 +34,12 @@ module.exports.layout = (ctx, title, className, content, head = '', scripts = ''
 
 		${content}
 		
-		<script src="${ctx.url('/js/jquery-3.4.1.slim.js')}"></script>
-		<script src="${ctx.url('/js/bootstrap.js')}"></script>
-		<script src="${ctx.url('/js/scripts.js')}"></script>
+		${ctx.options.tweaks.globalJS
+			.map(makePath => makePath(ctx))
+			.filter(Boolean)
+			.map(path => `<script src="${ctx.url(path)}"></script>`)
+			.join('\n')}
+		
 		${scripts || ''}
 	</body>
 </html>

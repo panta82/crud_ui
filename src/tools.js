@@ -190,6 +190,20 @@ function extractCookie(cookieStr, cookieName) {
 	return value;
 }
 
+/**
+ * Create a function that produces name if development and name.min.ext in production.
+ * @param {string} name
+ * @return {function(CUIContext)}
+ */
+function minInProd(name) {
+	const dotIndex = name.lastIndexOf('.');
+	const cleanName = name.substring(0, dotIndex);
+	const extension = name.slice(dotIndex);
+	return /** CUIContext */ ctx => {
+		return ctx.options.isProduction ? cleanName + '.min' + extension : name;
+	};
+}
+
 // *********************************************************************************************************************
 
 module.exports = {
@@ -214,4 +228,5 @@ module.exports = {
 	escapeHTML,
 	escapeScript,
 	extractCookie,
+	minInProd,
 };

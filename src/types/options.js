@@ -99,6 +99,13 @@ class CUIOptions {
 		 */
 		this.debugLog = undefined;
 
+		/**
+		 * Trigger various minor tweaks depending whether we are running in production mode
+		 * (eg. load minimized assets). If not set, defaults to sniffing NODE_ENV.
+		 * @type {boolean}
+		 */
+		this.isProduction = undefined;
+
 		Object.assign(this, source);
 	}
 
@@ -167,6 +174,11 @@ class CUIOptions {
 			// Make it no-op
 			this.debugLog = () => {};
 		}
+
+		if (this.isProduction === undefined) {
+			this.isProduction = process.env.NODE_ENV === 'production';
+		}
+		asserters.type('isProduction', 'boolean');
 	}
 }
 

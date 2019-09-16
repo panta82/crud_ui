@@ -1,6 +1,7 @@
 'use strict';
 
 const http = require('http');
+const libPath = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -85,8 +86,11 @@ const actions = list => ({
 	},
 });
 
+const customAssets = express.static(libPath.resolve(__dirname, './custom_static'));
+
 app.use(
 	'/admin/users',
+	customAssets,
 	crudUI({
 		name: 'user',
 		recordId: 'id',
@@ -148,9 +152,11 @@ app.use(
 
 app.use(
 	'/admin/projects',
+	customAssets,
 	crudUI({
 		name: 'project',
 		navigation,
+		isProduction: true,
 		fields: [
 			new CUIField({
 				name: 'name',
