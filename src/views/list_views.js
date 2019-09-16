@@ -1,6 +1,7 @@
 'use strict';
 
 const { escapeHTML, escapeScript } = require('../tools');
+const { CUI_FIELD_TYPES } = require('../types/consts');
 
 /**
  * Render the entire list page. Embeds itself into layout, and renders all other parts of the list.
@@ -247,6 +248,11 @@ module.exports.listValue = (ctx, data, record, index, field) => {
 	if (typeof field.listView === 'function') {
 		// Use custom renderer
 		return field.listView(record[field.name], record, ctx, field, data, index);
+	}
+
+	if (field.type === CUI_FIELD_TYPES.secret) {
+		// Do not display secrets by default
+		return `<span class="text-muted">••••••••</span>`;
 	}
 
 	let value = record[field.name];

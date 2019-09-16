@@ -77,6 +77,7 @@ class CUITexts {
 		this.modalConfirmDeleteYesButton = 'Delete';
 		this.modalConfirmDeleteNoButton = 'Cancel';
 
+		this.errorPageTitle = (/** CUIContext */ ctx, err) => `Error`;
 		this.errorNotFound = (/** CUIContext */ ctx, id) =>
 			`${capitalize(singularize(ctx.options.name))} with id "${id}" couldn't be found`;
 

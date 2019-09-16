@@ -173,6 +173,10 @@ app.use(
 				listView: link =>
 					`<a href="${link}" target="_blank" rel="nofollow noreferrer noopener">URL</a>`,
 			}),
+			new CUIField({
+				name: 'password',
+				type: 'secret',
+			}),
 		],
 		actions: actions(data.projects),
 	})

@@ -259,6 +259,8 @@ module.exports.csrfField = ctx => {
 module.exports.errorPage = (ctx, err) => {
 	return ctx.views.layout(
 		ctx,
+		ctx.texts.errorPageTitle(ctx, err),
+		'cui-error-page',
 		`
 		${ctx.views.header(ctx)}
 		<main class="container cui-error-page">

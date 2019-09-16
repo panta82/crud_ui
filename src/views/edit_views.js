@@ -198,6 +198,8 @@ module.exports.editField = (ctx, record, field, index) => {
 	switch (field.type) {
 		case CUI_FIELD_TYPES.string:
 			return module.exports.editFieldString(ctx, record, field, index);
+		case CUI_FIELD_TYPES.secret:
+			return module.exports.editFieldSecret(ctx, record, field, index);
 		case CUI_FIELD_TYPES.text:
 			return module.exports.editFieldText(ctx, record, field, index);
 		case CUI_FIELD_TYPES.select:
@@ -302,6 +304,30 @@ module.exports.editFieldString = (ctx, record, field, index) => {
 	  <div class="form-group cui-field cui-field-name-${field.name} cui-field-string" data-field-name="${field.name}">
 			<label for="${field.name}">${field.label}</label>
 			<input type="text" class="form-control ${error.class}" name="${field.name}" id="${field.name}" value="${value}" ${help.aria} />
+			${error.dom}
+			${help.dom}
+		</div>
+	`;
+};
+
+/**
+ * Render a secret field. This maps to a password text box.
+ * @param {CUIContext} ctx
+ * @param {Object} record
+ * @param {CUIField} field
+ * @param {*} index
+ */
+module.exports.editFieldSecret = (ctx, record, field, index) => {
+	assertEqual(field.type, CUI_FIELD_TYPES.secret, 'field type');
+
+	const help = ctx.views.editFieldPrepareHelp(ctx, record, field, index);
+	const error = ctx.views.editFieldPrepareError(ctx, record, field, index);
+	const value = ctx.views.editFieldPrepareValue(ctx, record, field, index);
+
+	return `
+	  <div class="form-group cui-field cui-field-name-${field.name} cui-field-secret" data-field-name="${field.name}">
+			<label for="${field.name}">${field.label}</label>
+			<input type="password" class="form-control ${error.class}" name="${field.name}" id="${field.name}" value="${value}" ${help.aria} />
 			${error.dom}
 			${help.dom}
 		</div>
