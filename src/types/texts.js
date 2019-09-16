@@ -42,8 +42,12 @@ class CUITexts {
 		this.listNoData = 'No data is available';
 		this.listCreateButton = (/** CUIContext */ ctx) =>
 			'Create a new ' + uncapitalize(singularize(ctx.options.name));
+		this.listCreateButtonTitle = (/** CUIContext */ ctx) =>
+			'Create a new ' + uncapitalize(singularize(ctx.options.name));
 		this.listEditButton = 'Edit';
+		this.listEditButtonTitle = 'Edit';
 		this.listDeleteButton = 'Delete';
+		this.listDeleteButtonTitle = 'Delete';
 
 		this.footerBackToTop = 'Back to top';
 		this.footerCopyright = (/** CUIContext */ ctx) => {
@@ -54,14 +58,18 @@ class CUITexts {
 			`Create a new ${uncapitalize(singularize(ctx.options.name))}`;
 		this.editNewPageTitle = (/** CUIContext */ ctx) => `${ctx.texts.pageBaseTitle(ctx)} > New`;
 		this.editNewSaveButton = 'Create';
+		this.editNewSaveButtonTitle = 'Submit form and create a new record';
 		this.editNewCancelButton = 'Cancel';
+		this.editNewCancelButtonTitle = 'Cancel creation and go back to the list';
 
 		this.editExistingTitle = (/** CUIContext */ ctx, record) =>
 			`Edit ${uncapitalize(ctx.texts.recordTitle(ctx, record))}`;
 		this.editExistingPageTitle = (/** CUIContext */ ctx) =>
 			`${ctx.texts.pageBaseTitle(ctx)} > Edit`;
 		this.editExistingSaveButton = 'Save changes';
+		this.editExistingSaveButtonTitle = 'Submit form and save changes';
 		this.editExistingCancelButton = 'Cancel';
+		this.editExistingCancelButtonTitle = 'Cancel edit and go back to the list';
 
 		this.modalConfirmDeleteTitle = 'Are you sure?';
 		this.modalConfirmDeleteQuestion = (/** CUIContext */ ctx, data, record, index) =>

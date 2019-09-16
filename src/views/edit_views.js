@@ -99,11 +99,14 @@ module.exports.editSaveButton = (ctx, record) => {
 	const label = record
 		? ctx.texts.safe.editExistingSaveButton(ctx, record)
 		: ctx.texts.safe.editNewSaveButton(ctx, record);
+	const title = record
+		? ctx.texts.safe.editExistingSaveButtonTitle(ctx, record)
+		: ctx.texts.safe.editNewSaveButtonTitle(ctx, record);
 	const icon = record
 		? ctx.views.icon(ctx, ctx.icons.editExistingSaveButton, label && 'mr-1')
 		: ctx.views.icon(ctx, ctx.icons.editNewSaveButton, label && 'mr-1');
 	return `
-		<button type="submit" class="btn btn-success cui-submit-button">
+		<button type="submit" class="btn btn-success cui-submit-button" title="${title}">
 			${icon}
 			${label}
 		</button>
@@ -119,11 +122,16 @@ module.exports.editCancelButton = (ctx, record) => {
 	const label = record
 		? ctx.texts.safe.editExistingCancelButton(ctx, record)
 		: ctx.texts.safe.editNewCancelButton(ctx, record);
+	const title = record
+		? ctx.texts.safe.editExistingCancelButtonTitle(ctx, record)
+		: ctx.texts.safe.editNewCancelButtonTitle(ctx, record);
 	const icon = record
 		? ctx.views.icon(ctx, ctx.icons.editExistingCancelButton, label && 'mr-1')
 		: ctx.views.icon(ctx, ctx.icons.editNewCancelButton, label && 'mr-1');
 	return `
-		<a href="${ctx.url(ctx.urls.indexPage)}" class="btn btn-light ml-1 cui-cancel-button">
+		<a href="${ctx.url(
+			ctx.urls.indexPage
+		)}" class="btn btn-light ml-1 cui-cancel-button" title="${title}">
 			${icon}
 			${label}
 		</a>

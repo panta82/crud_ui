@@ -55,7 +55,8 @@ module.exports.listAbove = (ctx, data) => {
 module.exports.listCreateButton = (ctx, data) => {
 	const label = ctx.texts.safe.listCreateButton(ctx);
 	return `
-		<a href="${ctx.url(ctx.urls.createPage)}" class="btn btn-primary mb-3 mt-1 cui-create-button">
+		<a href="${ctx.url(ctx.urls.createPage)}" class="btn btn-primary mb-3 mt-1 cui-create-button"
+				title="${ctx.texts.safe.listCreateButtonTitle(ctx)}">
 			${ctx.views.icon(ctx, ctx.icons.listCreateButton, label && 'mr-1')}
 			${label}
 		</a>
@@ -286,7 +287,7 @@ module.exports.listEditButton = (ctx, data, record, index) => {
 	return `
 		<a href="${ctx.url(
 			ctx.urls.editPage(ctx.options.recordId(record))
-		)}" class="btn btn-primary btn-sm">
+		)}" class="btn btn-primary btn-sm" title="${ctx.texts.safe.listEditButtonTitle(ctx)}">
 			${ctx.views.icon(ctx, ctx.icons.listEditButton, label && 'mr-1')}
 			${label}
 		</a>
@@ -306,7 +307,7 @@ module.exports.listDeleteButton = (ctx, data, record, index) => {
 	return `
 		<button type="submit" class="btn btn-danger btn-sm cui-delete-button" data-delete-id="${escapeHTML(
 			ctx.options.recordId(record)
-		)}">
+		)}" title="${ctx.texts.safe.listDeleteButtonTitle(ctx)}">
 			${ctx.views.icon(ctx, ctx.icons.listDeleteButton, label && 'mr-1')}
 			${label}
 		</button>
