@@ -3,11 +3,13 @@
 /**
  * Main page layout. Common for all pages.
  * @param {CUIContext} ctx
+ * @param title
+ * @param className
  * @param content
  * @param head
  * @param scripts
  */
-module.exports.layout = (ctx, content, head = '', scripts = '') => {
+module.exports.layout = (ctx, title, className, content, head = '', scripts = '') => {
 	return `
 <!doctype html>
 <html lang="en">
@@ -17,7 +19,7 @@ module.exports.layout = (ctx, content, head = '', scripts = '') => {
 		<meta name="description" content="">
 		<meta name="author" content="">
 
-		<title>${ctx.texts.safe.listTitle(ctx)}</title>
+		<title>${title}</title>
 
 		<link rel="stylesheet" href="${ctx.url('/css/bootstrap.css')}" />
 		<link rel="stylesheet" href="${ctx.url('/css/fontawesome.css')}" />
@@ -25,7 +27,7 @@ module.exports.layout = (ctx, content, head = '', scripts = '') => {
 		${head || ''}
 	</head>
 
-	<body>
+	<body class="${className}">
 
 		${content}
 		
@@ -44,7 +46,7 @@ module.exports.layout = (ctx, content, head = '', scripts = '') => {
  */
 module.exports.header = ctx => {
 	return `
-		<div class="mb-5">
+		<div class="mb-5 cui-page-header">
 			${ctx.views.navigation(ctx)}
 			${ctx.views.flashMessage(ctx)}
 		</div>
@@ -57,7 +59,7 @@ module.exports.header = ctx => {
  */
 module.exports.footer = ctx => {
 	return `
-		<footer class="text-muted mt-5">
+		<footer class="text-muted mt-5 cui-page-footer">
       <div class="container">
         <hr />
         <p class="float-right">
@@ -91,7 +93,7 @@ module.exports.navigation = ctx => {
 		: '';
 
 	return `
-		<nav class="navbar navbar-expand-md navbar-light bg-light">
+		<nav class="navbar navbar-expand-md navbar-light bg-light cui-navbar">
 			<div class="container d-flex justify-content-between">
 				<a class="navbar-brand" href="${ctx.options.navigation.brand.url || '#'}">
 					${ctx.options.navigation.brand.title}
@@ -104,10 +106,10 @@ module.exports.navigation = ctx => {
 				</button>
 
 				<div class="collapse navbar-collapse" id="navbar_content">
-					<ul class="nav navbar-nav mr-auto">
+					<ul class="nav navbar-nav mr-auto cui-navbar-left">
 						${left}
 					</ul>
-					<ul class="nav navbar-nav ml-auto">
+					<ul class="nav navbar-nav ml-auto cui-navbar-right">
 						${right}
 					</ul>
 				</div>
@@ -132,7 +134,7 @@ module.exports.navigationItem = (ctx, item, index, isRight) => {
 		// Render as plain item
 		const url = item.url || '#';
 		return `
-			<li class="nav-item ${url.indexOf(ctx.baseUrl) === 0 ? 'active' : ''}">
+			<li class="nav-item ${url.indexOf(ctx.baseUrl) === 0 ? 'active' : ''} nav-item-${index}">
 				<a class="nav-link" href="${url}">
 					${ctx.views.icon(ctx, item.icon)}
 					${item.title}
@@ -182,7 +184,9 @@ module.exports.navigationDropDownItem = (ctx, item, index, isRight, parentItem, 
 
 	const url = item.url || '#';
 	return `
-		<a class="dropdown-item ${url.indexOf(ctx.baseUrl) === 0 ? 'active' : ''}" href="${url}">
+		<a class="dropdown-item ${
+			url.indexOf(ctx.baseUrl) === 0 ? 'active' : ''
+		} cui-nav-item-${parentIndex}-${index}" href="${url}">
 			${ctx.views.icon(ctx, item.icon)}
 			${item.title}
 		</a>
@@ -251,7 +255,7 @@ module.exports.errorPage = (ctx, err) => {
 		ctx,
 		`
 		${ctx.views.header(ctx)}
-		<main class="container">
+		<main class="container cui-error-page">
 			<div class="row">
 				<div class="col-md-6 offset-md-3">
 					<div class="alert alert-danger">

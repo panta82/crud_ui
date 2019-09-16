@@ -10,6 +10,8 @@ const { escapeHTML, escapeScript } = require('../tools');
 module.exports.listPage = (ctx, data) => {
 	return ctx.views.layout(
 		ctx,
+		ctx.texts.safe.listTitle(ctx),
+		'cui-page-list',
 		`
 		${ctx.views.listHeader(ctx, data)}
 		<main role="main" class="container mt-4 mb-4">
@@ -40,7 +42,7 @@ module.exports.listHeader = (ctx, data) => {
  */
 module.exports.listAbove = (ctx, data) => {
 	return `
-		<h2>${ctx.texts.safe.listTitle(ctx)}</h2>
+		<h2 class="cui-page-title">${ctx.texts.safe.listTitle(ctx)}</h2>
 		${ctx.actions.create ? ctx.views.listCreateButton(ctx, data) : ''}
 	`;
 };
@@ -53,7 +55,7 @@ module.exports.listAbove = (ctx, data) => {
 module.exports.listCreateButton = (ctx, data) => {
 	const label = ctx.texts.safe.listCreateButton(ctx);
 	return `
-		<a href="${ctx.url(ctx.urls.createPage)}" class="btn btn-primary mb-3 mt-1">
+		<a href="${ctx.url(ctx.urls.createPage)}" class="btn btn-primary mb-3 mt-1 cui-create-button">
 			${ctx.views.icon(ctx, ctx.icons.listCreateButton, label && 'mr-1')}
 			${label}
 		</a>
@@ -125,7 +127,7 @@ module.exports.listDeleteModalScripting = (ctx, data) => {
 	}
 
 	return `var deleteModalData = ${escapeScript(JSON.stringify(deleteModalData))};
-	  document.querySelectorAll('.cui-list-delete-button').forEach(function (el) {
+	  document.querySelectorAll('.cui-delete-button').forEach(function (el) {
 	    var id = el.getAttribute('data-delete-id');
 	    var data = deleteModalData[id];
 	    if (data) {
@@ -144,7 +146,7 @@ module.exports.listDeleteModalScripting = (ctx, data) => {
  */
 module.exports.listContent = (ctx, data) => {
 	return `
-<table class="table table-bordered table-sm">
+<table class="table table-bordered table-sm cui-list-table">
 <thead>
 	<tr>
 		${ctx.fields
@@ -294,7 +296,7 @@ module.exports.listEditButton = (ctx, data, record, index) => {
 module.exports.listDeleteButton = (ctx, data, record, index) => {
 	const label = ctx.texts.safe.listDeleteButton(ctx);
 	return `
-		<button type="submit" class="btn btn-danger btn-sm cui-list-delete-button" data-delete-id="${escapeHTML(
+		<button type="submit" class="btn btn-danger btn-sm cui-delete-button" data-delete-id="${escapeHTML(
 			ctx.options.recordId(record)
 		)}">
 			${ctx.views.icon(ctx, ctx.icons.listDeleteButton, label && 'mr-1')}
@@ -313,7 +315,7 @@ module.exports.listDeleteConfirmationModal = (ctx, data) => {
 	// NOTE: We are not accounting for margin in buttons if user sets no text. No easy way to do it with current system,
 	//       and probably not worth worrying about it for a pretty niche use case. Revisit if it turns out to matter.
 	return `
-		<div class="modal fade" tabindex="-1" role="dialog" id="delete_modal">
+		<div class="modal fade cui-delete-modal" tabindex="-1" role="dialog" id="delete_modal">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -349,5 +351,10 @@ module.exports.listDeleteConfirmationModal = (ctx, data) => {
  * @param {CUIContext} ctx
  */
 module.exports.listNoData = ctx => {
-	return `<tr><td colspan="100">${ctx.texts.safe.listNoData(ctx)}</td></tr>`;
+	return `
+		<tr>
+			<td class="cui-no-data-placeholder" colspan="100">
+				${ctx.texts.safe.listNoData(ctx)}
+			</td>
+		</tr>`;
 };

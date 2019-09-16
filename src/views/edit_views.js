@@ -11,6 +11,8 @@ const { assertEqual, getOrCall, capitalize } = require('../tools');
 module.exports.editPage = (ctx, record) => {
 	return ctx.views.layout(
 		ctx,
+		record ? ctx.texts.safe.editExistingTitle(ctx, record) : ctx.texts.safe.editNewTitle(ctx),
+		`cui-page-edit cui-page-edit-${record ? 'existing' : 'new'}`,
 		`
 		${ctx.views.editHeader(ctx)}
 		<main role="main" class="container mt-4 mb-4">
@@ -39,7 +41,7 @@ module.exports.editHeader = (ctx, record) => {
  */
 module.exports.editAbove = (ctx, record) => {
 	return `
-		<h2 class="mb-5">${
+		<h2 class="mb-5 cui-page-title">${
 			record ? ctx.texts.safe.editExistingTitle(ctx, record) : ctx.texts.safe.editNewTitle(ctx)
 		}</h2>
 		${ctx.views.editErrorSummary(ctx, record)}`;
@@ -70,7 +72,7 @@ module.exports.editFooter = (ctx, record) => {
  */
 module.exports.editContent = (ctx, record) => {
 	return `
-		<form method="post">
+		<form method="post" class="cui-main-form">
 			${ctx.views.csrfField(ctx)}
 			${ctx.fields
 				.map((field, index) => {
@@ -99,7 +101,7 @@ module.exports.editSaveButton = (ctx, record) => {
 		? ctx.views.icon(ctx, ctx.icons.editExistingSaveButton, label && 'mr-1')
 		: ctx.views.icon(ctx, ctx.icons.editNewSaveButton, label && 'mr-1');
 	return `
-		<button type="submit" class="btn btn-success">
+		<button type="submit" class="btn btn-success cui-submit-button">
 			${icon}
 			${label}
 		</button>
@@ -119,7 +121,7 @@ module.exports.editCancelButton = (ctx, record) => {
 		? ctx.views.icon(ctx, ctx.icons.editExistingCancelButton, label && 'mr-1')
 		: ctx.views.icon(ctx, ctx.icons.editNewCancelButton, label && 'mr-1');
 	return `
-		<a href="${ctx.url(ctx.urls.indexPage)}" class="btn btn-light ml-1">
+		<a href="${ctx.url(ctx.urls.indexPage)}" class="btn btn-light ml-1 cui-cancel-button">
 			${icon}
 			${label}
 		</a>
@@ -154,7 +156,7 @@ module.exports.editErrorSummary = (ctx, record) => {
 	}
 
 	return `
-		<div class="alert alert-danger mb-4 alert-dismissible fade show" role="alert">
+		<div class="alert alert-danger mb-4 alert-dismissible fade show cui-error-summary" role="alert">
 			<h5 class="my-0">${ctx.flash.error.message}</h5>
 			${errorList}
 			
@@ -287,7 +289,7 @@ module.exports.editFieldString = (ctx, record, field, index) => {
 	const value = ctx.views.editFieldPrepareValue(ctx, record, field, index);
 
 	return `
-	  <div class="form-group">
+	  <div class="form-group cui-field cui-field-name-${field.name} cui-field-string" data-field-name="${field.name}">
 			<label for="${field.name}">${field.label}</label>
 			<input type="text" class="form-control ${error.class}" name="${field.name}" id="${field.name}" value="${value}" ${help.aria} />
 			${error.dom}
@@ -311,7 +313,7 @@ module.exports.editFieldText = (ctx, record, field, index) => {
 	const value = ctx.views.editFieldPrepareValue(ctx, record, field, index);
 
 	return `
-	  <div class="form-group">
+	  <div class="form-group cui-field cui-field-name-${field.name} cui-field-text" data-field-name="${field.name}">
 			<label for="${field.name}">${field.label}</label>
 			<textarea class="form-control ${error.class}" name="${field.name}" id="${field.name}" rows="3">${value}</textarea>
 			${error.dom}
@@ -353,7 +355,7 @@ module.exports.editFieldSelect = (ctx, record, field, index) => {
 	}
 
 	return `
-	  <div class="form-group">
+	  <div class="form-group cui-field cui-field-name-${field.name} cui-field-select" data-field-name="${field.name}">
 			<label for="${field.name}">${field.label}</label>
 			<select class="form-control ${error.class}" name="${field.name}" id="${field.name}">${options}</select>
 			${error.dom}
