@@ -2,6 +2,22 @@
 
 # Release log
 
+##### 0.2.0
+###### *(2019/09/16)*
+
+- Added `secret` field (password)
+- Added `boolean` field (checkbox)
+- Changed the way `editView` and `listView` work. They are now only in charge of rendering. To hide a field from a screen, use `allowList`, `allowEdit`, `allowEditNew` or `allowEditExisting`.
+- Separated functionality of `label` and `title` for the field.
+- Added custom CSS classes to all elements (for targeting).
+- Added title-s to some buttons.
+- Added "production mode" (`isProduction`), which triggers loading minimized CSS and JS instead of regular ones.
+- Added `tweaks` in options, allowing developer to customize the appearance without overwriting views.
+- Added option to disable error summary.
+- Added hook for devs to override the CSS and JS file load order.
+- Added eslint and switched all files to strict mode.
+- Refactored `ctx.options`, now proxying a lot of properties.
+
 ##### 0.1.0
 ###### *(2019/09/15)*
 
