@@ -153,7 +153,7 @@ module.exports.listContent = (ctx, data) => {
 			.map((field, index) => ctx.views.listColumnHeader(ctx, data, field, index))
 			.filter(Boolean)
 			.join('\n')}
-		<th class="cui-shrink-cell"></th>
+		<th class="cui-shrink-cell cui-controls-cell"></th>
 	</tr>
 </thead>
 <tbody>
@@ -182,7 +182,10 @@ module.exports.listColumnHeader = (ctx, data, field, index) => {
 	if (field.listView === false) {
 		return null;
 	}
-	return `<th>${field.label}</th>`;
+	return `
+		<th class="cui-field-name-${field.name} cui-field-index-${index}" data-field-name="${field.name}">
+			${field.label}
+		</th>`;
 };
 
 /**
@@ -200,7 +203,7 @@ module.exports.listRow = (ctx, data, record, index) => {
 		.join('\n');
 
 	return `
-		<tr>
+		<tr class="cui-row-index-${index}" data-record-id="${escapeHTML(ctx.options.recordId(record))}">
 			${cols}
 			${ctx.views.listControlsCell(ctx, data, record, index)}
 		</tr>
@@ -212,16 +215,21 @@ module.exports.listRow = (ctx, data, record, index) => {
  * @param {CUIContext} ctx
  * @param {Array} data
  * @param {*} record
- * @param {Number} index
+ * @param {Number} recordIndex
  * @param {CUIField} field
  * @return {string}
  */
-module.exports.listCell = (ctx, data, record, index, field) => {
+module.exports.listCell = (ctx, data, record, recordIndex, field) => {
 	if (field.listView === false) {
 		return null;
 	}
 
-	return `<td>${ctx.views.listValue(ctx, data, record, index, field)}</td>`;
+	return `
+		<td class="cui-field-name-${field.name} cui-field-type-${field.type}" data-field-name="${
+		field.name
+	}">
+			${ctx.views.listValue(ctx, data, record, recordIndex, field)}
+		</td>`;
 };
 
 /**
@@ -258,7 +266,7 @@ module.exports.listValue = (ctx, data, record, index, field) => {
  */
 module.exports.listControlsCell = (ctx, data, record, index) => {
 	return `
-		<td class="text-nowrap">
+		<td class="text-nowrap cui-controls-cell">
 			${ctx.actions.update ? ctx.views.listEditButton(ctx, data, record, index) : ''}
 			${ctx.actions.delete ? ctx.views.listDeleteButton(ctx, data, record, index) : ''}
 		</td>
