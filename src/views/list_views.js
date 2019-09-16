@@ -10,7 +10,7 @@ const { escapeHTML, escapeScript } = require('../tools');
 module.exports.listPage = (ctx, data) => {
 	return ctx.views.layout(
 		ctx,
-		ctx.texts.safe.listTitle(ctx),
+		ctx.texts.safe.listPageTitle(ctx),
 		'cui-page-list',
 		`
 		${ctx.views.listHeader(ctx, data)}

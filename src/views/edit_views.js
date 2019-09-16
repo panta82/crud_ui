@@ -11,7 +11,9 @@ const { assertEqual, getOrCall, capitalize } = require('../tools');
 module.exports.editPage = (ctx, record) => {
 	return ctx.views.layout(
 		ctx,
-		record ? ctx.texts.safe.editExistingTitle(ctx, record) : ctx.texts.safe.editNewTitle(ctx),
+		record
+			? ctx.texts.safe.editExistingPageTitle(ctx, record)
+			: ctx.texts.safe.editNewPageTitle(ctx),
 		`cui-page-edit cui-page-edit-${record ? 'existing' : 'new'}`,
 		`
 		${ctx.views.editHeader(ctx)}

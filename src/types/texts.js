@@ -35,7 +35,10 @@ class CUITexts {
 		this.flashMessageRecordDeleted = (/** CUIContext */ ctx, record) =>
 			`${capitalize(ctx.texts.recordTitle(ctx, record))} deleted`;
 
+		this.pageBaseTitle = (/** CUIContext */ ctx) => pluralize(capitalize(ctx.options.name));
+
 		this.listTitle = (/** CUIContext */ ctx) => pluralize(capitalize(ctx.options.name));
+		this.listPageTitle = (/** CUIContext */ ctx) => ctx.texts.pageBaseTitle(ctx);
 		this.listNoData = 'No data is available';
 		this.listCreateButton = (/** CUIContext */ ctx) =>
 			'Create a new ' + uncapitalize(singularize(ctx.options.name));
@@ -49,11 +52,14 @@ class CUITexts {
 
 		this.editNewTitle = (/** CUIContext */ ctx) =>
 			`Create a new ${uncapitalize(singularize(ctx.options.name))}`;
+		this.editNewPageTitle = (/** CUIContext */ ctx) => `${ctx.texts.pageBaseTitle(ctx)} > New`;
 		this.editNewSaveButton = 'Create';
 		this.editNewCancelButton = 'Cancel';
 
 		this.editExistingTitle = (/** CUIContext */ ctx, record) =>
 			`Edit ${uncapitalize(ctx.texts.recordTitle(ctx, record))}`;
+		this.editExistingPageTitle = (/** CUIContext */ ctx) =>
+			`${ctx.texts.pageBaseTitle(ctx)} > Edit`;
 		this.editExistingSaveButton = 'Save changes';
 		this.editExistingCancelButton = 'Cancel';
 
