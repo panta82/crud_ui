@@ -39,7 +39,7 @@ module.exports.CUITweaks = CUITweaks;
 const { CUIViews } = require('./src/types/views');
 module.exports.CUIViews = CUIViews;
 /** @type {CUIViews} */
-module.exports.DEFAULT_VIEWS = CUIViews;
+module.exports.DEFAULT_VIEWS = require('./src/types/views');
 
 const { CUITexts } = require('./src/types/texts');
 module.exports.CUITexts = CUITexts;

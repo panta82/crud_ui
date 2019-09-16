@@ -7,7 +7,15 @@ const bodyParser = require('body-parser');
 
 const port = process.env.PORT || 3000;
 
-const { crudUI, CUIField, FIELD_TYPES, CUITexts, CUIIcons, ICON_NAMES } = require('../../');
+const {
+	crudUI,
+	CUIField,
+	FIELD_TYPES,
+	CUITexts,
+	CUIIcons,
+	ICON_NAMES,
+	DEFAULT_VIEWS,
+} = require('../../');
 
 const app = express();
 app.use(bodyParser.json());
@@ -176,6 +184,23 @@ app.use(
 			new CUIField({
 				name: 'password',
 				type: 'secret',
+				allowList: false,
+			}),
+			new CUIField({
+				name: 'terms',
+				type: 'boolean',
+				title: 'Terms',
+				label: 'I agree with terms of this project',
+				allowEditExisting: false,
+				validate: {
+					equality: {
+						attribute: 'dummy',
+						comparator: x => {
+							return x === true;
+						},
+						message: 'must be agreed to',
+					},
+				},
 			}),
 		],
 		actions: actions(data.projects),

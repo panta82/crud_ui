@@ -185,14 +185,27 @@ module.exports.editErrorSummary = (ctx, record) => {
  * @param {*} index
  */
 module.exports.editField = (ctx, record, field, index) => {
-	if (field.editView === false) {
-		// Do not display field at all
+	if (
+		!field.allowEdit ||
+		(!record && !field.allowEditNew) ||
+		(record && !field.allowEditExisting)
+	) {
+		// Skip this field
 		return null;
 	}
 
-	if (typeof field.editView === 'function') {
+	if (field.editView) {
 		// Render custom editor
-		return field.editView(record[field.name], record, ctx, field, index);
+		const customView = field.editView(
+			record ? record[field.name] : field.defaultValue,
+			ctx,
+			record,
+			field,
+			index
+		);
+		if (customView !== undefined) {
+			return customView;
+		}
 	}
 
 	switch (field.type) {
@@ -204,7 +217,10 @@ module.exports.editField = (ctx, record, field, index) => {
 			return module.exports.editFieldText(ctx, record, field, index);
 		case CUI_FIELD_TYPES.select:
 			return module.exports.editFieldSelect(ctx, record, field, index);
+		case CUI_FIELD_TYPES.boolean:
+			return module.exports.editFieldBoolean(ctx, record, field, index);
 	}
+
 	throw new TypeError(`Invalid field type: ${field.type}`);
 };
 
@@ -394,6 +410,35 @@ module.exports.editFieldSelect = (ctx, record, field, index) => {
 	  <div class="form-group cui-field cui-field-name-${field.name} cui-field-select" data-field-name="${field.name}">
 			<label for="${field.name}">${field.label}</label>
 			<select class="form-control ${error.class}" name="${field.name}" id="${field.name}">${options}</select>
+			${error.dom}
+			${help.dom}
+		</div>
+	`;
+};
+
+/**
+ * Render a boolean field. This maps to a single checkbox.
+ * @param {CUIContext} ctx
+ * @param {Object} record
+ * @param {CUIField} field
+ * @param {*} index
+ */
+module.exports.editFieldBoolean = (ctx, record, field, index) => {
+	assertEqual(field.type, CUI_FIELD_TYPES.boolean, 'field type');
+
+	const help = ctx.views.editFieldPrepareHelp(ctx, record, field, index);
+	const error = ctx.views.editFieldPrepareError(ctx, record, field, index);
+	const value = ctx.views.editFieldPrepareValue(ctx, record, field, index);
+
+	return `
+	  <div class="form-group form-check cui-field cui-field-name-${
+			field.name
+		} cui-field-boolean" data-field-name="${field.name}">
+			<input type="checkbox" class="form-check-input ${error.class}"
+				name="${field.name}" id="${field.name}" ${value ? 'checked="checked"' : ''} value="true" ${
+		help.aria
+	} />
+			<label class="form-check-label" for="${field.name}">${field.label}</label>
 			${error.dom}
 			${help.dom}
 		</div>

@@ -54,7 +54,7 @@ class CUIValidationFault {
 	}
 
 	get fullMessage() {
-		return capitalize(this.field.label) + ' ' + this.message;
+		return capitalize(this.field.title) + ' ' + this.message;
 	}
 
 	static cast(x) {

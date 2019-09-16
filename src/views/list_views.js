@@ -181,12 +181,12 @@ module.exports.listContent = (ctx, data) => {
  * @return {string}
  */
 module.exports.listColumnHeader = (ctx, data, field, index) => {
-	if (field.listView === false) {
+	if (!field.allowList) {
 		return null;
 	}
 	return `
 		<th class="cui-field-name-${field.name} cui-field-index-${index}" data-field-name="${field.name}">
-			${field.label}
+			${field.title}
 		</th>`;
 };
 
@@ -222,7 +222,7 @@ module.exports.listRow = (ctx, data, record, index) => {
  * @return {string}
  */
 module.exports.listCell = (ctx, data, record, recordIndex, field) => {
-	if (field.listView === false) {
+	if (!field.allowList) {
 		return null;
 	}
 
@@ -245,9 +245,12 @@ module.exports.listCell = (ctx, data, record, recordIndex, field) => {
  * @return {string}
  */
 module.exports.listValue = (ctx, data, record, index, field) => {
-	if (typeof field.listView === 'function') {
+	if (field.listView) {
 		// Use custom renderer
-		return field.listView(record[field.name], record, ctx, field, data, index);
+		const customView = field.listView(record[field.name], ctx, data, record, index, field);
+		if (customView !== undefined) {
+			return customView;
+		}
 	}
 
 	if (field.type === CUI_FIELD_TYPES.secret) {

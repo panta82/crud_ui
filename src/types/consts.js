@@ -5,6 +5,7 @@ const CUI_FIELD_TYPES = {
 	secret: 'secret',
 	text: 'text',
 	select: 'select',
+	boolean: 'boolean',
 };
 
 module.exports = {

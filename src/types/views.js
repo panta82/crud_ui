@@ -4,6 +4,7 @@
 
 class CUIViews {
 	constructor(/** CUIViews */ source) {
+
 		// Shared
 
 		this.layout = require('../views/shared_views.js').layout;
@@ -55,8 +56,10 @@ class CUIViews {
 		this.editFieldPrepareError = require('../views/edit_views.js').editFieldPrepareError;
 		this.editFieldPrepareValue = require('../views/edit_views.js').editFieldPrepareValue;
 		this.editFieldString = require('../views/edit_views.js').editFieldString;
+		this.editFieldSecret = require('../views/edit_views.js').editFieldSecret;
 		this.editFieldText = require('../views/edit_views.js').editFieldText;
 		this.editFieldSelect = require('../views/edit_views.js').editFieldSelect;
+		this.editFieldBoolean = require('../views/edit_views.js').editFieldBoolean;
 
 		Object.assign(this, source);
 	}

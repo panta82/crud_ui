@@ -19,7 +19,15 @@ class CUIField {
 		this.name = undefined;
 
 		/**
-		 * Label to use when referring to field.
+		 * Human-readable string to use when referring to field. If not provided, it is derived from name.
+		 * If label is not provided, it is also used as label.
+		 * @type {string}
+		 */
+		this.title = undefined;
+
+		/**
+		 * Label to use in edit form. If not provided, we will use the title.
+		 * It is recommended to provide separate label and title for boolean fields (if you want to ask a question, for example).
 		 * @type {string}
 		 */
 		this.label = undefined;
@@ -32,17 +40,43 @@ class CUIField {
 
 		/**
 		 * Customized render function to present the field value in the list view (table cell).
-		 * Set to false to disable this column in the table.
-		 * @type {boolean|function(value:*, record:*, ctx:CUIContext, field:CUIField, data:array, index:number)}
+		 * Return undefined to fall back to default render.
+		 * @type {function(value:*, ctx:CUIContext, data:array, record:*, index:number, field:CUIField)}
 		 */
 		this.listView = undefined;
 
 		/**
-		 * Customized render function for field editor.
-		 * Set to false or return false to hide the field from the editor.
-		 * @type {boolean|function(value:*, record:*, ctx:CUIContext, field:CUIField, index:number)}
+		 * Customized render function for field editor. If called for a new record,
+		 * value will be defaultValue and record will be null.
+		 * Return undefined to fall back to default view.
+		 * @type {function(value:*, ctx:CUIContext, record:*, field:CUIField, index:number)}
 		 */
 		this.editView = undefined;
+
+		/**
+		 * Show field in list view
+		 * @type {boolean}
+		 */
+		this.allowList = true;
+
+		/**
+		 * Show field when creating a new record or editing an existing record.
+		 * Works in conjunction with allowEditNew and allowEditExisting.
+		 * @type {boolean}
+		 */
+		this.allowEdit = true;
+
+		/**
+		 * Show field when creating a new record
+		 * @type {boolean}
+		 */
+		this.allowEditNew = true;
+
+		/**
+		 * Show field when editing an existing record
+		 * @type {boolean}
+		 */
+		this.allowEditExisting = true;
 
 		/**
 		 * Function or literal default value to pre-fill when creating a new record
@@ -104,15 +138,25 @@ class CUIField {
 		asserters.provided('name');
 		asserters.type('name', 'string');
 
+		if (this.title === undefined) {
+			this.title = capitalize(deslugify(this.name));
+		}
+		asserters.type('title', 'string');
+
 		if (this.label === undefined) {
-			this.label = capitalize(deslugify(this.name));
+			this.label = this.title;
 		}
 		asserters.type('label', 'string');
 
 		asserters.type('helpText', 'string');
 
-		asserters.type('listView', 'boolean', 'function');
-		asserters.type('editView', 'boolean', 'function');
+		asserters.type('listView', 'function');
+		asserters.type('editView', 'function');
+
+		asserters.type('allowList', 'boolean');
+		asserters.type('allowEdit', 'boolean');
+		asserters.type('allowEditNew', 'boolean');
+		asserters.type('allowEditExisting', 'boolean');
 	}
 }
 

@@ -22,7 +22,12 @@ function coerceAndValidateEditPayload(ctx, isCreate) {
 	const faults = [];
 
 	for (const field of ctx.fields) {
-		if (field.noEdit) {
+		if (
+			!field.allowEdit ||
+			(isCreate && !field.allowEditNew) ||
+			(!isCreate && !field.allowEditExisting)
+		) {
+			// We don't want to edit this field
 			continue;
 		}
 
@@ -39,11 +44,16 @@ function coerceAndValidateEditPayload(ctx, isCreate) {
 			}
 		}
 
-		doValidate(field, 'validate');
+		if (field.type === CUI_FIELD_TYPES.boolean) {
+			// Cast to boolean
+			value = !!value;
+		}
+
+		doValidate(field, 'validate', value);
 		if (isCreate) {
-			doValidate(field, 'validateCreate');
+			doValidate(field, 'validateCreate', value);
 		} else {
-			doValidate(field, 'validateEdit');
+			doValidate(field, 'validateEdit', value);
 		}
 
 		payload[field.name] = value;
@@ -56,13 +66,11 @@ function coerceAndValidateEditPayload(ctx, isCreate) {
 
 	return payload;
 
-	function doValidate(field, prop) {
+	function doValidate(field, prop, value) {
 		const validate = field[prop];
 		if (!validate) {
 			return;
 		}
-
-		const value = ctx.body[field.name];
 
 		let errors;
 
