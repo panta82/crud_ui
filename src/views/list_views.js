@@ -259,6 +259,12 @@ module.exports.listValue = (ctx, data, record, index, field) => {
 	}
 
 	let value = record[field.name];
+
+	if (field.type === CUI_FIELD_TYPES.boolean) {
+		// Display as icon
+		return ctx.views.icon(ctx, value ? ctx.icons.booleanTrue : ctx.icons.booleanFalse);
+	}
+
 	if (value === null || value === undefined) {
 		value = '';
 	}

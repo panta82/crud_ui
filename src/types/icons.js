@@ -973,6 +973,9 @@ class CUIIcons {
 		this.modalConfirmDeleteYesButton = ICON_NAMES.trash;
 		this.modalConfirmDeleteNoButton = ICON_NAMES.times;
 
+		this.booleanTrue = ICON_NAMES.check;
+		this.booleanFalse = ICON_NAMES.times;
+
 		Object.assign(this, source);
 	}
 }
