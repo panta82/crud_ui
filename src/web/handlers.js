@@ -224,6 +224,21 @@ function editAction(ctx) {
 /**
  * @param {CUIContext} ctx
  */
+function detailPage(ctx) {
+	return Promise.resolve()
+		.then(() => ctx.actions.getSingle(ctx, ctx.idParam))
+		.then(data => {
+			if (!data) {
+				throw new CUIError(ctx.texts.errorNotFound(ctx, ctx.idParam), 404);
+			}
+
+			return ctx.views.detailPage(ctx, data);
+		});
+}
+
+/**
+ * @param {CUIContext} ctx
+ */
 function deleteAction(ctx) {
 	CUIActionNotSupportedError.assert(ctx.actions, 'delete');
 
@@ -247,6 +262,8 @@ module.exports = {
 
 	editPage,
 	editAction,
+
+	detailPage,
 
 	deleteAction,
 };

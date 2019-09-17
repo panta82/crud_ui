@@ -35,6 +35,7 @@ class CUIViews {
 		this.listCell = require('../views/list_views.js').listCell;
 		this.listValue = require('../views/list_views.js').listValue;
 		this.listControlsCell = require('../views/list_views.js').listControlsCell;
+		this.listDetailsButton = require('../views/list_views.js').listDetailsButton;
 		this.listEditButton = require('../views/list_views.js').listEditButton;
 		this.listDeleteButton = require('../views/list_views.js').listDeleteButton;
 		this.listDeleteConfirmationModal = require('../views/list_views.js').listDeleteConfirmationModal;
@@ -60,6 +61,29 @@ class CUIViews {
 		this.editFieldText = require('../views/edit_views.js').editFieldText;
 		this.editFieldSelect = require('../views/edit_views.js').editFieldSelect;
 		this.editFieldBoolean = require('../views/edit_views.js').editFieldBoolean;
+
+		// Detail
+
+		this.detailPage = require('../views/detail_views.js').detailPage;
+		this.detailHeader = require('../views/detail_views.js').detailHeader;
+		this.detailAbove = require('../views/detail_views.js').detailAbove;
+		this.detailBelow = require('../views/detail_views.js').detailBelow;
+		this.detailFooter = require('../views/detail_views.js').detailFooter;
+		this.detailContent = require('../views/detail_views.js').detailContent;
+		this.detailControls = require('../views/detail_views.js').detailControls;
+		this.detailEditButton = require('../views/detail_views.js').detailEditButton;
+		this.detailDeleteButton = require('../views/detail_views.js').detailDeleteButton;
+		this.detailCancelButton = require('../views/detail_views.js').detailCancelButton;
+		this.detailErrorSummary = require('../views/detail_views.js').detailErrorSummary;
+		this.detailField = require('../views/detail_views.js').detailField;
+		this.detailFieldPrepareHelp = require('../views/detail_views.js').detailFieldPrepareHelp;
+		this.detailFieldPrepareError = require('../views/detail_views.js').detailFieldPrepareError;
+		this.detailFieldPrepareValue = require('../views/detail_views.js').detailFieldPrepareValue;
+		this.detailFieldString = require('../views/detail_views.js').detailFieldString;
+		this.detailFieldSecret = require('../views/detail_views.js').detailFieldSecret;
+		this.detailFieldText = require('../views/detail_views.js').detailFieldText;
+		this.detailFieldSelect = require('../views/detail_views.js').detailFieldSelect;
+		this.detailFieldBoolean = require('../views/detail_views.js').detailFieldBoolean;
 
 		Object.assign(this, source);
 	}

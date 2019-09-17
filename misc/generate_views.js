@@ -6,6 +6,7 @@ const sections = [
 	['Shared', 'shared_views.js'],
 	['List', 'list_views.js'],
 	['Edit', 'edit_views.js'],
+	['Detail', 'detail_views.js'],
 ];
 
 const lines = [

@@ -113,6 +113,7 @@ app.use(
 			listEditButton: null,
 		}),
 		tweaks: {
+			allowBothListAndDetailViews: true,
 			showValidationErrorSummary: false,
 		},
 		fields: [

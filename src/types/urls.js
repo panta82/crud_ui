@@ -13,6 +13,8 @@ class CUIUrls {
 		this.editPage = id => '/edit/' + encodeURI(id);
 		this.editAction = id => '/edit/' + encodeURI(id);
 
+		this.detailPage = id => '/detail/' + encodeURI(id);
+
 		this.deleteAction = id => '/delete/' + encodeURI(id);
 
 		Object.assign(this, source);

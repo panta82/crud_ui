@@ -962,6 +962,7 @@ const ICON_NAMES = {
 class CUIIcons {
 	constructor(/** CUIIcons */ source) {
 		this.listCreateButton = ICON_NAMES.plus_circle;
+		this.listDetailsButton = ICON_NAMES.eye;
 		this.listEditButton = ICON_NAMES.pen;
 		this.listDeleteButton = ICON_NAMES.trash;
 
@@ -969,6 +970,9 @@ class CUIIcons {
 		this.editNewCancelButton = ICON_NAMES.times;
 		this.editExistingSaveButton = ICON_NAMES.save;
 		this.editExistingCancelButton = ICON_NAMES.times;
+
+		this.detailEditButton = ICON_NAMES.pen;
+		this.detailDeleteButton = ICON_NAMES.trash;
 
 		this.modalConfirmDeleteYesButton = ICON_NAMES.trash;
 		this.modalConfirmDeleteNoButton = ICON_NAMES.times;

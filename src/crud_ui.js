@@ -42,6 +42,8 @@ function crudUI(options) {
 
 	router.get(options.urls.editPage(':id'), wrap(handlers.editPage));
 	router.post(options.urls.editAction(':id'), wrap(handlers.editAction));
+	
+	router.get(options.urls.detailPage(':id'), wrap(handlers.detailPage));
 
 	router.post(options.urls.deleteAction(':id'), wrap(handlers.deleteAction));
 

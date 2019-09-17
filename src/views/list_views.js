@@ -283,9 +283,36 @@ module.exports.listValue = (ctx, data, record, index, field) => {
 module.exports.listControlsCell = (ctx, data, record, index) => {
 	return `
 		<td class="text-nowrap cui-controls-cell">
+			${
+				ctx.options.tweaks.allowBothListAndDetailViews
+					? ctx.views.listDetailsButton(ctx, data, record, index)
+					: ''
+			}
 			${ctx.actions.update ? ctx.views.listEditButton(ctx, data, record, index) : ''}
 			${ctx.actions.delete ? ctx.views.listDeleteButton(ctx, data, record, index) : ''}
 		</td>
+	`;
+};
+
+/**
+ * Render the edit form and button for a single item in the list view
+ * @param {CUIContext} ctx
+ * @param {Array} data
+ * @param {*} record
+ * @param {Number} index
+ * @return {string}
+ */
+module.exports.listDetailsButton = (ctx, data, record, index) => {
+	const label = ctx.texts.safe.listDetailsButton(ctx);
+	return `
+		<a href="${ctx.url(
+			ctx.urls.detailPage(ctx.options.recordId(record))
+		)}" class="btn btn-secondary btn-sm cui-details-button" title="${ctx.texts.safe.listDetailsButtonTitle(
+		ctx
+	)}">
+			${ctx.views.icon(ctx, ctx.icons.listDetailsButton, label && 'mr-1')}
+			${label}
+		</a>
 	`;
 };
 
@@ -302,7 +329,9 @@ module.exports.listEditButton = (ctx, data, record, index) => {
 	return `
 		<a href="${ctx.url(
 			ctx.urls.editPage(ctx.options.recordId(record))
-		)}" class="btn btn-primary btn-sm" title="${ctx.texts.safe.listEditButtonTitle(ctx)}">
+		)}" class="btn btn-primary btn-sm cui-edit-button" title="${ctx.texts.safe.listEditButtonTitle(
+		ctx
+	)}">
 			${ctx.views.icon(ctx, ctx.icons.listEditButton, label && 'mr-1')}
 			${label}
 		</a>
@@ -320,7 +349,7 @@ module.exports.listEditButton = (ctx, data, record, index) => {
 module.exports.listDeleteButton = (ctx, data, record, index) => {
 	const label = ctx.texts.safe.listDeleteButton(ctx);
 	return `
-		<button type="submit" class="btn btn-danger btn-sm cui-delete-button" data-delete-id="${escapeHTML(
+		<button type="button" class="btn btn-danger btn-sm cui-delete-button" data-delete-id="${escapeHTML(
 			ctx.options.recordId(record)
 		)}" title="${ctx.texts.safe.listDeleteButtonTitle(ctx)}">
 			${ctx.views.icon(ctx, ctx.icons.listDeleteButton, label && 'mr-1')}

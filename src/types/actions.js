@@ -15,7 +15,8 @@ class CUIActions {
 		this.getList = undefined;
 
 		/**
-		 * Get single item for edit view. It will be called with recird id, and should return either an object or null, if none is found.
+		 * Get single item for edit view. It will be called with record id,
+		 * and should return either an object or null, if none is found.
 		 * @type {function(CUIContext, id):Promise<Array>|Array}
 		 */
 		this.getSingle = undefined;
@@ -23,6 +24,7 @@ class CUIActions {
 		/**
 		 * Create a new record with given payload. If not provided, creation will be disabled.
 		 * To display a flash message, return either a string or created record.
+		 * If this is not provided, UI will not show Create button.
 		 * @type {function(CUIContext, Object)}
 		 */
 		this.create = undefined;
@@ -31,12 +33,14 @@ class CUIActions {
 		 * Update the record with given id. It will be called with a record id and update payload.
 		 * If not provided, editing will be disabled.
 		 * To display a flash message, return either a string or updated record.
+		 * If this is not provided, UI will not show Edit button.
 		 * @type {function(CUIContext, id, Object)}
 		 */
 		this.update = undefined;
 
 		/**
-		 * Delete a record. It will be called with a record id. If not provided, deletion will be disabled.
+		 * Delete a record. It will be called with a record id.
+		 * If this is not provided, UI will not show Delete button.
 		 * @type {function(CUIContext, id)}
 		 */
 		this.delete = undefined;
