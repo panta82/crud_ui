@@ -317,7 +317,7 @@ module.exports.editFieldString = (ctx, record, field, index) => {
 	const value = ctx.views.editFieldPrepareValue(ctx, record, field, index);
 
 	return `
-	  <div class="form-group cui-field cui-field-name-${field.name} cui-field-string" data-field-name="${field.name}">
+	  <div class="form-group cui-field-edit cui-field-name-${field.name} cui-field-string" data-field-name="${field.name}">
 			<label for="${field.name}">${field.label}</label>
 			<input type="text" class="form-control ${error.class}" name="${field.name}" id="${field.name}" value="${value}" ${help.aria} />
 			${error.dom}
@@ -341,7 +341,7 @@ module.exports.editFieldSecret = (ctx, record, field, index) => {
 	const value = ctx.views.editFieldPrepareValue(ctx, record, field, index);
 
 	return `
-	  <div class="form-group cui-field cui-field-name-${field.name} cui-field-secret" data-field-name="${field.name}">
+	  <div class="form-group cui-field-edit cui-field-name-${field.name} cui-field-secret" data-field-name="${field.name}">
 			<label for="${field.name}">${field.label}</label>
 			<input type="password" class="form-control ${error.class}" name="${field.name}" id="${field.name}" value="${value}" ${help.aria} />
 			${error.dom}
@@ -365,7 +365,7 @@ module.exports.editFieldText = (ctx, record, field, index) => {
 	const value = ctx.views.editFieldPrepareValue(ctx, record, field, index);
 
 	return `
-	  <div class="form-group cui-field cui-field-name-${field.name} cui-field-text" data-field-name="${field.name}">
+	  <div class="form-group cui-field-edit cui-field-name-${field.name} cui-field-text" data-field-name="${field.name}">
 			<label for="${field.name}">${field.label}</label>
 			<textarea class="form-control ${error.class}" name="${field.name}" id="${field.name}" rows="3">${value}</textarea>
 			${error.dom}
@@ -407,7 +407,7 @@ module.exports.editFieldSelect = (ctx, record, field, index) => {
 	}
 
 	return `
-	  <div class="form-group cui-field cui-field-name-${field.name} cui-field-select" data-field-name="${field.name}">
+	  <div class="form-group cui-field-edit cui-field-name-${field.name} cui-field-select" data-field-name="${field.name}">
 			<label for="${field.name}">${field.label}</label>
 			<select class="form-control ${error.class}" name="${field.name}" id="${field.name}">${options}</select>
 			${error.dom}
@@ -431,7 +431,7 @@ module.exports.editFieldBoolean = (ctx, record, field, index) => {
 	const value = ctx.views.editFieldPrepareValue(ctx, record, field, index);
 
 	return `
-	  <div class="form-group form-check cui-field cui-field-name-${
+	  <div class="form-group form-check cui-field-edit cui-field-name-${
 			field.name
 		} cui-field-boolean" data-field-name="${field.name}">
 			<input type="checkbox" class="form-check-input ${error.class}"

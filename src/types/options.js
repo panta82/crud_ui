@@ -82,18 +82,6 @@ class CUIOptions {
 		this.onError = undefined;
 
 		/**
-		 * Options related to flash messages
-		 * @type {CUIFlashManagerOptions}
-		 */
-		this.flashOptions = undefined;
-
-		/**
-		 * Options related to CSRF protection
-		 * @type {CUICSRFMiddlewareOptions}
-		 */
-		this.csrfOptions = undefined;
-
-		/**
 		 * Set to true or provide your own logging function to get some logs from the CrudUI internals
 		 * @type {boolean|function(string)}
 		 */
@@ -167,7 +155,6 @@ class CUIOptions {
 			};
 		}
 
-		this.flashOptions = asserters.type('debugLog', 'function', 'boolean');
 		if (this.debugLog === true) {
 			this.debugLog = msg => console.log(msg);
 		} else if (!this.debugLog) {

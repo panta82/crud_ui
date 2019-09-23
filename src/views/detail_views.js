@@ -21,7 +21,8 @@ module.exports.detailPage = (ctx, record) => {
 			${ctx.views.detailBelow(ctx, record)}
 		</main>
 		${ctx.views.detailFooter(ctx, record)}
-	`
+	`,
+		`<link rel="stylesheet" href="${ctx.url('css/detail.css')}" />`
 	);
 };
 
@@ -41,7 +42,7 @@ module.exports.detailHeader = (ctx, record) => {
  */
 module.exports.detailAbove = (ctx, record) => {
 	return `
-		<h2 class="mb-5 cui-page-title">
+		<h2 class="mb-4 cui-page-title">
 			${ctx.texts.safe.detailTitle(ctx, record)}
 		</h2>`;
 };
@@ -71,17 +72,17 @@ module.exports.detailFooter = (ctx, record) => {
  */
 module.exports.detailContent = (ctx, record) => {
 	return `
-		<div class="cui-detail-content row">
-			<div class="col-md-9 cui-detail-fields">
+		<div class="cui-detail-content row justify-content-md-between">
+		<div class="col-md-auto order-md-2 cui-detail-controls mb-4">
+				${ctx.views.detailControls(ctx, record)}
+			</div>
+			<div class="col-md-auto order-md-1 cui-detail-fields">
 				${ctx.fields
 					.map((field, index) => {
 						return ctx.views.detailField(ctx, record, field, index);
 					})
 					.filter(Boolean)
 					.join('\n')}
-			</div>
-			<div class="col-md-3 cui-detail-controls">
-				${ctx.views.detailControls(ctx, record)}
 			</div>
 		</div>
 	`;
@@ -93,26 +94,19 @@ module.exports.detailContent = (ctx, record) => {
  * @param {Object} record
  */
 module.exports.detailControls = (ctx, record) => {
-	let editBtn = ctx.actions.update ? this.detailEditButton(ctx, record) : '';
-	let deleteBtn = ctx.actions.delete ? this.detailDeleteButton(ctx, record) : '';
+	const editBtn = ctx.actions.update ? this.detailEditButton(ctx, record) : '';
+	const deleteBtn = ctx.actions.delete ? this.detailDeleteButton(ctx, record) : '';
 	if (!editBtn && !deleteBtn) {
 		// Don't show anything at all
 		return '';
 	}
 
-	if (editBtn) {
-		editBtn = `<div class="${deleteBtn ? 'mb-2' : ''}">${editBtn}</div>`;
-	}
-	if (deleteBtn) {
-		deleteBtn = `<div>${deleteBtn}</div>`;
-	}
-
 	return `
-		<div class="card">
-			<div class="card-body">
-				${editBtn}
-				${deleteBtn}
-			</div>
+		<div class="cui-detail-controls-content ${editBtn ? 'cui-detail-controls-has-edit' : ''} ${
+		deleteBtn ? 'cui-detail-controls-has-delete' : ''
+	}">
+			${editBtn}
+			${deleteBtn}
 		</div>
 	`;
 };
@@ -127,7 +121,7 @@ module.exports.detailEditButton = (ctx, record) => {
 	const label = ctx.texts.safe.detailEditButton(ctx, record);
 	return `
 		<a href="${ctx.url(ctx.urls.editPage(ctx.options.recordId(record)))}"
-			class="btn btn-primary btn-block cui-edit-button" title="${ctx.texts.safe.detailEditButtonTitle(
+			class="btn btn-primary cui-edit-button" title="${ctx.texts.safe.detailEditButtonTitle(
 				ctx,
 				record
 			)}">
@@ -146,7 +140,7 @@ module.exports.detailEditButton = (ctx, record) => {
 module.exports.detailDeleteButton = (ctx, record) => {
 	const label = ctx.texts.safe.detailDeleteButton(ctx, record);
 	return `
-		<button type="button" class="btn btn-danger btn-block cui-delete-button"
+		<button type="button" class="btn btn-danger cui-delete-button"
 			title="${ctx.texts.safe.detailDeleteButtonTitle(ctx, record)}">
 			${ctx.views.icon(ctx, ctx.icons.detailDeleteButton, label && 'mr-1')}
 			${label}
@@ -180,45 +174,6 @@ module.exports.detailCancelButton = (ctx, record) => {
 };
 
 /**
- * If error is present and error summary is enabled,
- * renders a red box with error message and all faults above the form.
- * @param {CUIContext} ctx
- * @param {Object} record
- */
-module.exports.detailErrorSummary = (ctx, record) => {
-	if (!ctx.flash.error) {
-		return '';
-	}
-
-	if (!ctx.options.tweaks.showValidationErrorSummary) {
-		return '';
-	}
-
-	let errorList = '';
-	if (ctx.flash.error.faults && ctx.flash.error.faults.length >= 2) {
-		errorList =
-			'<ul class="mt-3 mb-0">' +
-			ctx.flash.error.faults
-				.map(fault => {
-					return `<li>${fault.fullMessage}</li>`;
-				})
-				.join('\n') +
-			'</ul>';
-	}
-
-	return `
-		<div class="alert alert-danger mb-4 alert-dismissible fade show cui-error-summary" role="alert">
-			<h5 class="my-0">${ctx.flash.error.message}</h5>
-			${errorList}
-			
-			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-				<span aria-hidden="true">&times;</span>
-			</button>
-		</div>
-	`;
-};
-
-/**
  * Render an individual edit field
  * @param {CUIContext} ctx
  * @param {Object} record
@@ -226,26 +181,14 @@ module.exports.detailErrorSummary = (ctx, record) => {
  * @param {*} index
  */
 module.exports.detailField = (ctx, record, field, index) => {
-	return 'TODO';
-
-	if (
-		!field.allowEdit ||
-		(!record && !field.allowEditNew) ||
-		(record && !field.allowEditExisting)
-	) {
+	if (!field.allowDetail) {
 		// Skip this field
 		return null;
 	}
 
-	if (field.editView) {
-		// Render custom editor
-		const customView = field.editView(
-			record ? record[field.name] : field.defaultValue,
-			ctx,
-			record,
-			field,
-			index
-		);
+	if (field.detailView) {
+		// Render custom view
+		const customView = field.detailView(record[field.name], ctx, record, field, index);
 		if (customView !== undefined) {
 			return customView;
 		}
@@ -268,59 +211,7 @@ module.exports.detailField = (ctx, record, field, index) => {
 };
 
 /**
- * Utility function to prepare help block. Must return an object.
- * @param {CUIContext} ctx
- * @param {Object} record
- * @param {CUIField} field
- * @param {*} index
- * @return {{dom, aria}}
- */
-module.exports.detailFieldPrepareHelp = (ctx, record, field, index) => {
-	if (!field.helpText) {
-		// Do not render anything
-		return { dom: '', aria: '' };
-	}
-
-	const id = `${field.name}_help_text`;
-	return {
-		dom: `<small id=${id} class="form-text text-muted">${getOrCall(
-			field.helpText,
-			ctx,
-			record,
-			field,
-			index
-		)}</small>`,
-		aria: `aria-describedby="${id}"`,
-	};
-};
-
-/**
- * Utility function to prepare an invalid field class and block. Must return an object.
- * @param {CUIContext} ctx
- * @param {Object} record
- * @param {CUIField} field
- * @param {*} index
- * @return {{dom, class}}
- */
-module.exports.detailFieldPrepareError = (ctx, record, field, index) => {
-	const faults =
-		ctx.flash.error && ctx.flash.error.byFieldName && ctx.flash.error.byFieldName[field.name];
-	if (!faults || !faults.length) {
-		// Nothing to show
-		return { dom: '', class: '' };
-	}
-
-	const lines = faults.map(f => `<li>${capitalize(f.message)}</li>`).join('\n');
-
-	return {
-		dom: `<div class="invalid-feedback">${lines}</div>`,
-		class: 'is-invalid',
-	};
-};
-
-/**
- * Utility function to prepare a value to be filled in edit field. Can be default value,
- * existing value to edit or the restored value after validation error.
+ * Utility function to prepare a value to be shown in detail view.
  * @param {CUIContext} ctx
  * @param {Object} record
  * @param {CUIField} field
@@ -328,25 +219,15 @@ module.exports.detailFieldPrepareError = (ctx, record, field, index) => {
  * @return {*}
  */
 module.exports.detailFieldPrepareValue = (ctx, record, field, index) => {
-	let value;
-	if (ctx.flash.error && ctx.flash.error.payload) {
-		// Restore value after error
-		value = ctx.flash.error.payload[field.name];
-	} else if (record) {
-		value = record[field.name];
-	} else if (field.defaultValue) {
-		value = getOrCall(field.defaultValue, ctx, field, index);
+	let value = record[field.name];
+	if (!value) {
+		value = '&nbsp;';
 	}
-
-	if (value === null || value === undefined) {
-		value = '';
-	}
-
 	return value;
 };
 
 /**
- * Render a string field. This maps to an ordinary text box.
+ * Render a string field's details.
  * @param {CUIContext} ctx
  * @param {Object} record
  * @param {CUIField} field
@@ -355,22 +236,18 @@ module.exports.detailFieldPrepareValue = (ctx, record, field, index) => {
 module.exports.detailFieldString = (ctx, record, field, index) => {
 	assertEqual(field.type, CUI_FIELD_TYPES.string, 'field type');
 
-	const help = ctx.views.detailFieldPrepareHelp(ctx, record, field, index);
-	const error = ctx.views.detailFieldPrepareError(ctx, record, field, index);
 	const value = ctx.views.detailFieldPrepareValue(ctx, record, field, index);
 
 	return `
-	  <div class="form-group cui-field cui-field-name-${field.name} cui-field-string" data-field-name="${field.name}">
-			<label for="${field.name}">${field.label}</label>
-			<input type="text" class="form-control ${error.class}" name="${field.name}" id="${field.name}" value="${value}" ${help.aria} />
-			${error.dom}
-			${help.dom}
+	  <div class="cui-field-detail cui-field-name-${field.name} cui-field-string" data-field-name="${field.name}">
+			<label>${field.label}</label>
+			<article>${value}</article>
 		</div>
 	`;
 };
 
 /**
- * Render a secret field. This maps to a password text box.
+ * Render a secret field's details.
  * @param {CUIContext} ctx
  * @param {Object} record
  * @param {CUIField} field
@@ -379,22 +256,22 @@ module.exports.detailFieldString = (ctx, record, field, index) => {
 module.exports.detailFieldSecret = (ctx, record, field, index) => {
 	assertEqual(field.type, CUI_FIELD_TYPES.secret, 'field type');
 
-	const help = ctx.views.detailFieldPrepareHelp(ctx, record, field, index);
-	const error = ctx.views.detailFieldPrepareError(ctx, record, field, index);
 	const value = ctx.views.detailFieldPrepareValue(ctx, record, field, index);
 
 	return `
-	  <div class="form-group cui-field cui-field-name-${field.name} cui-field-secret" data-field-name="${field.name}">
-			<label for="${field.name}">${field.label}</label>
-			<input type="password" class="form-control ${error.class}" name="${field.name}" id="${field.name}" value="${value}" ${help.aria} />
-			${error.dom}
-			${help.dom}
+	  <div class="cui-field-detail cui-field-name-${field.name} cui-field-secret" data-field-name="${
+		field.name
+	}">
+			<label>${field.label}</label>
+			<article data-field-value="${escapeHTML(value)}">
+				<span class="text-muted">••••••••</span>
+			</article>
 		</div>
 	`;
 };
 
 /**
- * Render a text field. This maps to a text area.
+ * Render a text field's details.
  * @param {CUIContext} ctx
  * @param {Object} record
  * @param {CUIField} field
@@ -403,22 +280,18 @@ module.exports.detailFieldSecret = (ctx, record, field, index) => {
 module.exports.detailFieldText = (ctx, record, field, index) => {
 	assertEqual(field.type, CUI_FIELD_TYPES.text, 'field type');
 
-	const help = ctx.views.detailFieldPrepareHelp(ctx, record, field, index);
-	const error = ctx.views.detailFieldPrepareError(ctx, record, field, index);
 	const value = ctx.views.detailFieldPrepareValue(ctx, record, field, index);
 
 	return `
-	  <div class="form-group cui-field cui-field-name-${field.name} cui-field-text" data-field-name="${field.name}">
-			<label for="${field.name}">${field.label}</label>
-			<textarea class="form-control ${error.class}" name="${field.name}" id="${field.name}" rows="3">${value}</textarea>
-			${error.dom}
-			${help.dom}
+	  <div class="cui-field-detail cui-field-name-${field.name} cui-field-text" data-field-name="${field.name}">
+			<label>${field.label}</label>
+			<article>${value}</article>
 		</div>
 	`;
 };
 
 /**
- * Render a select field. Uses DOM select element
+ * Render a select field's selected value details.
  * @param {CUIContext} ctx
  * @param {Object} record
  * @param {CUIField} field
@@ -427,40 +300,18 @@ module.exports.detailFieldText = (ctx, record, field, index) => {
 module.exports.detailFieldSelect = (ctx, record, field, index) => {
 	assertEqual(field.type, CUI_FIELD_TYPES.select, 'field type');
 
-	const help = ctx.views.detailFieldPrepareHelp(ctx, record, field, index);
-	const error = ctx.views.detailFieldPrepareError(ctx, record, field, index);
 	const selectedValue = ctx.views.detailFieldPrepareValue(ctx, record, field, index);
 
-	const values = getOrCall(field.values, ctx, record, field, index);
-
-	const options = values.map(v => {
-		const value = v.value || v;
-		const title = v.title || v;
-		const selected = selectedValue === value ? 'selected="selected"' : '';
-		return `<option value="${value}" ${selected}>${title}</option>`;
-	});
-
-	if (typeof field.nullOption === 'string' || field.nullOption === true) {
-		// Add null option
-		options.unshift(
-			`<option value="" ${!selectedValue ? 'selected="selected"' : ''}>${
-				field.nullOption.length ? field.nullOption : ''
-			}</option>`
-		);
-	}
-
 	return `
-	  <div class="form-group cui-field cui-field-name-${field.name} cui-field-select" data-field-name="${field.name}">
-			<label for="${field.name}">${field.label}</label>
-			<select class="form-control ${error.class}" name="${field.name}" id="${field.name}">${options}</select>
-			${error.dom}
-			${help.dom}
+	  <div class="cui-field-detail cui-field-name-${field.name} cui-field-select" data-field-name="${field.name}">
+			<label>${field.label}</label>
+			<article>${selectedValue}</article>
 		</div>
 	`;
 };
 
 /**
- * Render a boolean field. This maps to a single checkbox.
+ * Render a boolean field's details.
  * @param {CUIContext} ctx
  * @param {Object} record
  * @param {CUIField} field
@@ -469,21 +320,14 @@ module.exports.detailFieldSelect = (ctx, record, field, index) => {
 module.exports.detailFieldBoolean = (ctx, record, field, index) => {
 	assertEqual(field.type, CUI_FIELD_TYPES.boolean, 'field type');
 
-	const help = ctx.views.detailFieldPrepareHelp(ctx, record, field, index);
-	const error = ctx.views.detailFieldPrepareError(ctx, record, field, index);
 	const value = ctx.views.detailFieldPrepareValue(ctx, record, field, index);
 
 	return `
-	  <div class="form-group form-check cui-field cui-field-name-${
-			field.name
-		} cui-field-boolean" data-field-name="${field.name}">
-			<input type="checkbox" class="form-check-input ${error.class}"
-				name="${field.name}" id="${field.name}" ${value ? 'checked="checked"' : ''} value="true" ${
-		help.aria
-	} />
-			<label class="form-check-label" for="${field.name}">${field.label}</label>
-			${error.dom}
-			${help.dom}
+	  <div class="cui-field-detail cui-field-name-${field.name} cui-field-boolean" data-field-name="${
+		field.name
+	}">
+			<label>${field.label}</label>
+			<article>${ctx.views.icon(ctx, value ? ctx.icons.booleanTrue : ctx.icons.booleanFalse)}</article>
 		</div>
 	`;
 };

@@ -1,0 +1,42 @@
+/* Detail page, controls */
+
+@media screen and (min-width: 768px) {
+	.cui-detail-controls {
+		text-align: right;
+	}
+}
+
+/* Detail page, fields */
+
+.cui-field-detail {
+	margin-bottom: 1rem;
+	margin-right: 1rem;
+}
+.cui-field-detail label {
+	display: block;
+	text-transform: uppercase;
+	font-size: 0.7rem;
+	padding: 0.1rem 0.3rem;
+	background: rgba(0,0,0,0.1);
+	border-left: 2px solid rgba(210, 210, 210, 1);
+	color: rgba(0,0,0,0.6);
+	margin: 0;
+}
+.cui-field-detail article {
+	border-left: 2px solid rgba(210, 210, 210, 1);
+	padding: 0.3rem 0.3rem;
+	word-break: break-all;
+}
+
+.cui-field-detail.cui-field-text article {
+	white-space: pre-line;
+	font-family: var(--font-family-monospace);
+}
+
+@media screen and (min-width: 768px) {
+	.cui-detail-fields {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+}

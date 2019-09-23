@@ -10,6 +10,7 @@ const { CUIContext } = require('./types/context');
 const { createHandlerResponseWrapper } = require('./types/responses');
 const { createFlashManager } = require('./web/flash_manager');
 const { createCSRFMiddleware } = require('./web/csrf_middleware');
+const { createSessionMiddleware } = require('./web/session_middleware');
 const handlers = require('./web/handlers');
 
 /**
@@ -21,7 +22,11 @@ function crudUI(options) {
 
 	options._validateAndCoerce();
 
-	const flashManager = createFlashManager(options.flashOptions, options.debugLog);
+	const flashManager = createFlashManager(
+		options.tweaks.flashCookieName,
+		options.tweaks.flashMaxAge,
+		options.debugLog
+	);
 	const wrap = createHandlerResponseWrapper(options, flashManager);
 
 	const router = express.Router();
@@ -32,8 +37,20 @@ function crudUI(options) {
 			extended: true,
 		})
 	);
+
 	router.use(flashManager.middleware);
-	router.use(createCSRFMiddleware(options.csrfOptions, options.debugLog));
+
+	router.use(
+		createSessionMiddleware(
+			options.tweaks.sessionCookieName,
+			options.tweaks.sessionTTL,
+			options.debugLog
+		)
+	);
+
+	if (options.tweaks.csrfEnabled) {
+		router.use(createCSRFMiddleware(options.tweaks.csrfFieldName, options.debugLog));
+	}
 
 	router.get(options.urls.indexPage, wrap(handlers.indexPage));
 
@@ -42,7 +59,7 @@ function crudUI(options) {
 
 	router.get(options.urls.editPage(':id'), wrap(handlers.editPage));
 	router.post(options.urls.editAction(':id'), wrap(handlers.editAction));
-	
+
 	router.get(options.urls.detailPage(':id'), wrap(handlers.detailPage));
 
 	router.post(options.urls.deleteAction(':id'), wrap(handlers.deleteAction));

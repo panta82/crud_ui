@@ -245,10 +245,10 @@ module.exports.icon = (ctx, iconName, className = '') => {
  * @param {CUIContext} ctx
  */
 module.exports.csrfField = ctx => {
-	if (!ctx.csrf) {
+	if (!ctx.options.tweaks.csrfEnabled) {
 		return '';
 	}
-	return `<input type="hidden" name="${ctx.csrf.field}" value="${ctx.csrf.value}" />`;
+	return `<input type="hidden" name="${ctx.options.tweaks.csrfFieldName}" value="${ctx.session.csrfToken}" />`;
 };
 
 /**

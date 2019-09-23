@@ -45,6 +45,42 @@ class CUITweaks {
 			'/js/scripts.js',
 		];
 
+		/**
+		 * Name of the cookie to use for storing session id
+		 * @type {string}
+		 */
+		this.sessionCookieName = 'CUI_session';
+
+		/**
+		 * How long to keep sessions in memory before we drop them (in ms).
+		 * @type {number}
+		 */
+		this.sessionTTL = 1000 * 60 * 60 * 24; // 1 day;
+
+		/**
+		 * Enable CSRF protection in forms
+		 * @type {boolean}
+		 */
+		this.csrfEnabled = true;
+
+		/**
+		 * Name of the form field to store the CSRF token in
+		 * @type {string}
+		 */
+		this.csrfFieldName = '__cui_csrf__';
+
+		/**
+		 * Name of the cookie to use for storing flash messages.
+		 * @type {string}
+		 */
+		this.flashCookieName = 'CUI_flash';
+
+		/**
+		 * How many milliseconds can a flash live before it is consumed
+		 * @type {number}
+		 */
+		this.flashMaxAge = 1000 * 60;
+
 		Object.assign(this, source);
 	}
 
@@ -62,6 +98,18 @@ class CUITweaks {
 				return () => item;
 			});
 		}
+
+		asserters.provided('csrfEnabled');
+		asserters.type('csrfEnabled', 'boolean');
+
+		asserters.provided('csrfFieldName');
+		asserters.type('csrfFieldName', 'string');
+
+		asserters.provided('flashCookieName');
+		asserters.type('flashCookieName', 'string');
+
+		asserters.provided('flashMaxAge');
+		asserters.type('flashMaxAge', 'number');
 	}
 }
 

@@ -76,8 +76,6 @@ class CUIViews {
 		this.detailCancelButton = require('../views/detail_views.js').detailCancelButton;
 		this.detailErrorSummary = require('../views/detail_views.js').detailErrorSummary;
 		this.detailField = require('../views/detail_views.js').detailField;
-		this.detailFieldPrepareHelp = require('../views/detail_views.js').detailFieldPrepareHelp;
-		this.detailFieldPrepareError = require('../views/detail_views.js').detailFieldPrepareError;
 		this.detailFieldPrepareValue = require('../views/detail_views.js').detailFieldPrepareValue;
 		this.detailFieldString = require('../views/detail_views.js').detailFieldString;
 		this.detailFieldSecret = require('../views/detail_views.js').detailFieldSecret;

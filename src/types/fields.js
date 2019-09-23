@@ -54,10 +54,23 @@ class CUIField {
 		this.editView = undefined;
 
 		/**
+		 * Customized render function for detail view.
+		 * Return undefined to fall back to default view.
+		 * @type {function(value:*, ctx:CUIContext, record:*, field:CUIField, index:number)}
+		 */
+		this.detailView = undefined;
+
+		/**
 		 * Show field in list view
 		 * @type {boolean}
 		 */
 		this.allowList = true;
+
+		/**
+		 * Show field in detail view
+		 * @type {boolean}
+		 */
+		this.allowDetail = true;
 
 		/**
 		 * Show field when creating a new record or editing an existing record.
@@ -154,6 +167,7 @@ class CUIField {
 		asserters.type('editView', 'function');
 
 		asserters.type('allowList', 'boolean');
+		asserters.type('allowDetail', 'boolean');
 		asserters.type('allowEdit', 'boolean');
 		asserters.type('allowEditNew', 'boolean');
 		asserters.type('allowEditExisting', 'boolean');

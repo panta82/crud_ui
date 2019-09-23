@@ -2,33 +2,14 @@
 
 const { extractCookie, randomToken } = require('../tools');
 
-class CUIFlashManagerOptions {
-	constructor(source) {
-		/**
-		 * How to name the cookie used to track flash
-		 * @type {string}
-		 */
-		this.cookie_name = 'CUI_flash';
-
-		/**
-		 * How many milliseconds can a flash live before it is consumed
-		 * @type {number}
-		 */
-		this.max_age = 1000 * 60;
-
-		Object.assign(this, source);
-	}
-}
-
 /**
  * Use cookies to provide "flash message" functionality
- * @param {CUIFlashManagerOptions} options
+ * @param cookieName
+ * @param maxAge
  * @param {function} debugLog
  * @return {CUIFlashManager}
  */
-function createFlashManager(options, debugLog) {
-	options = new CUIFlashManagerOptions(options);
-
+function createFlashManager(cookieName, maxAge, debugLog) {
 	const _flashes = new Map();
 
 	return /** @lends CUIFlashManager.prototype */ {
@@ -41,7 +22,7 @@ function createFlashManager(options, debugLog) {
 	function cleanOldFlashes() {
 		const now = new Date();
 		for (const [key, { timestamp }] in _flashes.entries()) {
-			if (now - timestamp - timestamp > options.max_age) {
+			if (now - timestamp - timestamp > maxAge) {
 				// Delete outdated flash
 				_flashes.delete(key);
 				debugLog(`Cleaned outdated flash "${key}"`);
@@ -56,7 +37,7 @@ function createFlashManager(options, debugLog) {
 	 * @param next
 	 */
 	function middleware(req, res, next) {
-		const key = extractCookie(req.headers.cookie, options.cookie_name);
+		const key = extractCookie(req.headers.cookie, cookieName);
 		if (!key) {
 			// No flash message
 			return next();
@@ -65,7 +46,7 @@ function createFlashManager(options, debugLog) {
 		const entry = _flashes.get(key);
 
 		_flashes.delete(key);
-		res.clearCookie(options.cookie_name);
+		res.clearCookie(cookieName);
 
 		if (entry) {
 			req.flash = entry.data;
@@ -88,7 +69,7 @@ function createFlashManager(options, debugLog) {
 		_flashes.set(flashKey, { data, timestamp: new Date() });
 		debugLog(`Set flash "${flashKey}": ${JSON.stringify(data)}`);
 
-		res.cookie(options.cookie_name, flashKey, {
+		res.cookie(cookieName, flashKey, {
 			httpOnly: true,
 			sameSite: true,
 			// NOTE: We are not setting path here because we want all crudUI routers to share flashes
@@ -97,6 +78,5 @@ function createFlashManager(options, debugLog) {
 }
 
 module.exports = {
-	CUIFlashManagerOptions,
 	createFlashManager,
 };
