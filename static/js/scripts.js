@@ -1,6 +1,22 @@
 initFlashMessageDismiss();
 initClearInvalidFormElements();
 
+window.addEventListener('beforeunload', function(event) {
+	let session = sessionStorage.getItem('sessionCookie');
+	if (!session) {
+		session =
+			Math.random()
+				.toString(32)
+				.slice(2) +
+			Math.random()
+				.toString(32)
+				.slice(2);
+		sessionStorage.setItem('sessionCookie', session);
+	}
+
+	document.cookie = `CUI_tabsession=${session}; path=/ `;
+});
+
 // *** END SYNCHRONOUS CODE ***
 
 function logError(message) {

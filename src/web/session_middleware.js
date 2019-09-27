@@ -85,6 +85,9 @@ function createSessionMiddleware(cookieName, ttl, debugLog) {
 	 * @param next
 	 */
 	function middleware(req, res, next) {
+		const tabCookie = extractCookie(req.headers.cookie, 'CUI_tabsession');
+		console.log('CUI_tabsession', tabCookie);
+
 		const key = extractCookie(req.headers.cookie, cookieName);
 		const now = new Date();
 
