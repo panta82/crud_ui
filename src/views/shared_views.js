@@ -248,7 +248,7 @@ module.exports.csrfField = ctx => {
 	if (!ctx.options.tweaks.csrfEnabled) {
 		return '';
 	}
-	return `<input type="hidden" name="${ctx.options.tweaks.csrfFieldName}" value="${ctx.session.csrfToken}" />`;
+	return `<input type="hidden" name="${ctx.options.tweaks.csrfFieldName}" value="${ctx.csrfToken}" />`;
 };
 
 /**

@@ -46,18 +46,6 @@ class CUITweaks {
 		];
 
 		/**
-		 * Name of the cookie to use for storing session id
-		 * @type {string}
-		 */
-		this.sessionCookieName = 'CUI_session';
-
-		/**
-		 * How long to keep sessions in memory before we drop them (in ms).
-		 * @type {number}
-		 */
-		this.sessionTTL = 1000 * 60 * 60 * 24; // 1 day;
-
-		/**
 		 * Enable CSRF protection in forms
 		 * @type {boolean}
 		 */
@@ -68,6 +56,12 @@ class CUITweaks {
 		 * @type {string}
 		 */
 		this.csrfFieldName = '__cui_csrf__';
+
+		/**
+		 * Name of the cookie to use for storing CSRF. Note that this will be common for all CUI routers!
+		 * @type {string}
+		 */
+		this.csrfCookieName = 'CUI_csrf';
 
 		/**
 		 * Name of the cookie to use for storing flash messages.

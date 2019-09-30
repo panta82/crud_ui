@@ -10,7 +10,6 @@ const { CUIContext } = require('./types/context');
 const { createHandlerResponseWrapper } = require('./types/responses');
 const { createFlashManager } = require('./web/flash_manager');
 const { createCSRFMiddleware } = require('./web/csrf_middleware');
-const { createSessionMiddleware } = require('./web/session_middleware');
 const handlers = require('./web/handlers');
 
 /**
@@ -40,16 +39,14 @@ function crudUI(options) {
 
 	router.use(flashManager.middleware);
 
-	router.use(
-		createSessionMiddleware(
-			options.tweaks.sessionCookieName,
-			options.tweaks.sessionTTL,
-			options.debugLog
-		)
-	);
-
 	if (options.tweaks.csrfEnabled) {
-		router.use(createCSRFMiddleware(options.tweaks.csrfFieldName, options.debugLog));
+		router.use(
+			createCSRFMiddleware(
+				options.tweaks.csrfFieldName,
+				options.tweaks.csrfCookieName,
+				options.debugLog
+			)
+		);
 	}
 
 	router.get(options.urls.indexPage, wrap(handlers.indexPage));

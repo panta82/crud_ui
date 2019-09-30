@@ -41,17 +41,16 @@ class CUIContext {
 		this.baseUrl = req.baseUrl;
 
 		/**
+		 * CSRF token for this request
+		 * @type {string}
+		 */
+		this.csrfToken = req.csrfToken;
+
+		/**
 		 * Flash object extracted by FlashManager
 		 * @type {{message: string, flavor: string}|{error: CUIValidationError}}
 		 */
 		this.flash = req.flash || {};
-
-		/**
-		 * User's session object. Handlers can freely mutate this object.
-		 * TODO: Should I create a clone of session object for each context and better control session updates?
-		 * @type {CUISession}
-		 */
-		this.session = req.session;
 	}
 
 	/**

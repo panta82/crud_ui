@@ -1,14 +1,16 @@
 'use strict';
 
+const { extractCookie, randomToken } = require('../tools');
 const { CUICSRFError } = require('../types/errors');
 
 /**
  * Middleware that generates and checks CSRF tokens
- * @param {string} fieldName
+ * @param fieldName
+ * @param cookieName
  * @param {function} debugLog
  * @return {function(req, res, next)}
  */
-function createCSRFMiddleware(fieldName, debugLog) {
+function createCSRFMiddleware(fieldName, cookieName, debugLog) {
 	return middleware;
 
 	/**
@@ -18,20 +20,31 @@ function createCSRFMiddleware(fieldName, debugLog) {
 	 * @param next
 	 */
 	function middleware(req, res, next) {
-		/** @type {CUISession} */
-		const session = req.session;
-		if (!session) {
-			throw new Error(`Session not found in request. Is session middleware present?`);
-		}
+		// Extract CSRF session
+		let csrf = extractCookie(req.headers.cookie, cookieName);
 
 		// Check that CSRF is present in case we have a body
 		if (req.method === 'POST' || req.method === 'PUT' || req.method === 'DELETE') {
 			const submittedCSRF = req.body[fieldName];
-			if (!submittedCSRF || session.csrfToken !== submittedCSRF) {
+			if (!csrf || !submittedCSRF || csrf !== submittedCSRF) {
 				// Invalid CSRF
 				return next(new CUICSRFError());
 			}
 		}
+
+		// If csrf is not present, set it now
+		if (!csrf) {
+			csrf = randomToken();
+			res.cookie(cookieName, csrf, {
+				httpOnly: true,
+				sameSite: true,
+				// NOTE: We are not setting path here because we can reuse the same cookie
+			});
+			debugLog(`CSRF set to "${csrf}" for ${req.baseUrl}`);
+		}
+
+		// Tell services downstream what csrf token to use
+		req.csrfToken = csrf;
 
 		return next();
 	}
