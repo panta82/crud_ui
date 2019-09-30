@@ -25,12 +25,6 @@ class CUISession {
 		this.lastSeenAt = undefined;
 
 		/**
-		 *
-		 * @type {undefined}
-		 */
-		this.flash = undefined;
-
-		/**
 		 * CSRF token for this session
 		 * @type {string}
 		 */
