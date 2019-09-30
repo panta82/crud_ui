@@ -81,6 +81,8 @@ class CUITexts {
 		this.detailEditButtonTitle = 'Edit';
 		this.detailDeleteButton = 'Delete';
 		this.detailDeleteButtonTitle = 'Delete';
+		this.detailBackButton = 'Back';
+		this.detailBackButtonTitle = 'Back to the list view';
 
 		this.modalConfirmDeleteTitle = 'Are you sure?';
 		this.modalConfirmDeleteQuestion = (/** CUIContext */ ctx, data, record, index) =>

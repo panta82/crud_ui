@@ -1,7 +1,7 @@
 'use strict';
 
 const { CUI_FIELD_TYPES } = require('../types/consts');
-const { assertEqual, getOrCall, capitalize, escapeHTML } = require('../tools');
+const { assertEqual, escapeHTML } = require('../tools');
 
 /**
  * Details page will show a single item with full details.
@@ -94,17 +94,19 @@ module.exports.detailContent = (ctx, record) => {
  * @param {Object} record
  */
 module.exports.detailControls = (ctx, record) => {
+	const backBtn = this.detailBackButton(ctx, record);
 	const editBtn = ctx.actions.update ? this.detailEditButton(ctx, record) : '';
 	const deleteBtn = ctx.actions.delete ? this.detailDeleteButton(ctx, record) : '';
-	if (!editBtn && !deleteBtn) {
+	if (!backBtn && !editBtn && !deleteBtn) {
 		// Don't show anything at all
 		return '';
 	}
 
 	return `
-		<div class="cui-detail-controls-content ${editBtn ? 'cui-detail-controls-has-edit' : ''} ${
-		deleteBtn ? 'cui-detail-controls-has-delete' : ''
-	}">
+		<div class="cui-detail-controls-content ${backBtn ? 'cui-detail-controls-has-back' : ''} ${
+		editBtn ? 'cui-detail-controls-has-edit' : ''
+	} ${deleteBtn ? 'cui-detail-controls-has-delete' : ''}">
+			${backBtn}
 			${editBtn}
 			${deleteBtn}
 		</div>
@@ -149,25 +151,20 @@ module.exports.detailDeleteButton = (ctx, record) => {
 };
 
 /**
- * Cancel button on the edit form
+ * Back button on the detail page. Returns back to the list view (if available)
  * @param {CUIContext} ctx
  * @param {Object} record
  */
-module.exports.detailCancelButton = (ctx, record) => {
-	const label = record
-		? ctx.texts.safe.editExistingCancelButton(ctx, record)
-		: ctx.texts.safe.editNewCancelButton(ctx, record);
-	const title = record
-		? ctx.texts.safe.editExistingCancelButtonTitle(ctx, record)
-		: ctx.texts.safe.editNewCancelButtonTitle(ctx, record);
-	const icon = record
-		? ctx.views.icon(ctx, ctx.icons.editExistingCancelButton, label && 'mr-1')
-		: ctx.views.icon(ctx, ctx.icons.editNewCancelButton, label && 'mr-1');
+module.exports.detailBackButton = (ctx, record) => {
+	const label = ctx.texts.detailBackButton(ctx, record);
 	return `
 		<a href="${ctx.url(
 			ctx.routes.indexPage
-		)}" class="btn btn-light ml-1 cui-cancel-button" title="${title}">
-			${icon}
+		)}" class="btn btn-light cui-back-button" title="${ctx.texts.detailBackButtonTitle(
+		ctx,
+		record
+	)}">
+			${ctx.views.icon(ctx, ctx.icons.detailBackButton, label && 'mr-1')}
 			${label}
 		</a>
 	`;

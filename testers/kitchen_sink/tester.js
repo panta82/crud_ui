@@ -22,7 +22,12 @@ app.use(bodyParser.json());
 
 const data = {
 	users: [
-		{ id: 1, name: 'Axe' },
+		{
+			id: 1,
+			name: 'Axe',
+			description:
+				'Quick brown fox jumps over a lazy dog. Quick brown fox jumps over a lazy dog. Quick brown fox jumps over a lazy dog. Quick brown fox jumps over a lazy dog.',
+		},
 		{ id: 2, name: 'Barry', description: 'This\nIs\nBarry!' },
 		{ id: 3, name: 'Cindy', gender: 'female' },
 	],

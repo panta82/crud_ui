@@ -971,6 +971,7 @@ class CUIIcons {
 		this.editExistingSaveButton = ICON_NAMES.save;
 		this.editExistingCancelButton = ICON_NAMES.times;
 
+		this.detailBackButton = ICON_NAMES.arrow_left;
 		this.detailEditButton = ICON_NAMES.pen;
 		this.detailDeleteButton = ICON_NAMES.trash;
 

@@ -1,8 +1,21 @@
-/* Detail page, controls */
+/* Detail page, layout */
 
 @media screen and (min-width: 768px) {
+	.cui-detail-content {
+		flex-wrap: nowrap;
+	}
+	.cui-detail-fields {
+		flex-basis: 0;
+		flex-grow: 1;
+	}
 	.cui-detail-controls {
 		text-align: right;
+	}
+	.cui-detail-controls .btn {
+		display: block;
+	}
+	.cui-detail-controls .btn + .btn {
+		margin-top: 0.2rem;
 	}
 }
 

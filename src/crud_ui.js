@@ -63,7 +63,7 @@ function crudUI(options) {
 		options.routes.detailEditPage(':id'),
 		wrap(handlers.editPage, ROUTE_NAMES.detailEditPage)
 	);
-	router.get(
+	router.post(
 		options.routes.detailEditAction(':id'),
 		wrap(handlers.editAction, ROUTE_NAMES.detailEditAction)
 	);
