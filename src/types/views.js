@@ -35,7 +35,7 @@ class CUIViews {
 		this.listCell = require('../views/list_views.js').listCell;
 		this.listValue = require('../views/list_views.js').listValue;
 		this.listControlsCell = require('../views/list_views.js').listControlsCell;
-		this.listDetailsButton = require('../views/list_views.js').listDetailsButton;
+		this.listDetailButton = require('../views/list_views.js').listDetailButton;
 		this.listEditButton = require('../views/list_views.js').listEditButton;
 		this.listDeleteButton = require('../views/list_views.js').listDeleteButton;
 		this.listDeleteConfirmationModal = require('../views/list_views.js').listDeleteConfirmationModal;

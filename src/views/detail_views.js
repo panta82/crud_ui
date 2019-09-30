@@ -120,7 +120,7 @@ module.exports.detailControls = (ctx, record) => {
 module.exports.detailEditButton = (ctx, record) => {
 	const label = ctx.texts.safe.detailEditButton(ctx, record);
 	return `
-		<a href="${ctx.url(ctx.urls.editPage(ctx.options.recordId(record)))}"
+		<a href="${ctx.url(ctx.routes.detailEditPage(ctx.options.recordId(record)))}"
 			class="btn btn-primary cui-edit-button" title="${ctx.texts.safe.detailEditButtonTitle(
 				ctx,
 				record
@@ -165,7 +165,7 @@ module.exports.detailCancelButton = (ctx, record) => {
 		: ctx.views.icon(ctx, ctx.icons.editNewCancelButton, label && 'mr-1');
 	return `
 		<a href="${ctx.url(
-			ctx.urls.indexPage
+			ctx.routes.indexPage
 		)}" class="btn btn-light ml-1 cui-cancel-button" title="${title}">
 			${icon}
 			${label}

@@ -51,7 +51,7 @@ class CUIActions {
 	_validateAndCoerce() {
 		const asserters = makeObjectAsserters(this, '"', '" action');
 
-		asserters.type('single', 'function');
+	 	asserters.type('single', 'function');
 		asserters.type('list', 'function');
 	}
 }

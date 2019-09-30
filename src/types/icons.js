@@ -962,7 +962,7 @@ const ICON_NAMES = {
 class CUIIcons {
 	constructor(/** CUIIcons */ source) {
 		this.listCreateButton = ICON_NAMES.plus_circle;
-		this.listDetailsButton = ICON_NAMES.eye;
+		this.listDetailButton = ICON_NAMES.eye;
 		this.listEditButton = ICON_NAMES.pen;
 		this.listDeleteButton = ICON_NAMES.trash;
 

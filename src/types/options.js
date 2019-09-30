@@ -8,7 +8,7 @@ const { CUITweaks } = require('./tweaks');
 const { CUITexts } = require('./texts');
 const { CUIIcons } = require('./icons');
 const { CUIViews } = require('./views');
-const { CUIUrls } = require('./urls');
+const { CUIRoutes } = require('./routes');
 
 class CUIOptions {
 	constructor(/** CUIOptions */ source) {
@@ -71,9 +71,9 @@ class CUIOptions {
 
 		/**
 		 * URLS to use for various pages of CMS. Rarely needed to be altered by user
-		 * @type {CUIUrls}
+		 * @type {CUIRoutes}
 		 */
-		this.urls = undefined;
+		this.routes = undefined;
 
 		/**
 		 * Function to be called in case of error. Defaults to console.error.
@@ -147,7 +147,7 @@ class CUIOptions {
 		this.views = cast(CUIViews, this.views);
 		this.texts = cast(CUITexts, this.texts);
 		this.icons = cast(CUIIcons, this.icons);
-		this.urls = cast(CUIUrls, this.urls);
+		this.routes = cast(CUIRoutes, this.routes);
 
 		if (this.onError === undefined) {
 			this.onError = (ctx, err) => {
@@ -166,6 +166,10 @@ class CUIOptions {
 			this.isProduction = process.env.NODE_ENV === 'production';
 		}
 		asserters.type('isProduction', 'boolean');
+	}
+
+	get hasList() {
+		return !!this.actions.getList;
 	}
 }
 

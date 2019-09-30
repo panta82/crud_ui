@@ -8,8 +8,9 @@ class CUIContext {
 	/**
 	 * @param {CUIOptions} options
 	 * @param {e.Request} req
+	 * @param routeName
 	 */
-	constructor(options, req) {
+	constructor(options, req, routeName) {
 		/**
 		 * Coerced and validated options passed to the router
 		 * @type {CUIOptions}
@@ -39,6 +40,12 @@ class CUIContext {
 		 * @type {string}
 		 */
 		this.baseUrl = req.baseUrl;
+
+		/**
+		 * Name of the route that was triggered for this request
+		 * @type {string}
+		 */
+		this.routeName = routeName;
 
 		/**
 		 * CSRF token for this request
@@ -112,10 +119,10 @@ class CUIContext {
 
 	/**
 	 * Convenience shortcut to urls
-	 * @type {CUIUrls}
+	 * @type {CUIRoutes}
 	 */
-	get urls() {
-		return this.options.urls;
+	get routes() {
+		return this.options.routes;
 	}
 }
 

@@ -56,7 +56,7 @@ module.exports.listAbove = (ctx, data) => {
 module.exports.listCreateButton = (ctx, data) => {
 	const label = ctx.texts.safe.listCreateButton(ctx);
 	return `
-		<a href="${ctx.url(ctx.urls.createPage)}" class="btn btn-primary mb-3 mt-1 cui-create-button"
+		<a href="${ctx.url(ctx.routes.createPage)}" class="btn btn-primary mb-3 mt-1 cui-create-button"
 				title="${ctx.texts.safe.listCreateButtonTitle(ctx)}">
 			${ctx.views.icon(ctx, ctx.icons.listCreateButton, label && 'mr-1')}
 			${label}
@@ -118,7 +118,7 @@ module.exports.listDeleteModalScripting = (ctx, data) => {
 
 		const id = ctx.options.recordId(item);
 		deleteModalData[id] = {
-			action: ctx.url(ctx.urls.deleteAction(id)),
+			action: ctx.url(ctx.routes.deleteAction(id)),
 			texts: {
 				'modal-title': ctx.texts.modalConfirmDeleteTitle(ctx, data, item, index),
 				'delete-modal-question': ctx.texts.modalConfirmDeleteQuestion(ctx, data, item, index),
@@ -283,11 +283,7 @@ module.exports.listValue = (ctx, data, record, index, field) => {
 module.exports.listControlsCell = (ctx, data, record, index) => {
 	return `
 		<td class="text-nowrap cui-controls-cell">
-			${
-				ctx.options.tweaks.allowBothListAndDetailViews
-					? ctx.views.listDetailsButton(ctx, data, record, index)
-					: ''
-			}
+			${ctx.views.listDetailButton(ctx, data, record, index)}
 			${ctx.actions.update ? ctx.views.listEditButton(ctx, data, record, index) : ''}
 			${ctx.actions.delete ? ctx.views.listDeleteButton(ctx, data, record, index) : ''}
 		</td>
@@ -302,15 +298,15 @@ module.exports.listControlsCell = (ctx, data, record, index) => {
  * @param {Number} index
  * @return {string}
  */
-module.exports.listDetailsButton = (ctx, data, record, index) => {
-	const label = ctx.texts.safe.listDetailsButton(ctx);
+module.exports.listDetailButton = (ctx, data, record, index) => {
+	const label = ctx.texts.safe.listDetailButton(ctx);
 	return `
 		<a href="${ctx.url(
-			ctx.urls.detailPage(ctx.options.recordId(record))
-		)}" class="btn btn-secondary btn-sm cui-details-button" title="${ctx.texts.safe.listDetailsButtonTitle(
+			ctx.routes.detailPage(ctx.options.recordId(record))
+		)}" class="btn btn-secondary btn-sm cui-details-button" title="${ctx.texts.safe.listDetailButtonTitle(
 		ctx
 	)}">
-			${ctx.views.icon(ctx, ctx.icons.listDetailsButton, label && 'mr-1')}
+			${ctx.views.icon(ctx, ctx.icons.listDetailButton, label && 'mr-1')}
 			${label}
 		</a>
 	`;
@@ -328,7 +324,7 @@ module.exports.listEditButton = (ctx, data, record, index) => {
 	const label = ctx.texts.safe.listEditButton(ctx);
 	return `
 		<a href="${ctx.url(
-			ctx.urls.editPage(ctx.options.recordId(record))
+			ctx.routes.editPage(ctx.options.recordId(record))
 		)}" class="btn btn-primary btn-sm cui-edit-button" title="${ctx.texts.safe.listEditButtonTitle(
 		ctx
 	)}">

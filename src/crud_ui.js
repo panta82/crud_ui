@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const { CUIOptions } = require('./types/options');
 const { CUIContext } = require('./types/context');
 const { createHandlerResponseWrapper } = require('./types/responses');
+const { ROUTE_NAMES } = require('./types/routes');
 const { createFlashManager } = require('./web/flash_manager');
 const { createCSRFMiddleware } = require('./web/csrf_middleware');
 const handlers = require('./web/handlers');
@@ -49,17 +50,28 @@ function crudUI(options) {
 		);
 	}
 
-	router.get(options.urls.indexPage, wrap(handlers.indexPage));
+	router.get(options.routes.indexPage, wrap(handlers.indexPage, ROUTE_NAMES.indexPage));
 
-	router.get(options.urls.createPage, wrap(handlers.createPage));
-	router.post(options.urls.createAction, wrap(handlers.createAction));
+	router.get(options.routes.createPage, wrap(handlers.createPage, ROUTE_NAMES.createPage));
+	router.post(options.routes.createAction, wrap(handlers.createAction, ROUTE_NAMES.createAction));
 
-	router.get(options.urls.editPage(':id'), wrap(handlers.editPage));
-	router.post(options.urls.editAction(':id'), wrap(handlers.editAction));
+	router.get(options.routes.editPage(':id'), wrap(handlers.editPage, ROUTE_NAMES.editPage));
+	router.post(options.routes.editAction(':id'), wrap(handlers.editAction, ROUTE_NAMES.editAction));
 
-	router.get(options.urls.detailPage(':id'), wrap(handlers.detailPage));
+	router.get(options.routes.detailPage(':id'), wrap(handlers.detailPage, ROUTE_NAMES.detailPage));
+	router.get(
+		options.routes.detailEditPage(':id'),
+		wrap(handlers.editPage, ROUTE_NAMES.detailEditPage)
+	);
+	router.get(
+		options.routes.detailEditAction(':id'),
+		wrap(handlers.editAction, ROUTE_NAMES.detailEditAction)
+	);
 
-	router.post(options.urls.deleteAction(':id'), wrap(handlers.deleteAction));
+	router.post(
+		options.routes.deleteAction(':id'),
+		wrap(handlers.deleteAction, ROUTE_NAMES.deleteAction)
+	);
 
 	router.use((err, req, res, next) => {
 		const ctx = new CUIContext(options, req);

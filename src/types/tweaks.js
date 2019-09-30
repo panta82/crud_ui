@@ -9,13 +9,6 @@ const { makeObjectAsserters, minInProd } = require('../tools');
 class CUITweaks {
 	constructor(/** CUITweaks */ source) {
 		/**
-		 * If true, UI will show "Details" button in list view, which user will be able to click to see individual
-		 * item details. On the detail view, there will be a way to go back to the list of all items.
-		 * @type {boolean}
-		 */
-		this.allowBothListAndDetailViews = false;
-
-		/**
 		 * If enabled, renders a red box with validation error message and all the faults above the edit form.
 		 * Otherwise, we will still show errors next to affected fields, but not above the form.
 		 * This will have no influence on non-validation errors.

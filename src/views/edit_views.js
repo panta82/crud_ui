@@ -1,6 +1,7 @@
 'use strict';
 
 const { CUI_FIELD_TYPES } = require('../types/consts');
+const { ROUTE_NAMES } = require('../types/routes');
 const { assertEqual, getOrCall, capitalize } = require('../tools');
 
 /**
@@ -16,7 +17,7 @@ module.exports.editPage = (ctx, record) => {
 			: ctx.texts.safe.editNewPageTitle(ctx),
 		`cui-page-edit cui-page-edit-${record ? 'existing' : 'new'}`,
 		`
-		${ctx.views.editHeader(ctx)}
+		${ctx.views.editHeader(ctx, record)}
 		<main role="main" class="container mt-4 mb-4">
 			${ctx.views.editAbove(ctx, record)}
 			${ctx.views.editContent(ctx, record)}
@@ -128,10 +129,13 @@ module.exports.editCancelButton = (ctx, record) => {
 	const icon = record
 		? ctx.views.icon(ctx, ctx.icons.editExistingCancelButton, label && 'mr-1')
 		: ctx.views.icon(ctx, ctx.icons.editNewCancelButton, label && 'mr-1');
+	const backUrl = ctx.url(
+		ctx.routeName === ROUTE_NAMES.detailEditPage
+			? ctx.routes.detailPage(ctx.idParam)
+			: ctx.routes.indexPage
+	);
 	return `
-		<a href="${ctx.url(
-			ctx.urls.indexPage
-		)}" class="btn btn-light ml-1 cui-cancel-button" title="${title}">
+		<a href="${backUrl}" class="btn btn-light ml-1 cui-cancel-button" title="${title}">
 			${icon}
 			${label}
 		</a>

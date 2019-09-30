@@ -46,8 +46,8 @@ class CUITexts {
 			'Create a new ' + uncapitalize(singularize(ctx.options.name));
 		this.listEditButton = 'Edit';
 		this.listEditButtonTitle = 'Edit this item';
-		this.listDetailsButton = 'Show';
-		this.listDetailsButtonTitle = 'Show details about this item on a separate page';
+		this.listDetailButton = 'Show';
+		this.listDetailButtonTitle = 'Show details about this item on a separate page';
 		this.listDeleteButton = 'Delete';
 		this.listDeleteButtonTitle = 'Delete this item';
 

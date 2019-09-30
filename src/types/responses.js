@@ -43,11 +43,11 @@ class CUIRedirectResponse extends CUIResponse {
  * @return {handlerResponseWrapper}
  */
 function createHandlerResponseWrapper(options, flashManager) {
-	return function handlerResponseWrapper(handler) {
+	return function handlerResponseWrapper(handler, routeName) {
 		return function expressHandler(req, res, next) {
 			Promise.resolve()
 				.then(() => {
-					const ctx = new CUIContext(options, req);
+					const ctx = new CUIContext(options, req, routeName);
 					return handler(ctx);
 				})
 				.then(CUIResponse.cast)

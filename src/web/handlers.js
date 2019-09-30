@@ -3,6 +3,7 @@
 const vjs = require('validate.js');
 
 const { CUI_FIELD_TYPES } = require('../types/consts');
+const { ROUTE_NAMES } = require('../types/routes');
 const {
 	CUIError,
 	CUIActionNotSupportedError,
@@ -156,14 +157,14 @@ function createAction(ctx) {
 		.then(
 			createResult => {
 				return new CUIRedirectResponse(
-					ctx.url(ctx.urls.indexPage),
+					ctx.url(ctx.routes.indexPage),
 					resultToFlash(ctx, ctx.texts.flashMessageRecordCreated, createResult)
 				);
 			},
 			error => {
 				if (error instanceof CUIValidationError) {
 					// Show errors on page
-					return new CUIRedirectResponse(ctx.url(ctx.urls.createPage), {
+					return new CUIRedirectResponse(ctx.url(ctx.routes.createPage), {
 						error,
 					});
 				}
@@ -202,15 +203,24 @@ function editAction(ctx) {
 		})
 		.then(
 			updateResult => {
+				const redirectUrl =
+					ctx.routeName === ROUTE_NAMES.detailEditAction
+						? ctx.routes.detailPage(ctx.idParam)
+						: ctx.routes.indexPage;
+
 				return new CUIRedirectResponse(
-					ctx.url(ctx.urls.indexPage),
+					ctx.url(redirectUrl),
 					resultToFlash(ctx, ctx.texts.flashMessageRecordUpdated, updateResult)
 				);
 			},
 			error => {
 				if (error instanceof CUIValidationError) {
 					// Show errors on page
-					return new CUIRedirectResponse(ctx.url(ctx.urls.editPage(ctx.idParam)), {
+					const redirectUrl =
+						ctx.routeName === ROUTE_NAMES.detailEditAction
+							? ctx.routes.detailEditPage(ctx.idParam)
+							: ctx.routes.editPage(ctx.idParam);
+					return new CUIRedirectResponse(ctx.url(redirectUrl), {
 						error,
 					});
 				}
@@ -246,7 +256,7 @@ function deleteAction(ctx) {
 		.then(() => ctx.actions.delete(ctx, ctx.idParam))
 		.then(deleteResult => {
 			return new CUIRedirectResponse(
-				ctx.url(ctx.urls.indexPage),
+				ctx.url(ctx.routes.indexPage),
 				resultToFlash(ctx, ctx.texts.flashMessageRecordDeleted, deleteResult)
 			);
 		});
