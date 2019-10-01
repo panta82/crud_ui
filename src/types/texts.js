@@ -51,6 +51,12 @@ class CUITexts {
 		this.listDeleteButton = 'Delete';
 		this.listDeleteButtonTitle = 'Delete this item';
 
+		this.listConfirmDeleteTitle = 'Are you sure?';
+		this.listConfirmDeleteQuestion = (/** CUIContext */ ctx, data, record, index) =>
+			`You are about to delete ${uncapitalize(ctx.texts.recordTitle(ctx, record))}. Proceed?`;
+		this.listConfirmDeleteYesButton = 'Delete';
+		this.listConfirmDeleteNoButton = 'Cancel';
+
 		this.footerBackToTop = 'Back to top';
 		this.footerCopyright = (/** CUIContext */ ctx) => {
 			return `Copyright ${new Date().getFullYear()}, All rights reserved.`;
@@ -84,11 +90,11 @@ class CUITexts {
 		this.detailBackButton = 'Back';
 		this.detailBackButtonTitle = 'Back to the list view';
 
-		this.modalConfirmDeleteTitle = 'Are you sure?';
-		this.modalConfirmDeleteQuestion = (/** CUIContext */ ctx, data, record, index) =>
+		this.detailConfirmDeleteTitle = 'Are you sure?';
+		this.detailConfirmDeleteQuestion = (/** CUIContext */ ctx, record) =>
 			`You are about to delete ${uncapitalize(ctx.texts.recordTitle(ctx, record))}. Proceed?`;
-		this.modalConfirmDeleteYesButton = 'Delete';
-		this.modalConfirmDeleteNoButton = 'Cancel';
+		this.detailConfirmDeleteYesButton = 'Delete';
+		this.detailConfirmDeleteNoButton = 'Cancel';
 
 		this.errorPageTitle = (/** CUIContext */ ctx, err) => `Error`;
 		this.errorNotFound = (/** CUIContext */ ctx, id) =>

@@ -120,10 +120,10 @@ module.exports.listDeleteModalScripting = (ctx, data) => {
 		deleteModalData[id] = {
 			action: ctx.url(ctx.routes.deleteAction(id)),
 			texts: {
-				'modal-title': ctx.texts.modalConfirmDeleteTitle(ctx, data, item, index),
-				'delete-modal-question': ctx.texts.modalConfirmDeleteQuestion(ctx, data, item, index),
-				'delete-modal-yes': ctx.texts.modalConfirmDeleteYesButton(ctx, data, item, index),
-				'delete-modal-no': ctx.texts.modalConfirmDeleteNoButton(ctx, data, item, index),
+				'modal-title': ctx.texts.listConfirmDeleteTitle(ctx, data, item, index),
+				'delete-modal-question': ctx.texts.listConfirmDeleteQuestion(ctx, data, item, index),
+				'delete-modal-yes': ctx.texts.listConfirmDeleteYesButton(ctx, data, item, index),
+				'delete-modal-no': ctx.texts.listConfirmDeleteNoButton(ctx, data, item, index),
 			},
 		};
 	}
@@ -380,12 +380,12 @@ module.exports.listDeleteConfirmationModal = (ctx, data) => {
 						<form method="post" action="" class="d-inline">
 							${ctx.views.csrfField(ctx)}
 							<button type="submit" class="btn btn-danger">
-								${ctx.views.icon(ctx, ctx.icons.modalConfirmDeleteYesButton, 'mr-1')}
+								${ctx.views.icon(ctx, ctx.icons.listConfirmDeleteYesButton, 'mr-1')}
 								<span class="delete-modal-yes"></span>
 							</button>
 						</form>
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">
-							${ctx.views.icon(ctx, ctx.icons.modalConfirmDeleteNoButton, 'mr-1')}
+							${ctx.views.icon(ctx, ctx.icons.listConfirmDeleteNoButton, 'mr-1')}
 							<span class="delete-modal-no"></span>
 						</button>
 					</div>

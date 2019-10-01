@@ -966,6 +966,9 @@ class CUIIcons {
 		this.listEditButton = ICON_NAMES.pen;
 		this.listDeleteButton = ICON_NAMES.trash;
 
+		this.listConfirmDeleteYesButton = ICON_NAMES.trash;
+		this.listConfirmDeleteNoButton = ICON_NAMES.times;
+
 		this.editNewSaveButton = ICON_NAMES.plus_circle;
 		this.editNewCancelButton = ICON_NAMES.times;
 		this.editExistingSaveButton = ICON_NAMES.save;
@@ -975,8 +978,8 @@ class CUIIcons {
 		this.detailEditButton = ICON_NAMES.pen;
 		this.detailDeleteButton = ICON_NAMES.trash;
 
-		this.modalConfirmDeleteYesButton = ICON_NAMES.trash;
-		this.modalConfirmDeleteNoButton = ICON_NAMES.times;
+		this.detailConfirmDeleteYesButton = ICON_NAMES.trash;
+		this.detailConfirmDeleteNoButton = ICON_NAMES.times;
 
 		this.booleanTrue = ICON_NAMES.check;
 		this.booleanFalse = ICON_NAMES.times;

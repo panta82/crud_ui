@@ -1,22 +1,6 @@
 initFlashMessageDismiss();
 initClearInvalidFormElements();
 
-window.addEventListener('beforeunload', function(event) {
-	let session = sessionStorage.getItem('sessionCookie');
-	if (!session) {
-		session =
-			Math.random()
-				.toString(32)
-				.slice(2) +
-			Math.random()
-				.toString(32)
-				.slice(2);
-		sessionStorage.setItem('sessionCookie', session);
-	}
-
-	document.cookie = `CUI_tabsession=${session}; path=/ `;
-});
-
 // *** END SYNCHRONOUS CODE ***
 
 function logError(message) {
@@ -49,25 +33,29 @@ function initFlashMessageDismiss() {
  * Texts should be a lookup of class names, whose content should be replaced with the given text.
  * @param id
  * @param action
- * @param texts
+ * @param textReplacements
  */
-function showModal(id, action, texts) {
+function showModal(id, action, textReplacements) {
 	var el = document.querySelector('#' + id);
 	if (!el) {
 		typeof console === 'object' && console.error && console.error("Couldn't find modal #" + id);
 		return logError("Couldn't find modal #" + id);
 	}
 
-	for (var className in texts) {
-		var els = el.querySelectorAll('.' + className);
-		els.forEach(function(el) {
-			el.innerText = texts[className];
-		});
+	if (textReplacements) {
+		for (var className in textReplacements) {
+			var els = el.querySelectorAll('.' + className);
+			els.forEach(function(el) {
+				el.innerText = textReplacements[className];
+			});
+		}
 	}
 
-	var formEl = el.querySelector('form');
-	if (formEl) {
-		formEl.setAttribute('action', action);
+	if (action) {
+		var formEl = el.querySelector('form');
+		if (formEl) {
+			formEl.setAttribute('action', action);
+		}
 	}
 
 	$(el).modal('show');

@@ -69,6 +69,8 @@ class CUIViews {
 		this.detailAbove = require('../views/detail_views.js').detailAbove;
 		this.detailBelow = require('../views/detail_views.js').detailBelow;
 		this.detailFooter = require('../views/detail_views.js').detailFooter;
+		this.detailHead = require('../views/detail_views.js').detailHead;
+		this.detailScripts = require('../views/detail_views.js').detailScripts;
 		this.detailContent = require('../views/detail_views.js').detailContent;
 		this.detailControls = require('../views/detail_views.js').detailControls;
 		this.detailEditButton = require('../views/detail_views.js').detailEditButton;
@@ -81,6 +83,7 @@ class CUIViews {
 		this.detailFieldText = require('../views/detail_views.js').detailFieldText;
 		this.detailFieldSelect = require('../views/detail_views.js').detailFieldSelect;
 		this.detailFieldBoolean = require('../views/detail_views.js').detailFieldBoolean;
+		this.detailDeleteConfirmationModal = require('../views/detail_views.js').detailDeleteConfirmationModal;
 
 		Object.assign(this, source);
 	}

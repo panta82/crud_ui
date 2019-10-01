@@ -111,7 +111,7 @@ app.use(
 		texts: new CUITexts({
 			listEditButton: 'Change',
 			listDeleteButton: '',
-			modalConfirmDeleteNoButton: '',
+			listConfirmDeleteNoButton: '',
 		}),
 		icons: new CUIIcons({
 			listCreateButton: 'fa-plus',
