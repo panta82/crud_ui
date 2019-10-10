@@ -126,13 +126,20 @@ function resultToFlash(ctx, makeMessage, result) {
  */
 function indexPage(ctx) {
 	return Promise.resolve()
-		.then(() => ctx.actions.getList(ctx))
+		.then(() => {
+			if (ctx.tweaks.singleRecordMode) {
+				return ctx.actions.getSingle(ctx, null);
+			}
+			return ctx.actions.getList(ctx);
+		})
 		.then(data => {
 			if (!data) {
 				throw new CUIError(`Invalid data`);
 			}
 
-			return ctx.views.listPage(ctx, data);
+			return ctx.tweaks.singleRecordMode
+				? ctx.views.detailPage(ctx, data)
+				: ctx.views.listPage(ctx, data);
 		});
 }
 

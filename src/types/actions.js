@@ -17,7 +17,8 @@ class CUIActions {
 		/**
 		 * Get single item for edit view. It will be called with record id,
 		 * and should return either an object or null, if none is found.
-		 * @type {function(CUIContext, id):Promise<Array>|Array}
+		 * If we are operating in single record mode, given id will be null.
+		 * @type {function(CUIContext, id):Promise<Object>|Object}
 		 */
 		this.getSingle = undefined;
 
@@ -48,11 +49,20 @@ class CUIActions {
 		Object.assign(this, source);
 	}
 
-	_validateAndCoerce() {
+	_validateAndCoerce(mustSupportList) {
 		const asserters = makeObjectAsserters(this, '"', '" action');
 
-	 	asserters.type('single', 'function');
-		asserters.type('list', 'function');
+		if (mustSupportList) {
+			asserters.provided('getList');
+		}
+		asserters.type('getList', 'function');
+
+		asserters.type('getSingle', 'function');
+
+		if (this.update) {
+			// In order for update to work, we must be able to get single record
+			asserters.provided('getSingle');
+		}
 	}
 }
 

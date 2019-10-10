@@ -94,6 +94,14 @@ class CUIContext {
 	}
 
 	/**
+	 * Convenience shortcut to tweaks
+	 * @type {CUITweaks}
+	 */
+	get tweaks() {
+		return this.options.tweaks;
+	}
+
+	/**
 	 * Convenience shortcut to views
 	 * @type {CUIViews}
 	 */

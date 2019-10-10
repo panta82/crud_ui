@@ -21,7 +21,7 @@ module.exports.layout = (ctx, title, className, content, head = '', scripts = ''
 
 		<title>${title}</title>
 
-		${ctx.options.tweaks.globalCSS
+		${ctx.tweaks.globalCSS
 			.map(makePath => makePath(ctx))
 			.filter(Boolean)
 			.map(path => `<link rel="stylesheet" href="${ctx.url(path)}" />`)
@@ -34,7 +34,7 @@ module.exports.layout = (ctx, title, className, content, head = '', scripts = ''
 
 		${content}
 		
-		${ctx.options.tweaks.globalJS
+		${ctx.tweaks.globalJS
 			.map(makePath => makePath(ctx))
 			.filter(Boolean)
 			.map(path => `<script src="${ctx.url(path)}"></script>`)
@@ -245,10 +245,10 @@ module.exports.icon = (ctx, iconName, className = '') => {
  * @param {CUIContext} ctx
  */
 module.exports.csrfField = ctx => {
-	if (!ctx.options.tweaks.csrfEnabled) {
+	if (!ctx.tweaks.csrfEnabled) {
 		return '';
 	}
-	return `<input type="hidden" name="${ctx.options.tweaks.csrfFieldName}" value="${ctx.csrfToken}" />`;
+	return `<input type="hidden" name="${ctx.tweaks.csrfFieldName}" value="${ctx.csrfToken}" />`;
 };
 
 /**

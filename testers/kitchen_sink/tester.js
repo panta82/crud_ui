@@ -7,15 +7,7 @@ const bodyParser = require('body-parser');
 
 const port = process.env.PORT || 3000;
 
-const {
-	crudUI,
-	CUIField,
-	FIELD_TYPES,
-	CUITexts,
-	CUIIcons,
-	ICON_NAMES,
-	DEFAULT_VIEWS,
-} = require('../../');
+const { crudUI, CUIField, FIELD_TYPES, CUITexts, CUIIcons, ICON_NAMES } = require('../../');
 
 const app = express();
 app.use(bodyParser.json());
@@ -35,6 +27,12 @@ const data = {
 		{ id: 1, name: 'Axe store', link: 'https://axes.com' },
 		{ id: 2, name: 'Blog', link: 'https://blog.com' },
 	],
+	options: {
+		darkMode: true,
+		emailAlerts: false,
+		smsAlerts: false,
+		defaultProjectName: '',
+	},
 };
 
 const navigation = {
@@ -52,6 +50,11 @@ const navigation = {
 			title: 'Projects',
 			url: '/admin/projects',
 			icon: ICON_NAMES.list_alt,
+		},
+		{
+			title: 'Options',
+			url: '/admin/options',
+			icon: ICON_NAMES.cogs,
 		},
 	],
 	right: [
@@ -210,6 +213,44 @@ app.use(
 			}),
 		],
 		actions: actions(data.projects),
+	})
+);
+
+app.use(
+	'/admin/options',
+	customAssets,
+	crudUI({
+		name: 'options',
+		navigation,
+		isProduction: true,
+		tweaks: {
+			singleRecordMode: true,
+		},
+		fields: [
+			new CUIField({
+				name: 'darkMode',
+				type: FIELD_TYPES.boolean,
+			}),
+			new CUIField({
+				name: 'emailAlerts',
+				type: FIELD_TYPES.boolean,
+			}),
+			new CUIField({
+				name: 'smsAlerts',
+				type: FIELD_TYPES.boolean,
+			}),
+			new CUIField({
+				name: 'defaultProjectName',
+				type: FIELD_TYPES.string,
+			}),
+		],
+		actions: {
+			getSingle: () => data.options,
+			update: val => {
+				data.options = val;
+				return data.options;
+			},
+		},
 	})
 );
 

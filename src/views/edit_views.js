@@ -153,7 +153,7 @@ module.exports.editErrorSummary = (ctx, record) => {
 		return '';
 	}
 
-	if (!ctx.options.tweaks.showValidationErrorSummary) {
+	if (!ctx.tweaks.showValidationErrorSummary) {
 		return '';
 	}
 

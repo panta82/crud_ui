@@ -113,7 +113,7 @@ class CUIOptions {
 		// Turn record id into a getter
 		if (typeof this.recordId === 'string') {
 			const key = this.recordId;
-			this.recordId = ob => (ob ? ob[key] : '');
+			this.recordId = ob => (ob ? ob[key] : null);
 		}
 
 		if (this.fields.length < 1) {
@@ -132,11 +132,11 @@ class CUIOptions {
 			return field;
 		});
 
-		this.actions = cast(CUIActions, this.actions);
-		this.actions._validateAndCoerce();
-
 		this.tweaks = cast(CUITweaks, this.tweaks);
 		this.tweaks._validateAndCoerce();
+
+		this.actions = cast(CUIActions, this.actions);
+		this.actions._validateAndCoerce(!this.tweaks.singleRecordMode);
 
 		if (this.navigation) {
 			asserters.type('navigation', 'object');

@@ -9,6 +9,14 @@ const { makeObjectAsserters, minInProd } = require('../tools');
 class CUITweaks {
 	constructor(/** CUITweaks */ source) {
 		/**
+		 * If true, the router is configured for only dealing with one record, instead of a list of them.
+		 * Index page will show detail view instead of list view (which will not be available).
+		 * getList action can be omitted.
+		 * @type {boolean}
+		 */
+		this.singleRecordMode = false;
+
+		/**
 		 * If enabled, renders a red box with validation error message and all the faults above the edit form.
 		 * Otherwise, we will still show errors next to affected fields, but not above the form.
 		 * This will have no influence on non-validation errors.
@@ -73,6 +81,8 @@ class CUITweaks {
 
 	_validateAndCoerce() {
 		const asserters = makeObjectAsserters(this, 'tweak "', '"');
+
+		asserters.type('singleRecordMode', 'boolean');
 
 		asserters.type('showValidationErrorSummary', 'boolean');
 
