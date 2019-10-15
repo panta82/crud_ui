@@ -52,26 +52,40 @@ function crudUI(options) {
 
 	router.get(options.routes.indexPage, wrap(handlers.indexPage, ROUTE_NAMES.indexPage));
 
-	router.get(options.routes.createPage, wrap(handlers.createPage, ROUTE_NAMES.createPage));
-	router.post(options.routes.createAction, wrap(handlers.createAction, ROUTE_NAMES.createAction));
+	if (options.tweaks.singleRecordMode) {
+		router.get(
+			options.routes.singleRecordModeEditPage,
+			wrap(handlers.editPage, ROUTE_NAMES.singleRecordModeEditPage)
+		);
+		router.post(
+			options.routes.singleRecordModeEditAction,
+			wrap(handlers.editAction, ROUTE_NAMES.singleRecordModeEditAction)
+		);
+	} else {
+		router.get(options.routes.createPage, wrap(handlers.createPage, ROUTE_NAMES.createPage));
+		router.post(options.routes.createAction, wrap(handlers.createAction, ROUTE_NAMES.createAction));
 
-	router.get(options.routes.editPage(':id'), wrap(handlers.editPage, ROUTE_NAMES.editPage));
-	router.post(options.routes.editAction(':id'), wrap(handlers.editAction, ROUTE_NAMES.editAction));
+		router.get(options.routes.editPage(':id'), wrap(handlers.editPage, ROUTE_NAMES.editPage));
+		router.post(
+			options.routes.editAction(':id'),
+			wrap(handlers.editAction, ROUTE_NAMES.editAction)
+		);
 
-	router.get(options.routes.detailPage(':id'), wrap(handlers.detailPage, ROUTE_NAMES.detailPage));
-	router.get(
-		options.routes.detailEditPage(':id'),
-		wrap(handlers.editPage, ROUTE_NAMES.detailEditPage)
-	);
-	router.post(
-		options.routes.detailEditAction(':id'),
-		wrap(handlers.editAction, ROUTE_NAMES.detailEditAction)
-	);
+		router.get(options.routes.detailPage(':id'), wrap(handlers.detailPage, ROUTE_NAMES.detailPage));
+		router.get(
+			options.routes.detailEditPage(':id'),
+			wrap(handlers.editPage, ROUTE_NAMES.detailEditPage)
+		);
+		router.post(
+			options.routes.detailEditAction(':id'),
+			wrap(handlers.editAction, ROUTE_NAMES.detailEditAction)
+		);
 
-	router.post(
-		options.routes.deleteAction(':id'),
-		wrap(handlers.deleteAction, ROUTE_NAMES.deleteAction)
-	);
+		router.post(
+			options.routes.deleteAction(':id'),
+			wrap(handlers.deleteAction, ROUTE_NAMES.deleteAction)
+		);
+	}
 
 	router.use((err, req, res, next) => {
 		const ctx = new CUIContext(options, req);

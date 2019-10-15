@@ -39,9 +39,11 @@ function coerceAndValidateEditPayload(ctx, isCreate) {
 				// Convert empty string value to null
 				value = null;
 			}
-			if (value !== null && !field.values.includes(value)) {
-				// Invalid value, user trying to be sneaky?
-				throw new CUIError(`Invalid ${field.name} value: "${value}".`);
+			if (value !== null && field.values) {
+				if (!field.values.some(f => f === value || (f && f.value === value))) {
+					// Invalid value, user trying to be sneaky?
+					throw new CUIError(`Invalid ${field.name} value: "${value}".`);
+				}
 			}
 		}
 
@@ -206,14 +208,16 @@ function editAction(ctx) {
 	return Promise.resolve()
 		.then(() => {
 			const payload = coerceAndValidateEditPayload(ctx, false);
-			return ctx.actions.update(ctx, ctx.idParam, payload);
+			return ctx.tweaks.singleRecordMode
+				? ctx.actions.update(ctx, payload)
+				: ctx.actions.update(ctx, ctx.idParam, payload);
 		})
 		.then(
 			updateResult => {
 				const redirectUrl =
 					ctx.routeName === ROUTE_NAMES.detailEditAction
 						? ctx.routes.detailPage(ctx.idParam)
-						: ctx.routes.indexPage;
+						: ctx.routes.indexPage; // This works for single record mode too
 
 				return new CUIRedirectResponse(
 					ctx.url(redirectUrl),
@@ -223,10 +227,11 @@ function editAction(ctx) {
 			error => {
 				if (error instanceof CUIValidationError) {
 					// Show errors on page
-					const redirectUrl =
-						ctx.routeName === ROUTE_NAMES.detailEditAction
-							? ctx.routes.detailEditPage(ctx.idParam)
-							: ctx.routes.editPage(ctx.idParam);
+					const redirectUrl = ctx.tweaks.singleRecordMode
+						? ctx.routes.singleRecordModeEditPage
+						: ctx.routeName === ROUTE_NAMES.detailEditAction
+						? ctx.routes.detailEditPage(ctx.idParam)
+						: ctx.routes.editPage(ctx.idParam);
 					return new CUIRedirectResponse(ctx.url(redirectUrl), {
 						error,
 					});

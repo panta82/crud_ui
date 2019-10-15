@@ -117,8 +117,8 @@ module.exports.detailContent = (ctx, record) => {
  */
 module.exports.detailControls = (ctx, record) => {
 	const backBtn = this.detailBackButton(ctx, record);
-	const editBtn = ctx.actions.update ? this.detailEditButton(ctx, record) : '';
-	const deleteBtn = ctx.actions.delete ? this.detailDeleteButton(ctx, record) : '';
+	const editBtn = this.detailEditButton(ctx, record);
+	const deleteBtn = this.detailDeleteButton(ctx, record);
 	if (!backBtn && !editBtn && !deleteBtn) {
 		// Don't show anything at all
 		return '';
@@ -142,9 +142,19 @@ module.exports.detailControls = (ctx, record) => {
  * @return {string}
  */
 module.exports.detailEditButton = (ctx, record) => {
+	if (!ctx.actions.update) {
+		// Don't show edit button becuse update is not supported
+		return '';
+	}
+
 	const label = ctx.texts.safe.detailEditButton(ctx, record);
+	const href = ctx.url(
+		ctx.tweaks.singleRecordMode
+			? ctx.routes.singleRecordModeEditPage
+			: ctx.routes.detailEditPage(ctx.options.recordId(record))
+	);
 	return `
-		<a href="${ctx.url(ctx.routes.detailEditPage(ctx.options.recordId(record)))}"
+		<a href="${href}"
 			class="btn btn-primary cui-edit-button" title="${ctx.texts.safe.detailEditButtonTitle(
 				ctx,
 				record
@@ -162,6 +172,11 @@ module.exports.detailEditButton = (ctx, record) => {
  * @return {string}
  */
 module.exports.detailDeleteButton = (ctx, record) => {
+	if (ctx.actions.delete || ctx.tweaks.singleRecordMode) {
+		// Deletion is not supported
+		return '';
+	}
+
 	const label = ctx.texts.safe.detailDeleteButton(ctx, record);
 	return `
 		<button type="button" class="btn btn-danger cui-delete-button"
@@ -179,6 +194,11 @@ module.exports.detailDeleteButton = (ctx, record) => {
  * @param {Object} record
  */
 module.exports.detailBackButton = (ctx, record) => {
+	if (ctx.tweaks.singleRecordMode) {
+		// There is nothing to go back to
+		return '';
+	}
+
 	const label = ctx.texts.detailBackButton(ctx, record);
 	return `
 		<a href="${ctx.url(
@@ -231,22 +251,6 @@ module.exports.detailField = (ctx, record, field, index) => {
 };
 
 /**
- * Utility function to prepare a value to be shown in detail view.
- * @param {CUIContext} ctx
- * @param {Object} record
- * @param {CUIField} field
- * @param {*} index
- * @return {*}
- */
-module.exports.detailFieldPrepareValue = (ctx, record, field, index) => {
-	let value = record[field.name];
-	if (!value) {
-		value = '&nbsp;';
-	}
-	return value;
-};
-
-/**
  * Render a string field's details.
  * @param {CUIContext} ctx
  * @param {Object} record
@@ -256,7 +260,7 @@ module.exports.detailFieldPrepareValue = (ctx, record, field, index) => {
 module.exports.detailFieldString = (ctx, record, field, index) => {
 	assertEqual(field.type, CUI_FIELD_TYPES.string, 'field type');
 
-	const value = ctx.views.detailFieldPrepareValue(ctx, record, field, index);
+	const value = record[field.name] || '&nbsp;';
 
 	return `
 	  <div class="cui-field-detail cui-field-name-${field.name} cui-field-string" data-field-name="${field.name}">
@@ -276,7 +280,7 @@ module.exports.detailFieldString = (ctx, record, field, index) => {
 module.exports.detailFieldSecret = (ctx, record, field, index) => {
 	assertEqual(field.type, CUI_FIELD_TYPES.secret, 'field type');
 
-	const value = ctx.views.detailFieldPrepareValue(ctx, record, field, index);
+	const value = record[field.name] || '&nbsp;';
 
 	return `
 	  <div class="cui-field-detail cui-field-name-${field.name} cui-field-secret" data-field-name="${
@@ -300,7 +304,7 @@ module.exports.detailFieldSecret = (ctx, record, field, index) => {
 module.exports.detailFieldText = (ctx, record, field, index) => {
 	assertEqual(field.type, CUI_FIELD_TYPES.text, 'field type');
 
-	const value = ctx.views.detailFieldPrepareValue(ctx, record, field, index);
+	const value = ctx.views.detailFieldPrepareValueForPrint(ctx, record, field, index);
 
 	return `
 	  <div class="cui-field-detail cui-field-name-${field.name} cui-field-text" data-field-name="${field.name}">
@@ -320,7 +324,12 @@ module.exports.detailFieldText = (ctx, record, field, index) => {
 module.exports.detailFieldSelect = (ctx, record, field, index) => {
 	assertEqual(field.type, CUI_FIELD_TYPES.select, 'field type');
 
-	const selectedValue = ctx.views.detailFieldPrepareValue(ctx, record, field, index);
+	let selectedValue = record[field.name];
+	const valueObject = field.values.find(x => x.value === selectedValue);
+	if (valueObject) {
+		selectedValue = valueObject.label;
+	}
+	selectedValue = selectedValue || '&nbsp;';
 
 	return `
 	  <div class="cui-field-detail cui-field-name-${field.name} cui-field-select" data-field-name="${field.name}">
@@ -340,7 +349,7 @@ module.exports.detailFieldSelect = (ctx, record, field, index) => {
 module.exports.detailFieldBoolean = (ctx, record, field, index) => {
 	assertEqual(field.type, CUI_FIELD_TYPES.boolean, 'field type');
 
-	const value = ctx.views.detailFieldPrepareValue(ctx, record, field, index);
+	const value = !!record[field.name];
 
 	return `
 	  <div class="cui-field-detail cui-field-name-${field.name} cui-field-boolean" data-field-name="${

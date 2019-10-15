@@ -77,7 +77,7 @@ class CUIViews {
 		this.detailDeleteButton = require('../views/detail_views.js').detailDeleteButton;
 		this.detailBackButton = require('../views/detail_views.js').detailBackButton;
 		this.detailField = require('../views/detail_views.js').detailField;
-		this.detailFieldPrepareValue = require('../views/detail_views.js').detailFieldPrepareValue;
+		this.detailFieldPrepareValueForPrint = require('../views/detail_views.js').detailFieldPrepareValueForPrint;
 		this.detailFieldString = require('../views/detail_views.js').detailFieldString;
 		this.detailFieldSecret = require('../views/detail_views.js').detailFieldSecret;
 		this.detailFieldText = require('../views/detail_views.js').detailFieldText;

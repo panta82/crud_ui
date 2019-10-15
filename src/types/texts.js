@@ -17,7 +17,8 @@ class CUITexts {
 		 * @param record
 		 * @return {string}
 		 */
-		this.recordDescriptor = (ctx, record) => `#${ctx.options.recordId(record)}`;
+		this.recordDescriptor = (ctx, record) =>
+			ctx.tweaks.singleRecordMode ? '' : `#${ctx.options.recordId(record)}`;
 
 		/**
 		 * Generate title of a particular record, used for messages about that record. For example, "User #13".
@@ -26,7 +27,9 @@ class CUITexts {
 		 * @return {string}
 		 */
 		this.recordTitle = (ctx, record) =>
-			`${singularize(ctx.options.name)} ${ctx.texts.recordDescriptor(ctx, record)}`;
+			ctx.tweaks.singleRecordMode
+				? ctx.options.name
+				: `${singularize(ctx.options.name)} ${ctx.texts.recordDescriptor(ctx, record)}`;
 
 		this.flashMessageRecordCreated = (/** CUIContext */ ctx, record) =>
 			`${capitalize(ctx.texts.recordTitle(ctx, record))} created`;
@@ -80,7 +83,9 @@ class CUITexts {
 		this.editExistingCancelButtonTitle = 'Cancel edit and go back to the list';
 
 		this.detailTitle = (/** CUIContext */ ctx, record) =>
-			`${capitalize(ctx.texts.recordTitle(ctx, record))} details`;
+			ctx.tweaks.singleRecordMode
+				? `${capitalize(ctx.texts.recordTitle(ctx, record))}`
+				: `${capitalize(ctx.texts.recordTitle(ctx, record))} details`;
 		this.detailPageTitle = (/** CUIContext */ ctx, record) =>
 			`${ctx.texts.pageBaseTitle(ctx)} > Details`;
 		this.detailEditButton = 'Edit';

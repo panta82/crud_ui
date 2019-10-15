@@ -198,7 +198,7 @@ app.use(
 			new CUIField({
 				name: 'terms',
 				type: 'boolean',
-				title: 'Terms',
+				title: 'Terms of service',
 				label: 'I agree with terms of this project',
 				allowEditExisting: false,
 				validate: {
@@ -228,12 +228,19 @@ app.use(
 		},
 		fields: [
 			new CUIField({
-				name: 'darkMode',
-				type: FIELD_TYPES.boolean,
+				name: 'theme',
+				type: FIELD_TYPES.select,
+				defaultValue: 'light',
+				values: [
+					{ value: 'dark', label: 'Dark' },
+					{ value: 'light', label: 'Light' },
+					{ value: 'hc', label: 'High contrast' },
+				],
 			}),
 			new CUIField({
 				name: 'emailAlerts',
 				type: FIELD_TYPES.boolean,
+				allowEdit: false,
 			}),
 			new CUIField({
 				name: 'smsAlerts',
@@ -242,14 +249,20 @@ app.use(
 			new CUIField({
 				name: 'defaultProjectName',
 				type: FIELD_TYPES.string,
+				validate: {
+					length: { minimum: 3 },
+					presence: true,
+				},
 			}),
 		],
 		actions: {
 			getSingle: () => data.options,
-			update: val => {
+			update: (ctx, val) => {
 				data.options = val;
 				return data.options;
 			},
+			// Will be ignored
+			delete: () => {},
 		},
 	})
 );

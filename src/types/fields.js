@@ -107,7 +107,7 @@ class CUIField {
 
 		/**
 		 * Function getter or literal list of values to offer for select fields. Values can be just strings, or objects
-		 * in format {title, value}. Ignored for other field types.
+		 * in format {title, label, value}. Ignored for other field types.
 		 * @type {function(CUIContext, *, CUIField, number):string[]|string[]}
 		 */
 		this.values = undefined;

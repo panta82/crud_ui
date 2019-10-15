@@ -17,6 +17,9 @@ class CUIRoutes {
 		this.detailEditPage = id => '/detail/' + encodeURI(id) + '/edit';
 		this.detailEditAction = id => '/detail/' + encodeURI(id) + '/edit';
 
+		this.singleRecordModeEditPage = '/edit';
+		this.singleRecordModeEditAction = '/edit';
+
 		this.deleteAction = id => '/delete/' + encodeURI(id);
 
 		Object.assign(this, source);

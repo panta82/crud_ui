@@ -23,7 +23,18 @@ function singularize(str) {
  * @param str
  */
 function deslugify(str) {
-	return str.replace(/[_-]/g, ' ');
+	let firstWord = true;
+	return str
+		.replace(/[_-]/g, ' ')
+		.replace(/([A-Z]+|[A-Z]?[a-z]+)(?=[A-Z]|\b)/g, x => {
+			if (firstWord) {
+				firstWord = false;
+			} else {
+				x = x.toLowerCase();
+			}
+			return x + ' ';
+		})
+		.trim();
 }
 
 /**

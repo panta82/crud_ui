@@ -17,8 +17,8 @@ class CUIActions {
 		/**
 		 * Get single item for edit view. It will be called with record id,
 		 * and should return either an object or null, if none is found.
-		 * If we are operating in single record mode, given id will be null.
-		 * @type {function(CUIContext, id):Promise<Object>|Object}
+		 * If operating in single record mode, id will be left out.
+		 * @type {function(CUIContext, id?):Promise<Object>|Object}
 		 */
 		this.getSingle = undefined;
 
@@ -35,7 +35,8 @@ class CUIActions {
 		 * If not provided, editing will be disabled.
 		 * To display a flash message, return either a string or updated record.
 		 * If this is not provided, UI will not show Edit button.
-		 * @type {function(CUIContext, id, Object)}
+		 * If operating in single record mode, id will be left out
+		 * @type {function(CUIContext, id?, Object)}
 		 */
 		this.update = undefined;
 

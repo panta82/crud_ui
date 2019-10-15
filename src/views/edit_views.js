@@ -396,9 +396,9 @@ module.exports.editFieldSelect = (ctx, record, field, index) => {
 
 	const options = values.map(v => {
 		const value = v.value || v;
-		const title = v.title || v;
+		const label = v.label || v;
 		const selected = selectedValue === value ? 'selected="selected"' : '';
-		return `<option value="${value}" ${selected}>${title}</option>`;
+		return `<option value="${value}" title="${v.title || ''}" ${selected}>${label}</option>`;
 	});
 
 	if (typeof field.nullOption === 'string' || field.nullOption === true) {
