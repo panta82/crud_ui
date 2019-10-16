@@ -4,8 +4,11 @@ const { crudUI } = require('./src/crud_ui');
 module.exports = crudUI;
 module.exports.crudUI = crudUI;
 
-const { CUI_FIELD_TYPES } = require('./src/types/consts');
+const { CUI_FIELD_TYPES, CUI_MODES } = require('./src/types/consts');
 module.exports.FIELD_TYPES = CUI_FIELD_TYPES;
+module.exports.CUI_FIELD_TYPES = CUI_FIELD_TYPES;
+module.exports.MODES = CUI_MODES;
+module.exports.CUI_MODES = CUI_MODES;
 
 const {
 	CUIError,

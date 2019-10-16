@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 
 const port = process.env.PORT || 3000;
 
-const { crudUI, CUIField, FIELD_TYPES, CUITexts, CUIIcons, ICON_NAMES } = require('../../');
+const { crudUI, CUIField, FIELD_TYPES, MODES, CUITexts, CUIIcons, ICON_NAMES } = require('../../');
 
 const app = express();
 app.use(bodyParser.json());
@@ -162,7 +162,10 @@ app.use(
 				},
 			}),
 		],
-		actions: actions(data.users),
+		actions: {
+			...actions(data.users),
+			delete: null,
+		},
 		debugLog: true,
 	})
 );
@@ -172,6 +175,7 @@ app.use(
 	customAssets,
 	crudUI({
 		name: 'project',
+		mode: MODES.simple_list,
 		navigation,
 		isProduction: true,
 		fields: [
@@ -215,7 +219,6 @@ app.use(
 		actions: {
 			...actions(data.projects),
 			update: null,
-			delete: null,
 		},
 	})
 );
@@ -225,11 +228,9 @@ app.use(
 	customAssets,
 	crudUI({
 		name: 'options',
+		mode: MODES.single_record,
 		navigation,
 		isProduction: true,
-		tweaks: {
-			singleRecordMode: true,
-		},
 		fields: [
 			new CUIField({
 				name: 'theme',

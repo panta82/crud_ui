@@ -1,6 +1,7 @@
 'use strict';
 
 const { assertType, makeObjectAsserters, cast } = require('../tools');
+const { CUI_MODES } = require('./consts');
 const { CUIField } = require('./fields');
 const { CUIActions } = require('./actions');
 const { CUINavigation } = require('./navigation');
@@ -17,6 +18,13 @@ class CUIOptions {
 		 * @type {string}
 		 */
 		this.name = undefined;
+
+		/**
+		 * One of CUI_MODES. Mode in which this router will operate. Significantly changes way in which different pages
+		 * and actions work. See CUI_MODES docs for more details. Defaults to "detail_list".
+		 * @type {CUI_MODES}
+		 */
+		this.mode = undefined;
 
 		/**
 		 * A way to get ID or unique identifier out of a record. It can either be a string key (eg. "id"),
@@ -103,6 +111,12 @@ class CUIOptions {
 		asserters.provided('name');
 		asserters.type('name', 'string');
 
+		if (!this.mode) {
+			this.mode = CUI_MODES.detail_list;
+		}
+		asserters.type('mode', 'string');
+		asserters.member('mode', CUI_MODES);
+
 		asserters.provided('fields');
 		asserters.type('fields', 'array');
 
@@ -136,7 +150,7 @@ class CUIOptions {
 		this.tweaks._validateAndCoerce();
 
 		this.actions = cast(CUIActions, this.actions);
-		this.actions._validateAndCoerce(this.tweaks);
+		this.actions._validateAndCoerce(this.mode);
 
 		if (this.navigation) {
 			asserters.type('navigation', 'object');
@@ -170,6 +184,10 @@ class CUIOptions {
 
 	get hasList() {
 		return !!this.actions.getList;
+	}
+
+	get isSingleRecordMode() {
+		return this.mode === CUI_MODES.single_record;
 	}
 }
 

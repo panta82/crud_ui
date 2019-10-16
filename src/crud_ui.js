@@ -52,7 +52,7 @@ function crudUI(options) {
 
 	router.get(options.routes.indexPage, wrap(handlers.indexPage, ROUTE_NAMES.indexPage));
 
-	if (options.tweaks.singleRecordMode) {
+	if (options.isSingleRecordMode) {
 		router.get(
 			options.routes.singleRecordModeEditPage,
 			wrap(handlers.editPage, ROUTE_NAMES.singleRecordModeEditPage)

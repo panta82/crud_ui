@@ -1,7 +1,7 @@
 'use strict';
 
 const { escapeHTML, escapeScript } = require('../tools');
-const { CUI_FIELD_TYPES } = require('../types/consts');
+const { CUI_FIELD_TYPES, CUI_MODES } = require('../types/consts');
 
 /**
  * Render the entire list page. Embeds itself into layout, and renders all other parts of the list.
@@ -299,6 +299,10 @@ module.exports.listControlsCell = (ctx, data, record, index) => {
  * @return {string}
  */
 module.exports.listDetailButton = (ctx, data, record, index) => {
+	if (ctx.options.mode === CUI_MODES.simple_list) {
+		// Simple list mode doesn't have detail view
+		return '';
+	}
 	const label = ctx.texts.safe.listDetailButton(ctx);
 	return `
 		<a href="${ctx.url(

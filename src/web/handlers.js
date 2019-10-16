@@ -129,7 +129,7 @@ function resultToFlash(ctx, makeMessage, result) {
 function indexPage(ctx) {
 	return Promise.resolve()
 		.then(() => {
-			if (ctx.tweaks.singleRecordMode) {
+			if (ctx.options.isSingleRecordMode) {
 				return ctx.actions.getSingle(ctx, null);
 			}
 			return ctx.actions.getList(ctx);
@@ -139,7 +139,7 @@ function indexPage(ctx) {
 				throw new CUIError(`Invalid data`);
 			}
 
-			return ctx.tweaks.singleRecordMode
+			return ctx.options.isSingleRecordMode
 				? ctx.views.detailPage(ctx, data)
 				: ctx.views.listPage(ctx, data);
 		});
@@ -208,7 +208,7 @@ function editAction(ctx) {
 	return Promise.resolve()
 		.then(() => {
 			const payload = coerceAndValidateEditPayload(ctx, false);
-			return ctx.tweaks.singleRecordMode
+			return ctx.options.isSingleRecordMode
 				? ctx.actions.update(ctx, payload)
 				: ctx.actions.update(ctx, ctx.idParam, payload);
 		})
@@ -227,7 +227,7 @@ function editAction(ctx) {
 			error => {
 				if (error instanceof CUIValidationError) {
 					// Show errors on page
-					const redirectUrl = ctx.tweaks.singleRecordMode
+					const redirectUrl = ctx.options.isSingleRecordMode
 						? ctx.routes.singleRecordModeEditPage
 						: ctx.routeName === ROUTE_NAMES.detailEditAction
 						? ctx.routes.detailEditPage(ctx.idParam)

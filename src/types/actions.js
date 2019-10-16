@@ -1,5 +1,6 @@
 'use strict';
 
+const { CUI_MODES } = require('./consts');
 const { makeObjectAsserters } = require('../tools');
 
 /**
@@ -50,10 +51,10 @@ class CUIActions {
 		Object.assign(this, source);
 	}
 
-	_validateAndCoerce(/** CUITweaks */ tweaks) {
+	_validateAndCoerce(mode) {
 		const asserters = makeObjectAsserters(this, '"', '" action');
 
-		if (tweaks.singleRecordMode) {
+		if (mode === CUI_MODES.single_record) {
 			// Single is required in single record mode
 			asserters.provided('getSingle');
 		} else {

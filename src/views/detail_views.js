@@ -149,7 +149,7 @@ module.exports.detailEditButton = (ctx, record) => {
 
 	const label = ctx.texts.safe.detailEditButton(ctx, record);
 	const href = ctx.url(
-		ctx.tweaks.singleRecordMode
+		ctx.options.isSingleRecordMode
 			? ctx.routes.singleRecordModeEditPage
 			: ctx.routes.detailEditPage(ctx.options.recordId(record))
 	);
@@ -172,7 +172,7 @@ module.exports.detailEditButton = (ctx, record) => {
  * @return {string}
  */
 module.exports.detailDeleteButton = (ctx, record) => {
-	if (ctx.actions.delete || ctx.tweaks.singleRecordMode) {
+	if (!ctx.actions.delete || ctx.options.isSingleRecordMode) {
 		// Deletion is not supported
 		return '';
 	}
@@ -194,7 +194,7 @@ module.exports.detailDeleteButton = (ctx, record) => {
  * @param {Object} record
  */
 module.exports.detailBackButton = (ctx, record) => {
-	if (ctx.tweaks.singleRecordMode) {
+	if (ctx.options.isSingleRecordMode) {
 		// There is nothing to go back to
 		return '';
 	}
@@ -304,7 +304,7 @@ module.exports.detailFieldSecret = (ctx, record, field, index) => {
 module.exports.detailFieldText = (ctx, record, field, index) => {
 	assertEqual(field.type, CUI_FIELD_TYPES.text, 'field type');
 
-	const value = ctx.views.detailFieldPrepareValueForPrint(ctx, record, field, index);
+	const value = record[field.name] || '&nbsp;';
 
 	return `
 	  <div class="cui-field-detail cui-field-name-${field.name} cui-field-text" data-field-name="${field.name}">

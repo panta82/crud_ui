@@ -18,7 +18,7 @@ class CUITexts {
 		 * @return {string}
 		 */
 		this.recordDescriptor = (ctx, record) =>
-			ctx.tweaks.singleRecordMode ? '' : `#${ctx.options.recordId(record)}`;
+			ctx.options.isSingleRecordMode ? '' : `#${ctx.options.recordId(record)}`;
 
 		/**
 		 * Generate title of a particular record, used for messages about that record. For example, "User #13".
@@ -27,7 +27,7 @@ class CUITexts {
 		 * @return {string}
 		 */
 		this.recordTitle = (ctx, record) =>
-			ctx.tweaks.singleRecordMode
+			ctx.options.isSingleRecordMode
 				? ctx.options.name
 				: `${singularize(ctx.options.name)} ${ctx.texts.recordDescriptor(ctx, record)}`;
 
@@ -83,7 +83,7 @@ class CUITexts {
 		this.editExistingCancelButtonTitle = 'Cancel edit and go back to the list';
 
 		this.detailTitle = (/** CUIContext */ ctx, record) =>
-			ctx.tweaks.singleRecordMode
+			ctx.options.isSingleRecordMode
 				? `${capitalize(ctx.texts.recordTitle(ctx, record))}`
 				: `${capitalize(ctx.texts.recordTitle(ctx, record))} details`;
 		this.detailPageTitle = (/** CUIContext */ ctx, record) =>
