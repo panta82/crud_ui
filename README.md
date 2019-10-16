@@ -46,13 +46,13 @@ app.use(
 http.createServer(app).listen(3000);
 ```
 
-![Simple example](misc/cui_1.png)
+![Minimal example](misc/cui_1.png)
 
 ### More details
 
 The UI is rendered server-side using a vanilla [bootstrap](https://getbootstrap.com/) layout (feel free to slap your own [theme](https://bootswatch.com/) on top of it). Validation is performed by [validate.js](https://validatejs.org/), but you can plug in your own library. Every part of the UI in general is overridable through options.
 
-Each crudUI serves a single REST-like resource - a table view with items, edit item and delete. You can use multiple crudUI handlers to work with multiple resources. We provide an option of adding a top level menu, so you can navigate between them (and/or other parts of your app).
+By default, each crudUI router serves a single REST-like resource - a table view, with links to each item's detail page, edit page and delete popup (there are other view modes too, eg. the *single record mode*). You can use multiple crudUI handlers to work with multiple resources. We provide an option of adding a top level menu, so you can navigate between them (and/or other parts of your app).
 
 As the name says, this library is for the UI layer only. Since you are providing functions which resolve various operations, you can plug whatever database or other backend you want. We also don't do authentication. It is recommended to plug in your own auth middleware before the crudUI handler is reached.
 
@@ -68,11 +68,11 @@ To summarize:
 
 - You have relatively little data to manage (we don't support pagination yet).
 
-- You like self-contained low-impact libraries. We have very few direct dependencies, plus 2 peer dependencies (against `express.js` and `body-parser`).
+- You like self-contained low-impact libraries. We have very few direct dependencies, on top of 2 required peer dependencies (`express.js` and `body-parser`).
 
 ##### This library is NOT for you if:
 
-- You want a fully managed CMS solution with minimal coding (instead, see [strapi](https://strapi.io/) , for example).
+- You want a fully managed CMS solution with minimal coding.
 
 - You want to serve an interface towards customers. Our UI is functional, but simple and generic looking. While you can overwrite every view with your own code, if you start doing that all the time, maybe it's time to put up a real UI :-)
 
@@ -88,7 +88,7 @@ const express = require('express');
 
 const port = process.env.PORT || 3000;
 
-const { crudUI, CUIField, FIELD_TYPES } = require('crud-ui');
+const { crudUI, CUIField, FIELD_TYPES, CUI_MODES } = require('crud-ui');
 
 const app = express();
 
@@ -102,6 +102,7 @@ app.use(
   '/admin/users',
   crudUI({
     name: 'user',
+    mode: CUI_MODES.simple_list,
     recordId: 'id',
     navigation: {
       brand: {
@@ -233,15 +234,15 @@ server.listen(port, () => {
 
 ![Advanced example 3](misc/cui_4.png)
 
+For an even bigger example, look into the [kitchen_sink tester app](testers/kitchen_sink.js).
+
 ### Development
 
 Follow the development and TODO-s here: <https://trello.com/b/3vSgeUxa/crudui>
 
 Release log can be found [here](docs/releases.md).
 
-#### NOTE
-
-**This project is in very early stages of development. Lots of things are still missing. Nothing is battle tested in production. At this stage, we don't recommend using it for mission critical systems.**
+**NOTE:** I use this project in production for one micro CMS, and it's working fine. Still, given its lack of unit tests and relative immaturity, *use at your own risk*.
 
 ### License
 

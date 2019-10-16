@@ -3,7 +3,7 @@
 const http = require('http');
 const express = require('express');
 
-const crudUI = require('../../');
+const crudUI = require('../');
 
 const app = express();
 

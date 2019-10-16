@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 
 const port = process.env.PORT || 3000;
 
-const { crudUI, CUIField, FIELD_TYPES, MODES, CUITexts, CUIIcons, ICON_NAMES } = require('../../');
+const { crudUI, CUIField, FIELD_TYPES, MODES, CUITexts, CUIIcons, ICON_NAMES } = require('../');
 
 const app = express();
 app.use(bodyParser.json());

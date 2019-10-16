@@ -2,6 +2,16 @@
 
 # Release log
 
+##### 0.3.0
+###### *(2019/10/17)*
+
+- Added *detail view*. This page displays single record on screen.
+- Added support for `CUI_MODES`. `simple_table` is the only mode we had in 0.2. `detail_table` is the table view with newly added detail page links. `single_record` is a whole new mode that is suitable if you only have singular record to edit (eg. options). 
+- Fixed problem with display of boolean fields
+- Refactored the way middlewares are loaded and get their options
+- CUI routers now share cookies. CrudUI should now generate only 2-3 cookies regardless of deployment size.
+- Numerous bug fixes and internal refactorings. Changes in views might break existing customizations!
+
 ##### 0.2.0
 ###### *(2019/09/16)*
 
