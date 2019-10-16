@@ -50,20 +50,24 @@ class CUIActions {
 		Object.assign(this, source);
 	}
 
-	_validateAndCoerce(mustSupportList) {
+	_validateAndCoerce(/** CUITweaks */ tweaks) {
 		const asserters = makeObjectAsserters(this, '"', '" action');
 
-		if (mustSupportList) {
-			asserters.provided('getList');
-		}
-		asserters.type('getList', 'function');
-
-		asserters.type('getSingle', 'function');
-
-		if (this.update) {
-			// In order for update to work, we must be able to get single record
+		if (tweaks.singleRecordMode) {
+			// Single is required in single record mode
 			asserters.provided('getSingle');
+		} else {
+			// List must be supported in normal mode
+			asserters.provided('getList');
+
+			if (this.update) {
+				// Update requires getSingle
+				asserters.provided('getSingle');
+			}
 		}
+
+		asserters.type('getList', 'function');
+		asserters.type('getSingle', 'function');
 	}
 }
 

@@ -212,7 +212,11 @@ app.use(
 				},
 			}),
 		],
-		actions: actions(data.projects),
+		actions: {
+			...actions(data.projects),
+			update: null,
+			delete: null,
+		},
 	})
 );
 

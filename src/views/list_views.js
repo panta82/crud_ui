@@ -284,8 +284,8 @@ module.exports.listControlsCell = (ctx, data, record, index) => {
 	return `
 		<td class="text-nowrap cui-controls-cell">
 			${ctx.views.listDetailButton(ctx, data, record, index)}
-			${ctx.actions.update ? ctx.views.listEditButton(ctx, data, record, index) : ''}
-			${ctx.actions.delete ? ctx.views.listDeleteButton(ctx, data, record, index) : ''}
+			${ctx.views.listEditButton(ctx, data, record, index)}
+			${ctx.views.listDeleteButton(ctx, data, record, index)}
 		</td>
 	`;
 };
@@ -321,6 +321,11 @@ module.exports.listDetailButton = (ctx, data, record, index) => {
  * @return {string}
  */
 module.exports.listEditButton = (ctx, data, record, index) => {
+	if (!ctx.actions.update) {
+		// Don't support edit
+		return '';
+	}
+
 	const label = ctx.texts.safe.listEditButton(ctx);
 	return `
 		<a href="${ctx.url(
@@ -343,6 +348,11 @@ module.exports.listEditButton = (ctx, data, record, index) => {
  * @return {string}
  */
 module.exports.listDeleteButton = (ctx, data, record, index) => {
+	if (!ctx.actions.delete) {
+		// Don't support delete
+		return '';
+	}
+
 	const label = ctx.texts.safe.listDeleteButton(ctx);
 	return `
 		<button type="button" class="btn btn-danger btn-sm cui-delete-button" data-delete-id="${escapeHTML(

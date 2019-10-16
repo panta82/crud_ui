@@ -136,7 +136,7 @@ class CUIOptions {
 		this.tweaks._validateAndCoerce();
 
 		this.actions = cast(CUIActions, this.actions);
-		this.actions._validateAndCoerce(!this.tweaks.singleRecordMode);
+		this.actions._validateAndCoerce(this.tweaks);
 
 		if (this.navigation) {
 			asserters.type('navigation', 'object');
