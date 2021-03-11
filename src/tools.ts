@@ -1,28 +1,25 @@
-'use strict';
+import * as libPluralize from 'pluralize';
 
-const libPluralize = require('pluralize');
-
-function capitalize(str) {
+export function capitalize(str: string) {
 	return str[0].toUpperCase() + str.slice(1);
 }
 
-function uncapitalize(str) {
+export function uncapitalize(str: string) {
 	return str[0].toLowerCase() + str.slice(1);
 }
 
-function pluralize(str) {
+export function pluralize(str: string) {
 	return libPluralize(str);
 }
 
-function singularize(str) {
+export function singularize(str: string) {
 	return libPluralize.singular(str);
 }
 
 /**
  * Take a slug-like string ("string_with_things") and convert it into a conversational string ("string with things")
- * @param str
  */
-function deslugify(str) {
+export function deslugify(str: string) {
 	let firstWord = true;
 	return str
 		.replace(/[_-]/g, ' ')
@@ -39,9 +36,8 @@ function deslugify(str) {
 
 /**
  * Generate a random string token
- * @return {string}
  */
-function randomToken() {
+export function randomToken() {
 	return (
 		Math.random()
 			.toString(32)
@@ -54,23 +50,34 @@ function randomToken() {
 
 // *********************************************************************************************************************
 
-function assertEqual(value, expected, identifier = 'value') {
+export function assertEqual(value, expected, identifier = 'value') {
 	if (value !== expected) {
 		throw new TypeError(`Expected ${identifier} to be "${expected}", instead got "${value}"`);
 	}
 }
 
-function assertProvided(value, identifier) {
+export function assertProvided(value, identifier) {
 	if (value === undefined) {
 		throw new TypeError(`${identifier} must be provided`);
 	}
 }
 
-function assertType(value, identifier = 'Type', ...types) {
+type IAssertableType =
+	| 'string'
+	| 'number'
+	| 'bigint'
+	| 'boolean'
+	| 'symbol'
+	| 'undefined'
+	| 'object'
+	| 'function'
+	| 'array';
+export function assertType(value, identifier = 'Type', ...types: IAssertableType[]) {
 	if (value === undefined) {
 		// Pass through undefined, use assertProvided for those
 		return;
 	}
+	const t = typeof identifier;
 
 	const actual = Array.isArray(value) ? 'array' : typeof value;
 
@@ -81,7 +88,7 @@ function assertType(value, identifier = 'Type', ...types) {
 	}
 }
 
-function assertMember(value, hash, identifier = 'Value') {
+export function assertMember(value, hash, identifier = 'Value') {
 	if (!(value in hash)) {
 		const keys = Object.keys(hash).map(k => '"' + k + '"');
 		let keysStr;
@@ -95,29 +102,35 @@ function assertMember(value, hash, identifier = 'Value') {
 	}
 }
 
-function makeObjectAsserters(object, identifierPrefix = 'Key "', identifierSuffix = '"') {
+export function makeObjectAsserters<T>(
+	object: T,
+	identifierPrefix = 'Key "',
+	identifierSuffix = '"'
+) {
 	return {
-		provided: key => assertProvided(object[key], identifierPrefix + key + identifierSuffix),
-		type: (key, ...types) =>
-			assertType(object[key], identifierPrefix + key + identifierSuffix, ...types),
-		member: (key, hash) =>
-			assertMember(object[key], hash, identifierPrefix + key + identifierSuffix),
+		provided(key: keyof T) {
+			return assertProvided(object[key], identifierPrefix + key + identifierSuffix);
+		},
+		type(key: keyof T, ...types: IAssertableType[]) {
+			return assertType(object[key], identifierPrefix + key + identifierSuffix, ...types);
+		},
+		member(key: keyof T, hash: object) {
+			return assertMember(object[key], hash, identifierPrefix + key + identifierSuffix);
+		},
 	};
 }
 
 // *********************************************************************************************************************
 
-function isObject(val) {
+export function isObject(val) {
 	return !!val && typeof val === 'object' && !Array.isArray(val);
 }
 
 /**
  * If val is function, call it with args and return the result. Otherwise, just return the val.
  * This is used for function-or-literal pattern for some options.
- * @param {function|*} val
- * @param args
  */
-function getOrCall(val, ...args) {
+export function getOrCall(val, ...args) {
 	if (typeof val === 'function') {
 		return val(...args);
 	}
@@ -129,34 +142,83 @@ function getOrCall(val, ...args) {
  * @param leadingChar
  * @param str
  */
-function ensureLeadingChar(leadingChar, str) {
+export function ensureLeadingChar(leadingChar, str) {
 	return typeof str === 'string' && str[0] !== leadingChar ? leadingChar + str : str;
 }
 
 /**
  * Cast an object into a constructor
- * @param Ctr
- * @param ob
  */
-function cast(Ctr, ob) {
+export function cast<T>(Ctr: new (...args) => T, ob): T {
 	if (ob instanceof Ctr) {
 		return ob;
 	}
 	return new Ctr(ob);
 }
 
+/**
+ * Generates a javascript "enum", like {x: 'x', y: 'y'}. We are doing it like this so it will be treated as const by ts
+ * and we can generate a set of its keys.
+ */
+export function enumize<T extends string>(
+	arrayOfAllPossibleValues: readonly T[]
+): { [key in T]: key } {
+	const result = {};
+	for (const item of arrayOfAllPossibleValues) {
+		result[String(item)] = String(item);
+	}
+	return result as any;
+}
+
+/**
+ * Wrapper around Object.keys() that keeps typescript types
+ */
+export function enumValues<T extends { [key: string]: any }>(target: T): Array<keyof T> {
+	return Object.keys(target) as Array<keyof T>;
+}
+
+/**
+ * Shortcut to .hasOwnProperty() that's a bit safer (works for objects without prototype)
+ */
+export function hasOwnProperty(target, property): boolean {
+	return Object.prototype.hasOwnProperty.call(target, property);
+}
+
+/**
+ * Assign only properties that already exist on the target and that are not undefined
+ */
+export function safeAssign<T extends { [key: string]: any }>(
+	target: T,
+	...sources: Array<Partial<T> | T>
+): T {
+	3;
+	if (sources) {
+		for (const source of sources) {
+			if (source) {
+				for (const key in source) {
+					if (
+						hasOwnProperty(source, key) &&
+						hasOwnProperty(target, key) &&
+						source[key] !== undefined
+					) {
+						(target[key] as any) = source[key];
+					}
+				}
+			}
+		}
+	}
+	return target;
+}
+
 // *********************************************************************************************************************
 
 /**
  * Escape an arbitrary text into a form that can appear inside HTML.
- * @param str
- * @return {void | string | never}
  */
-function escapeHTML(str) {
-	return String(str).replace(/[&<>"']/g, m => ESCAPE_HTML_MAP[m]);
+function escapeHTML(str: string): string {
+	return String(str).replace(/[&<>"']/g, m => escapeHTML.MAP[m]);
 }
-
-const ESCAPE_HTML_MAP = {
+escapeHTML.MAP = {
 	'&': '&amp;',
 	'<': '&lt;',
 	'>': '&gt;',
@@ -167,19 +229,15 @@ const ESCAPE_HTML_MAP = {
 /**
  * Escape javascript code so that it can safely be embedded in a <script> tag.
  * https://stackoverflow.com/questions/14780858/escape-in-script-tag-contents
- * @param script
  */
-function escapeScript(script) {
+export function escapeScript(script) {
 	return script ? script.replace(/<\/script/gm, '</scri\\pt') : '';
 }
 
 /**
  * Extract cookie value from a cookie header value (eg. "a=b; c=d"). Returns null if nothing is found.
- * @param {string} cookieStr
- * @param {string} cookieName
- * @return {string|null}
  */
-function extractCookie(cookieStr, cookieName) {
+export function extractCookie(cookieStr: string, cookieName: string): string | null {
 	if (!cookieStr) {
 		return null;
 	}
@@ -201,43 +259,15 @@ function extractCookie(cookieStr, cookieName) {
 	return value;
 }
 
-/**
- * Create a function that produces name if development and name.min.ext in production.
- * @param {string} name
- * @return {function(CUIContext)}
- */
-function minInProd(name) {
-	const dotIndex = name.lastIndexOf('.');
-	const cleanName = name.substring(0, dotIndex);
-	const extension = name.slice(dotIndex);
-	return /** CUIContext */ ctx => {
-		return ctx.options.isProduction ? cleanName + '.min' + extension : name;
-	};
-}
-
 // *********************************************************************************************************************
 
-module.exports = {
-	capitalize,
-	uncapitalize,
-	pluralize,
-	singularize,
-	deslugify,
-	randomToken,
+export type PartialExcept<TTarget, TExcept extends keyof TTarget> = Partial<
+	Omit<TTarget, TExcept>
+> &
+	Pick<TTarget, TExcept>;
 
-	assertEqual,
-	assertProvided,
-	assertType,
-	assertMember,
-	makeObjectAsserters,
-
-	isObject,
-	getOrCall,
-	ensureLeadingChar,
-	cast,
-
-	escapeHTML,
-	escapeScript,
-	extractCookie,
-	minInProd,
-};
+export type Replace<TTarget extends { [key in keyof TReplacements]: any }, TReplacements> = Omit<
+	TTarget,
+	keyof TReplacements
+> &
+	TReplacements;

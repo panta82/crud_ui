@@ -1,21 +1,24 @@
 'use strict';
 
-const { capitalize } = require('../tools');
+import { capitalize, safeAssign } from '../tools';
+import { CUIField } from './fields';
 
-class CUIError extends Error {
+export class CUIError extends Error {
+	public code: number;
 	constructor(message, code = 500) {
 		super(message);
 		this.code = code;
 	}
 }
 
-class CUICSRFError extends CUIError {
+export class CUICSRFError extends CUIError {
 	constructor() {
 		super('Invalid or missing CSRF token. Reload and try again', 403);
 	}
 }
 
-class CUIActionNotSupportedError extends CUIError {
+export class CUIActionNotSupportedError extends CUIError {
+	public action: string;
 	constructor(action) {
 		super(`Action "${action}" is not supported`, 500);
 		this.action = action;
@@ -30,27 +33,24 @@ class CUIActionNotSupportedError extends CUIError {
 
 // *********************************************************************************************************************
 
-class CUIValidationFault {
-	constructor(/** CUIValidationFault */ source) {
-		/**
-		 * Short error message, excluding key name
-		 * @type {string}
-		 */
-		this.message = undefined;
+export class CUIValidationFault {
+	/**
+	 * Short error message, excluding key name
+	 */
+	public message: string = undefined;
 
-		/**
-		 * Field for which this error is
-		 * @type {CUIField}
-		 */
-		this.field = undefined;
+	/**
+	 * Field for which this error is
+	 */
+	public field: CUIField = undefined;
 
-		/**
-		 * Value that was validated
-		 * @type {*}
-		 */
-		this.value = undefined;
+	/**
+	 * Value that was validated
+	 */
+	public value: any = undefined;
 
-		Object.assign(this, source);
+	constructor(source?: Partial<CUIValidationFault>) {
+		safeAssign(this, source);
 	}
 
 	get fullMessage() {
@@ -62,12 +62,12 @@ class CUIValidationFault {
 	}
 }
 
-class CUIValidationError extends CUIError {
-	/**
-	 * @param {CUIValidationFault[]} faults
-	 * @param payload
-	 */
-	constructor(faults, payload) {
+export class CUIValidationError extends CUIError {
+	public faults: CUIValidationFault[];
+	public byFieldName: { [fieldName: string]: CUIValidationFault };
+	public payload: any;
+
+	constructor(faults: CUIValidationFault[], payload) {
 		let message;
 		if (!faults || !faults.length) {
 			message = 'Validation error';
@@ -82,10 +82,8 @@ class CUIValidationError extends CUIError {
 		}
 		super(message, 400);
 
-		/** @type {CUIValidationFault[]} */
 		this.faults = faults.map(f => CUIValidationFault.cast(f));
 
-		/** @type {Object.<string, CUIValidationFault[]>} */
 		this.byFieldName = this.faults.reduce((lookup, fault) => {
 			lookup[fault.field.name] = lookup[fault.field.name] || [];
 			lookup[fault.field.name].push(fault);
@@ -95,13 +93,3 @@ class CUIValidationError extends CUIError {
 		this.payload = payload;
 	}
 }
-
-// *********************************************************************************************************************
-
-module.exports = {
-	CUIError,
-	CUICSRFError,
-	CUIActionNotSupportedError,
-	CUIValidationFault,
-	CUIValidationError,
-};
