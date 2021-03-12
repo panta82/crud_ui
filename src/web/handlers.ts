@@ -1,24 +1,19 @@
-'use strict';
+import * as vjs from 'validate.js';
 
-const vjs = require('validate.js');
-
-const { CUI_FIELD_TYPES } = require('../types/consts');
-const { ROUTE_NAMES } = require('../types/routes');
-const {
-	CUIError,
+import {
 	CUIActionNotSupportedError,
+	CUIError,
 	CUIValidationError,
 	CUIValidationFault,
-} = require('../types/errors');
-const { CUIRedirectResponse } = require('../types/responses');
+} from '../types/errors';
+import { CUIRedirectResponse } from '../types/responses';
+import { CUIContext } from '../types/context';
+import { CUIField } from '../types/fields';
+import { getOrCall } from '../tools';
 
 // *********************************************************************************************************************
 
-/**
- * @param {CUIContext} ctx
- * @param {boolean} isCreate
- */
-function coerceAndValidateEditPayload(ctx, isCreate) {
+function coerceAndValidateEditPayload<T>(ctx: CUIContext<T>, isCreate: boolean) {
 	const payload = {};
 	const faults = [];
 
@@ -34,20 +29,21 @@ function coerceAndValidateEditPayload(ctx, isCreate) {
 
 		let value = ctx.body[field.name];
 
-		if (field.type === CUI_FIELD_TYPES.select) {
+		if (field.type === 'select') {
 			if (field.nullOption && !value) {
 				// Convert empty string value to null
 				value = null;
 			}
 			if (value !== null && field.values) {
-				if (!field.values.some(f => f === value || (f && f.value === value))) {
+				const values = getOrCall(field.values, ctx);
+				if (!values.some(f => f === value || (f && f.value === value))) {
 					// Invalid value, user trying to be sneaky?
 					throw new CUIError(`Invalid ${field.name} value: "${value}".`);
 				}
 			}
 		}
 
-		if (field.type === CUI_FIELD_TYPES.boolean) {
+		if (field.type === 'boolean') {
 			// Cast to boolean
 			value = !!value;
 		}
@@ -69,7 +65,7 @@ function coerceAndValidateEditPayload(ctx, isCreate) {
 
 	return payload;
 
-	function doValidate(field, prop, value) {
+	function doValidate<T extends keyof CUIField>(field: CUIField, prop: T, value) {
 		const validate = field[prop];
 		if (!validate) {
 			return;
@@ -108,11 +104,12 @@ function coerceAndValidateEditPayload(ctx, isCreate) {
 
 /**
  * Try to convert a result from user's method into a flash message object. Returns null if unable.
- * @param {CUIContext} ctx
- * @param makeMessage
- * @param result
  */
-function resultToFlash(ctx, makeMessage, result) {
+function resultToFlash<T extends any>(
+	ctx: CUIContext,
+	makeMessage: (ctx: CUIContext, T) => string,
+	result: T
+) {
 	if (!result || result === true) {
 		return null;
 	}
@@ -123,10 +120,7 @@ function resultToFlash(ctx, makeMessage, result) {
 
 // *********************************************************************************************************************
 
-/**
- * @param {CUIContext} ctx
- */
-function indexPage(ctx) {
+export function indexPage(ctx: CUIContext) {
 	return Promise.resolve()
 		.then(() => {
 			if (ctx.options.isSingleRecordMode) {
@@ -145,17 +139,11 @@ function indexPage(ctx) {
 		});
 }
 
-/**
- * @param {CUIContext} ctx
- */
-function createPage(ctx) {
+export function createPage(ctx: CUIContext) {
 	return ctx.views.editPage(ctx, null);
 }
 
-/**
- * @param {CUIContext} ctx
- */
-function createAction(ctx) {
+export function createAction(ctx: CUIContext) {
 	CUIActionNotSupportedError.assert(ctx.actions, 'create');
 
 	return Promise.resolve()
@@ -184,10 +172,7 @@ function createAction(ctx) {
 		);
 }
 
-/**
- * @param {CUIContext} ctx
- */
-function editPage(ctx) {
+export function editPage(ctx: CUIContext) {
 	return Promise.resolve()
 		.then(() => ctx.actions.getSingle(ctx, ctx.idParam))
 		.then(data => {
@@ -199,10 +184,7 @@ function editPage(ctx) {
 		});
 }
 
-/**
- * @param {CUIContext} ctx
- */
-function editAction(ctx) {
+export function editAction(ctx: CUIContext) {
 	CUIActionNotSupportedError.assert(ctx.actions, 'update');
 
 	return Promise.resolve()
@@ -215,7 +197,7 @@ function editAction(ctx) {
 		.then(
 			updateResult => {
 				const redirectUrl =
-					ctx.routeName === ROUTE_NAMES.detailEditAction
+					ctx.routeName === 'detailEditAction'
 						? ctx.routes.detailPage(ctx.idParam)
 						: ctx.routes.indexPage; // This works for single record mode too
 
@@ -229,7 +211,7 @@ function editAction(ctx) {
 					// Show errors on page
 					const redirectUrl = ctx.options.isSingleRecordMode
 						? ctx.routes.singleRecordModeEditPage
-						: ctx.routeName === ROUTE_NAMES.detailEditAction
+						: ctx.routeName === 'detailEditAction'
 						? ctx.routes.detailEditPage(ctx.idParam)
 						: ctx.routes.editPage(ctx.idParam);
 					return new CUIRedirectResponse(ctx.url(redirectUrl), {
@@ -243,10 +225,7 @@ function editAction(ctx) {
 		);
 }
 
-/**
- * @param {CUIContext} ctx
- */
-function detailPage(ctx) {
+export function detailPage(ctx: CUIContext) {
 	return Promise.resolve()
 		.then(() => ctx.actions.getSingle(ctx, ctx.idParam))
 		.then(data => {
@@ -258,10 +237,7 @@ function detailPage(ctx) {
 		});
 }
 
-/**
- * @param {CUIContext} ctx
- */
-function deleteAction(ctx) {
+export function deleteAction(ctx: CUIContext) {
 	CUIActionNotSupportedError.assert(ctx.actions, 'delete');
 
 	return Promise.resolve()
@@ -273,19 +249,3 @@ function deleteAction(ctx) {
 			);
 		});
 }
-
-// *********************************************************************************************************************
-
-module.exports = {
-	indexPage,
-
-	createPage,
-	createAction,
-
-	editPage,
-	editAction,
-
-	detailPage,
-
-	deleteAction,
-};

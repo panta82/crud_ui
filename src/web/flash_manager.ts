@@ -1,18 +1,20 @@
-'use strict';
+import { extractCookie, randomToken } from '../tools';
+import { ICUIExtendedRequest, ICUIFlash, IDebugLogFunction } from '../types/definitions';
+import { Response } from 'express';
 
-const { extractCookie, randomToken } = require('../tools');
+export type IFlashManager = ReturnType<typeof createFlashManager>;
 
 /**
  * Use cookies to provide "flash message" functionality
- * @param cookieName
- * @param maxAge
- * @param {function} debugLog
- * @return {CUIFlashManager}
  */
-function createFlashManager(cookieName, maxAge, debugLog) {
-	const _flashes = new Map();
+export function createFlashManager(
+	cookieName: string,
+	maxAge: number,
+	debugLog: IDebugLogFunction
+) {
+	const _flashes = new Map<string, { data: ICUIFlash; timestamp: Date }>();
 
-	return /** @lends CUIFlashManager.prototype */ {
+	return {
 		_flashes,
 
 		middleware,
@@ -20,9 +22,9 @@ function createFlashManager(cookieName, maxAge, debugLog) {
 	};
 
 	function cleanOldFlashes() {
-		const now = new Date();
-		for (const [key, { timestamp }] in _flashes.entries()) {
-			if (now - timestamp - timestamp > maxAge) {
+		const now = Date.now();
+		for (const [key, { timestamp }] of _flashes.entries()) {
+			if (now - timestamp.valueOf() > maxAge) {
 				// Delete outdated flash
 				_flashes.delete(key);
 				debugLog(`Cleaned outdated flash "${key}"`);
@@ -32,11 +34,8 @@ function createFlashManager(cookieName, maxAge, debugLog) {
 
 	/**
 	 * Extract flash object from request and set it to req.flash
-	 * @param {e.Request} req
-	 * @param {e.Response} res
-	 * @param next
 	 */
-	function middleware(req, res, next) {
+	function middleware(req: ICUIExtendedRequest, res: Response, next) {
 		const key = extractCookie(req.headers.cookie, cookieName);
 		if (!key) {
 			// No flash message
@@ -59,10 +58,8 @@ function createFlashManager(cookieName, maxAge, debugLog) {
 	/**
 	 * Set given object as a one-time flash, which will appear next time the same client calls back.
 	 * Useful for redirects.
-	 * @param {e.Response} res
-	 * @param data
 	 */
-	function setFlash(res, data) {
+	function setFlash(res: Response, data: ICUIFlash) {
 		cleanOldFlashes();
 
 		const flashKey = randomToken();
@@ -76,7 +73,3 @@ function createFlashManager(cookieName, maxAge, debugLog) {
 		});
 	}
 }
-
-module.exports = {
-	createFlashManager,
-};

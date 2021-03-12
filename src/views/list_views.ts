@@ -1,14 +1,11 @@
-'use strict';
-
-const { escapeHTML, escapeScript } = require('../tools');
-const { CUI_FIELD_TYPES, CUI_MODES } = require('../types/consts');
+import { escapeHTML, escapeScript } from '../tools';
+import { CUIContext } from '../types/context';
+import { CUIField } from '../types/fields';
 
 /**
  * Render the entire list page. Embeds itself into layout, and renders all other parts of the list.
- * @param {CUIContext} ctx
- * @param {Array} data
  */
-module.exports.listPage = (ctx, data) => {
+export const listPage = <T>(ctx: CUIContext, data: T[]) => {
 	return ctx.views.layout(
 		ctx,
 		ctx.texts.safe.listPageTitle(ctx),
@@ -29,19 +26,15 @@ module.exports.listPage = (ctx, data) => {
 
 /**
  * Header for the list page
- * @param {CUIContext} ctx
- * @param {Array} data
  */
-module.exports.listHeader = (ctx, data) => {
+export const listHeader = <T>(ctx: CUIContext, data: T[]) => {
 	return ctx.views.header(ctx);
 };
 
 /**
  * Content to be rendered above the main table
- * @param {CUIContext} ctx
- * @param {Array} data
  */
-module.exports.listAbove = (ctx, data) => {
+export const listAbove = <T>(ctx: CUIContext, data: T[]) => {
 	return `
 		<h2 class="cui-page-title">${ctx.texts.safe.listTitle(ctx)}</h2>
 		${ctx.actions.create ? ctx.views.listCreateButton(ctx, data) : ''}
@@ -50,10 +43,8 @@ module.exports.listAbove = (ctx, data) => {
 
 /**
  * Render Create new record button. Only called if create new is enabled.
- * @param {CUIContext} ctx
- * @param {Array} data
  */
-module.exports.listCreateButton = (ctx, data) => {
+export const listCreateButton = <T>(ctx: CUIContext, data: T[]) => {
 	const label = ctx.texts.safe.listCreateButton(ctx);
 	return `
 		<a href="${ctx.url(ctx.routes.createPage)}" class="btn btn-primary mb-3 mt-1 cui-create-button"
@@ -66,19 +57,15 @@ module.exports.listCreateButton = (ctx, data) => {
 
 /**
  * Content to be rendered below the main table
- * @param {CUIContext} ctx
- * @param {Array} data
  */
-module.exports.listBelow = (ctx, data) => {
+export const listBelow = <T>(ctx: CUIContext, data: T[]) => {
 	return '';
 };
 
 /**
  * Footer for the list page
- * @param {CUIContext} ctx
- * @param {Array} data
  */
-module.exports.listFooter = (ctx, data) => {
+export const listFooter = <T>(ctx: CUIContext, data: T[]) => {
 	return `
 		${ctx.views.footer(ctx)}
 		${ctx.views.listDeleteConfirmationModal(ctx, data)}
@@ -87,19 +74,15 @@ module.exports.listFooter = (ctx, data) => {
 
 /**
  * Stuff to add to head of the list page (styles, meta-tags...)
- * @param {CUIContext} ctx
- * @param {Array} data
  */
-module.exports.listHead = (ctx, data) => {
+export const listHead = <T>(ctx: CUIContext, data: T[]) => {
 	return '';
 };
 
 /**
  * Stuff to add at the very bottom, in the scripts section.
- * @param {CUIContext} ctx
- * @param {Array} data
  */
-module.exports.listScripts = (ctx, data) => {
+export const listScripts = <T>(ctx: CUIContext, data: T[]) => {
 	return `
 		<script>${ctx.views.listDeleteModalScripting(ctx, data)}</script>
 	`;
@@ -108,11 +91,9 @@ module.exports.listScripts = (ctx, data) => {
 /**
  * Scripting to enable functionality of the delete record modal. Should produce result in pure javascript.
  * WARNING: The product of this function must be escaped with escapeScript to be safely embedded in a script tag
- * @param {CUIContext} ctx
- * @param {Array} data
  */
-module.exports.listDeleteModalScripting = (ctx, data) => {
-	const deleteModalData = {};
+export const listDeleteModalScripting = <T>(ctx: CUIContext, data: T[]) => {
+	const deleteModalData: any = {};
 	for (let index = 0; index < data.length; index++) {
 		const item = data[index];
 
@@ -143,10 +124,8 @@ module.exports.listDeleteModalScripting = (ctx, data) => {
 
 /**
  * Render a table of items, or "no data" message
- * @param {CUIContext} ctx
- * @param {Array} data
  */
-module.exports.listContent = (ctx, data) => {
+export const listContent = <T>(ctx: CUIContext, data: T[]) => {
 	return `
 <table class="table table-bordered table-sm cui-list-table">
 <thead>
@@ -174,13 +153,8 @@ module.exports.listContent = (ctx, data) => {
 
 /**
  * Render table header for each field
- * @param {CUIContext} ctx
- * @param {Array} data
- * @param {CUIField} field
- * @param {Number} index
- * @return {string}
  */
-module.exports.listColumnHeader = (ctx, data, field, index) => {
+export const listColumnHeader = <T>(ctx: CUIContext, data: T[], field: CUIField, index: number) => {
 	if (!field.allowList) {
 		return null;
 	}
@@ -192,13 +166,8 @@ module.exports.listColumnHeader = (ctx, data, field, index) => {
 
 /**
  * Render a single row in list view
- * @param {CUIContext} ctx
- * @param {Array} data
- * @param {*} record
- * @param {Number} index
- * @return {string}
  */
-module.exports.listRow = (ctx, data, record, index) => {
+export const listRow = <T>(ctx: CUIContext, data: T[], record: T, index: number) => {
 	const cols = ctx.fields
 		.map(field => ctx.views.listCell(ctx, data, record, index, field))
 		.filter(Boolean)
@@ -214,14 +183,14 @@ module.exports.listRow = (ctx, data, record, index) => {
 
 /**
  * Render single field of a single row in list view.
- * @param {CUIContext} ctx
- * @param {Array} data
- * @param {*} record
- * @param {Number} recordIndex
- * @param {CUIField} field
- * @return {string}
  */
-module.exports.listCell = (ctx, data, record, recordIndex, field) => {
+export const listCell = <T>(
+	ctx: CUIContext,
+	data: T[],
+	record: T,
+	recordIndex: number,
+	field: CUIField
+) => {
 	if (!field.allowList) {
 		return null;
 	}
@@ -237,14 +206,14 @@ module.exports.listCell = (ctx, data, record, recordIndex, field) => {
 /**
  * Format and render CMS value in table view.
  * WARNING: This output must be HTML escaped!
- * @param {CUIContext} ctx
- * @param {Array} data
- * @param {*} record
- * @param {Number} index
- * @param {CUIField} field
- * @return {string}
  */
-module.exports.listValue = (ctx, data, record, index, field) => {
+export const listValue = <T>(
+	ctx: CUIContext,
+	data: T[],
+	record: T,
+	index: number,
+	field: CUIField
+) => {
 	if (field.listView) {
 		// Use custom renderer
 		const customView = field.listView(record[field.name], ctx, data, record, index, field);
@@ -253,14 +222,14 @@ module.exports.listValue = (ctx, data, record, index, field) => {
 		}
 	}
 
-	if (field.type === CUI_FIELD_TYPES.secret) {
+	if (field.type === 'secret') {
 		// Do not display secrets by default
 		return `<span class="text-muted">••••••••</span>`;
 	}
 
 	let value = record[field.name];
 
-	if (field.type === CUI_FIELD_TYPES.boolean) {
+	if (field.type === 'boolean') {
 		// Display as icon
 		return ctx.views.icon(ctx, value ? ctx.icons.booleanTrue : ctx.icons.booleanFalse);
 	}
@@ -274,13 +243,8 @@ module.exports.listValue = (ctx, data, record, index, field) => {
 
 /**
  * Render a cell with item controls (edit, delete, etc.)
- * @param {CUIContext} ctx
- * @param {Array} data
- * @param {*} record
- * @param {Number} index
- * @return {string}
  */
-module.exports.listControlsCell = (ctx, data, record, index) => {
+export const listControlsCell = <T>(ctx: CUIContext, data: T[], record: T, index: number) => {
 	return `
 		<td class="text-nowrap cui-controls-cell">
 			${ctx.views.listDetailButton(ctx, data, record, index)}
@@ -292,17 +256,13 @@ module.exports.listControlsCell = (ctx, data, record, index) => {
 
 /**
  * Render the edit form and button for a single item in the list view
- * @param {CUIContext} ctx
- * @param {Array} data
- * @param {*} record
- * @param {Number} index
- * @return {string}
  */
-module.exports.listDetailButton = (ctx, data, record, index) => {
-	if (ctx.options.mode === CUI_MODES.simple_list) {
+export const listDetailButton = <T>(ctx: CUIContext, data: T[], record: T, index: number) => {
+	if (ctx.options.mode === 'simple_list') {
 		// Simple list mode doesn't have detail view
 		return '';
 	}
+
 	const label = ctx.texts.safe.listDetailButton(ctx);
 	return `
 		<a href="${ctx.url(
@@ -318,13 +278,8 @@ module.exports.listDetailButton = (ctx, data, record, index) => {
 
 /**
  * Render the edit form and button for a single item in the list view
- * @param {CUIContext} ctx
- * @param {Array} data
- * @param {*} record
- * @param {Number} index
- * @return {string}
  */
-module.exports.listEditButton = (ctx, data, record, index) => {
+export const listEditButton = <T>(ctx: CUIContext, data: T[], record: T, index: number) => {
 	if (!ctx.actions.update) {
 		// Don't support edit
 		return '';
@@ -345,13 +300,8 @@ module.exports.listEditButton = (ctx, data, record, index) => {
 
 /**
  * Render the delete form and button for a single item in the list view
- * @param {CUIContext} ctx
- * @param {Array} data
- * @param {*} record
- * @param {Number} index
- * @return {string}
  */
-module.exports.listDeleteButton = (ctx, data, record, index) => {
+export const listDeleteButton = <T>(ctx: CUIContext, data: T[], record: T, index: number) => {
 	if (!ctx.actions.delete) {
 		// Don't support delete
 		return '';
@@ -370,11 +320,8 @@ module.exports.listDeleteButton = (ctx, data, record, index) => {
 
 /**
  * Render "are you sure?" modal for deleting items.
- * @param {CUIContext} ctx
- * @param {Array} data
- * @return {string}
  */
-module.exports.listDeleteConfirmationModal = (ctx, data) => {
+export const listDeleteConfirmationModal = <T>(ctx: CUIContext, data: T[]) => {
 	// NOTE: We are not accounting for margin in buttons if user sets no text. No easy way to do it with current system,
 	//       and probably not worth worrying about it for a pretty niche use case. Revisit if it turns out to matter.
 	return `
@@ -411,9 +358,8 @@ module.exports.listDeleteConfirmationModal = (ctx, data) => {
 
 /**
  * Render "no data" message when list of items is empty
- * @param {CUIContext} ctx
  */
-module.exports.listNoData = ctx => {
+export const listNoData = (ctx: CUIContext) => {
 	return `
 		<tr>
 			<td class="cui-no-data-placeholder" colspan="100">

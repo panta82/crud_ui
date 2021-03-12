@@ -1,5 +1,6 @@
 import { makeObjectAsserters, safeAssign } from '../tools';
 import { CUIContext } from './context';
+import { Replace } from './definitions';
 
 /**
  * Create a function that produces name if development and name.min.ext in production.
@@ -12,6 +13,14 @@ export function minimizeInProduction(name: string): (ctx: CUIContext) => string 
 		return ctx.options.isProduction ? cleanName + '.min' + extension : name;
 	};
 }
+
+export type CUITweaksSource = Replace<
+	CUITweaks,
+	{
+		globalCSS: Array<string | ((ctx: CUIContext) => string)>;
+		globalJS: Array<string | ((ctx: CUIContext) => string)>;
+	}
+>;
 
 /**
  * Options which the default views will utilize to customize UI appearance.
@@ -29,20 +38,20 @@ export class CUITweaks {
 	 * List of global CSS files to load in every page and order in which to do it.
 	 * Can take strings (paths) or functions which produce strings.
 	 */
-	public globalCSS: Array<string | ((ctx: CUIContext) => string)> = [
+	public globalCSS: Array<(ctx: CUIContext) => string> = [
 		minimizeInProduction('/css/bootstrap.css'),
 		minimizeInProduction('/css/fontawesome.css'),
-		'/css/styles.css',
+		() => '/css/styles.css',
 	];
 
 	/**
 	 * List of global javascript files to load in every page and order in which to do it.
 	 * Can take strings (paths) or functions which produce strings.
 	 */
-	public globalJS: Array<string | ((ctx: CUIContext) => string)> = [
+	public globalJS: Array<(ctx: CUIContext) => string> = [
 		minimizeInProduction('/js/jquery-3.4.1.slim.js'),
 		minimizeInProduction('/js/bootstrap.js'),
-		'/js/scripts.js',
+		() => '/js/scripts.js',
 	];
 
 	/**
@@ -70,7 +79,7 @@ export class CUITweaks {
 	 */
 	public flashMaxAge = 1000 * 60;
 
-	constructor(source?: Partial<CUITweaks>) {
+	constructor(source?: Partial<CUITweaksSource>) {
 		safeAssign(this, source);
 	}
 
@@ -79,6 +88,7 @@ export class CUITweaks {
 
 		asserters.type('showValidationErrorSummary', 'boolean');
 
+		// Replace literal strings with factories
 		for (const key of ['globalCSS', 'globalJS']) {
 			asserters.type(key as any, 'array');
 			this[key] = this[key].map(item => {

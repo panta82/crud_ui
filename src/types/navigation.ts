@@ -1,6 +1,7 @@
-import { makeObjectAsserters, PartialExcept, safeAssign } from '../tools';
+import { makeObjectAsserters, safeAssign } from '../tools';
 import { ICUIIconName } from './icons';
 import { CUIContext } from './context';
+import { PartialExcept } from './definitions';
 
 export class CUINavigationItem {
 	/**
@@ -31,8 +32,8 @@ export class CUINavigationItem {
 		item: CUINavigationItem,
 		index: number,
 		isRight: boolean,
-		parentItem: CUINavigationItem,
-		parentIndex: number
+		parentItem?: CUINavigationItem,
+		parentIndex?: number
 	) => {} = undefined;
 
 	constructor(source?: Partial<CUINavigationItem>) {

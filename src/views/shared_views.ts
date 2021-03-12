@@ -1,15 +1,12 @@
-'use strict';
+import { CUIContext } from '../types/context';
+import { CUINavigationItem } from '../types/navigation';
+import { ICUIIconName } from '../types/icons';
+import { CUIError } from '../types/errors';
 
 /**
  * Main page layout. Common for all pages.
- * @param {CUIContext} ctx
- * @param title
- * @param className
- * @param content
- * @param head
- * @param scripts
  */
-module.exports.layout = (ctx, title, className, content, head = '', scripts = '') => {
+export const layout = (ctx: CUIContext, title, className, content, head = '', scripts = '') => {
 	return `
 <!doctype html>
 <html lang="en">
@@ -48,9 +45,8 @@ module.exports.layout = (ctx, title, className, content, head = '', scripts = ''
 
 /**
  * Standard header
- * @param {CUIContext} ctx
  */
-module.exports.header = ctx => {
+export const header = (ctx: CUIContext) => {
 	return `
 		<div class="mb-5 cui-page-header">
 			${ctx.views.navigation(ctx)}
@@ -61,9 +57,8 @@ module.exports.header = ctx => {
 
 /**
  * Render standard page footer, with "back to top" link and copyright.
- * @param {CUIContext} ctx
  */
-module.exports.footer = ctx => {
+export const footer = (ctx: CUIContext) => {
 	return `
 		<footer class="text-muted mt-5 cui-page-footer">
       <div class="container">
@@ -79,9 +74,8 @@ module.exports.footer = ctx => {
 
 /**
  * Render navigation menu
- * @param {CUIContext} ctx
  */
-module.exports.navigation = ctx => {
+export const navigation = (ctx: CUIContext) => {
 	if (!ctx.options.navigation) {
 		// No navigation
 		return '';
@@ -126,12 +120,13 @@ module.exports.navigation = ctx => {
 
 /**
  * Render navigation menu item
- * @param {CUIContext} ctx
- * @param {CUINavigationItem} item
- * @param {number} index
- * @param {boolean} isRight
  */
-module.exports.navigationItem = (ctx, item, index, isRight) => {
+export const navigationItem = (
+	ctx: CUIContext,
+	item: CUINavigationItem,
+	index: number,
+	isRight: boolean
+) => {
 	if (item.render) {
 		return item.render(ctx, item, index, isRight);
 	}
@@ -172,14 +167,15 @@ module.exports.navigationItem = (ctx, item, index, isRight) => {
 
 /**
  * Render an item inside a navigation menu dropdown list
- * @param {CUIContext} ctx
- * @param {CUINavigationItem} item
- * @param {number} index
- * @param {boolean} isRight
- * @param {CUINavigationItem} parentItem
- * @param parentIndex
  */
-module.exports.navigationDropDownItem = (ctx, item, index, isRight, parentItem, parentIndex) => {
+export const navigationDropDownItem = (
+	ctx: CUIContext,
+	item: CUINavigationItem,
+	index: number,
+	isRight: boolean,
+	parentItem: CUINavigationItem,
+	parentIndex: number
+) => {
 	if (item.render) {
 		return item.render(ctx, item, index, isRight, parentItem, parentIndex);
 	}
@@ -201,12 +197,12 @@ module.exports.navigationDropDownItem = (ctx, item, index, isRight, parentItem, 
 
 /**
  * Render navigation menu
- * @param {CUIContext} ctx
  */
-module.exports.flashMessage = ctx => {
-	if (!ctx.flash.message) {
+export const flashMessage = (ctx: CUIContext) => {
+	if (!('message' in ctx.flash)) {
 		return '';
 	}
+
 	return `
 		<div class="cui-flash-message alert alert-${ctx.flash.flavor ||
 			'success'} fade show px-0 py-1 position-absolute w-100 my-0" role="alert">
@@ -220,21 +216,25 @@ module.exports.flashMessage = ctx => {
 /**
  * Render icon. Takes icon name, by default one of font awesome names (with or without fa- prefix).
  * For use in menus, buttons. You can optionally supply additional class (eg. for margins).
- * @param {CUIContext} ctx
- * @param iconName
- * @param className
  */
-module.exports.icon = (ctx, iconName, className = '') => {
+export const icon = (
+	ctx: CUIContext,
+	iconName: ICUIIconName | string | ((ctx: CUIContext, className: string) => string),
+	className = ''
+) => {
 	if (!iconName) {
 		return '';
 	}
+
 	if (typeof iconName === 'function') {
 		// Treat icon name as a custom render function
 		return iconName(ctx, className);
 	}
+
 	if (!iconName.startsWith('fa-')) {
 		iconName = 'fa-' + iconName;
 	}
+
 	return `<i class="fa ${iconName} ${className || ''}"></i>`;
 };
 
@@ -242,9 +242,8 @@ module.exports.icon = (ctx, iconName, className = '') => {
 
 /**
  * Render a CSRF field
- * @param {CUIContext} ctx
  */
-module.exports.csrfField = ctx => {
+export const csrfField = (ctx: CUIContext) => {
 	if (!ctx.tweaks.csrfEnabled) {
 		return '';
 	}
@@ -253,10 +252,8 @@ module.exports.csrfField = ctx => {
 
 /**
  * Render error page, this is shown where everything else fails
- * @param {CUIContext} ctx
- * @param {Error} err
  */
-module.exports.errorPage = (ctx, err) => {
+export const errorPage = (ctx: CUIContext, err: CUIError | Error) => {
 	return ctx.views.layout(
 		ctx,
 		ctx.texts.errorPageTitle(ctx, err),
@@ -267,7 +264,7 @@ module.exports.errorPage = (ctx, err) => {
 			<div class="row">
 				<div class="col-md-6 offset-md-3">
 					<div class="alert alert-danger">
-						${err.code || err.code < 500 ? err.message : 'Internal server error'}
+						${!('code' in err) || err.code < 500 ? err.message : 'Internal server error'}
 					</div>
 				</div>
 			</div>
