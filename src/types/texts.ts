@@ -131,14 +131,14 @@ export class CUITexts {
   constructor(source?: Partial<CUITexts | { [key in ICUITextKey]: string }>) {
     safeAssign(this, source as any);
 
+    this.safe = {} as any;
+
     // Turn all properties into functions
     // Also, generate safe getters, for HTML escaping
     Object.keys(this).forEach(key => {
       if (key === 'safe') {
         return;
       }
-
-      this.safe = {} as any;
 
       let getter = makeGetter(this[key]);
       let safeGetter = makeSafeGetter(getter);

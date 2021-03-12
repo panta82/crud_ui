@@ -2,7 +2,8 @@
   "name": "crud-ui",
   "version": "0.3.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "nodemon-tester": "nodemon testers/kitchen_sink.js",
     "test": "jest",
